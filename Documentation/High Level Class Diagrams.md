@@ -1,10 +1,11 @@
-```mermaid
+
 classDiagram
 %% ===============================
 %% HEART OF RUIN - HIGH LEVEL CLASS DIAGRAM (Unity 6)
 %% ===============================
 
 %% === GAME FLOW SYSTEMS ===
+```mermaid
 class GameManager {
     +StartGame()
     +EndRun()
@@ -47,8 +48,8 @@ GameManager --> AudioManager
 GameManager --> OptionsManager
 OptionsManager --> GraphicsManager
 OptionsManager --> AccessibilityManager
-
-
+```
+```mermaid
 %% === PLAYER SYSTEMS ===
 class PlayerController {
     +Move()
@@ -92,8 +93,9 @@ PlayerController --> Weapon
 PlayerController --> BuffCurseManager
 Inventory --> WeaponFramework
 Inventory --> PlayerController
+```
 
-
+```mermaid
 %% === ENEMY & AI SYSTEMS ===
 class Enemy {
     +TakeDamage()
@@ -116,8 +118,9 @@ class EnemySpawner {
 EnemySpawner --> EnemyAI
 EnemyAI --> Enemy
 Boss <|-- Enemy
+```
 
-
+```mermaid
 %% === COMBAT CORE SYSTEMS ===
 class CombatSystem {
     +RegisterHit()
@@ -130,8 +133,9 @@ class DamageSystem {
 CombatSystem --> DamageSystem
 PlayerController --> CombatSystem
 Enemy --> CombatSystem
+```
 
-
+```mermaid
 %% === DUNGEON SYSTEMS ===
 class DungeonGenerator {
     +GenerateLayout(seed)
@@ -158,8 +162,9 @@ DungeonGenerator --> BiomeDefinition
 GameManager --> FloorProgression
 FloorProgression --> SafePointHub
 SafePointHub --> PermanentUpgradeSystem
+```
 
-
+```mermaid
 %% === UI SYSTEMS ===
 class HUD {
     +DisplayHealth()
@@ -187,8 +192,9 @@ HUD --> PlayerController
 InventoryUI --> Inventory
 ShopUI --> SafePointHub
 PauseMenu --> OptionsManager
+```
 
-
+```mermaid
 %% === MULTIPLAYER & NETWORKING ===
 class NetworkManager {
     +HostGame()
@@ -222,8 +228,9 @@ PartyManager --> PseudoParty
 FlareSystem --> PartyManager
 NetworkManager --> LeaderboardSystem
 NetworkManager --> WorldEventManager
+```
 
-
+```mermaid
 %% === TESTING & DEBUG ===
 class DeveloperConsole {
     +ExecuteCommand(cmd)
@@ -242,6 +249,5 @@ DeveloperConsole --> GameManager
 DebugOverlay --> GameManager
 ProceduralDebugTools --> DungeonGenerator
 RemoteConsole --> DeveloperConsole
-
-%% End Diagram
 ```
+%% End Diagram
