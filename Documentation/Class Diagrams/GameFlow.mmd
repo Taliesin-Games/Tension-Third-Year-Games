@@ -1,0 +1,44 @@
+classDiagram
+%% === GAME FLOW SYSTEMS ===
+class GameManager {
+    +StartGame()
+    +EndRun()
+    +LoadScene(sceneName)
+    +ReturnToHub()
+}
+class SceneManager {
+    +LoadAdditive(scene)
+    +Unload(scene)
+}
+class SaveLoadSystem {
+    +SaveData()
+    +LoadData()
+}
+class EventManager {
+    +Broadcast(eventName)
+    +Subscribe(eventName, callback)
+}
+class AudioManager {
+    +PlaySFX(id)
+    +PlayBGM(track)
+    +FadeTrack(newTrack)
+}
+class OptionsManager {
+    +SaveSettings()
+    +LoadSettings()
+}
+class GraphicsManager {
+    +ApplyQualityPreset()
+}
+class AccessibilityManager {
+    +ToggleSubtitles()
+    +AdjustTextSize()
+}
+
+GameManager --> SceneManager
+GameManager --> SaveLoadSystem
+GameManager --> EventManager
+GameManager --> AudioManager
+GameManager --> OptionsManager
+OptionsManager --> GraphicsManager
+OptionsManager --> AccessibilityManager

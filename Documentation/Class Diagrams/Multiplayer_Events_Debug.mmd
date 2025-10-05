@@ -1,0 +1,50 @@
+classDiagram
+%% === MULTIPLAYER & DEBUG SYSTEMS ===
+class NetworkManager {
+    +HostGame()
+    +JoinGame()
+    +SyncData()
+}
+class PartyManager {
+    +CreateParty()
+    +AddPlayer()
+    +RemovePlayer()
+}
+class FlareSystem {
+    +SendFlare()
+    +ReceiveFlare()
+}
+class PseudoParty {
+    +AutoJoin()
+    +AutoLeave()
+}
+class LeaderboardSystem {
+    +SubmitScore()
+    +DisplayLeaderboard()
+}
+class WorldEventManager {
+    +TriggerWorldBoss()
+    +ScheduleRaid()
+}
+class DeveloperConsole {
+    +ExecuteCommand(cmd)
+}
+class DebugOverlay {
+    +ShowStats()
+}
+class ProceduralDebugTools {
+    +VisualiseLayout()
+}
+class RemoteConsole {
+    +StreamLogs()
+}
+
+NetworkManager --> PartyManager
+PartyManager --> PseudoParty
+FlareSystem --> PartyManager
+NetworkManager --> LeaderboardSystem
+NetworkManager --> WorldEventManager
+DeveloperConsole --> GameManager
+DebugOverlay --> GameManager
+ProceduralDebugTools --> DungeonGenerator
+RemoteConsole --> DeveloperConsole

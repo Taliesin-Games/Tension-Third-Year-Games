@@ -1,0 +1,23 @@
+classDiagram
+%% === ENEMY & AI SYSTEMS ===
+class Enemy {
+    +TakeDamage()
+    +Attack()
+}
+class EnemyAI {
+    +Patrol()
+    +Chase()
+    +AttackTarget()
+}
+class Boss extends Enemy {
+    +PhaseTransition()
+    +SpecialAttack()
+}
+class EnemySpawner {
+    +SpawnEnemies()
+    +DespawnAll()
+}
+
+EnemySpawner --> EnemyAI
+EnemyAI --> Enemy
+Boss <|-- Enemy

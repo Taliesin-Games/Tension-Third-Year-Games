@@ -1,0 +1,53 @@
+classDiagram
+%% === PLAYER SYSTEMS ===
+class PlayerController {
+    +Move()
+    +Dash()
+    +Attack()
+}
+class ResourceManager {
+    +ModifyHealth()
+    +ModifyMana()
+    +CheckDeath()
+}
+class PlayerStats {
+    +Strength
+    +Agility
+    +Intelligence
+    +ApplyModifiers()
+}
+class Weapon {
+    +Attack()
+    +Damage
+    +Cooldown
+}
+class WeaponFramework {
+    +EquipWeapon()
+    +GenerateWeapon(type)
+}
+class Inventory {
+    +AddItem()
+    +RemoveItem()
+    +UseItem()
+}
+class BuffCurseManager {
+    +ApplyBuff()
+    +ApplyCurse()
+    +ExpireEffect()
+}
+class CombatSystem {
+    +RegisterHit()
+    +ApplyDamage()
+}
+class DamageSystem {
+    +CalculateDamage()
+    +ApplyResistance()
+}
+
+PlayerController --> ResourceManager
+PlayerController --> PlayerStats
+PlayerController --> Weapon
+PlayerController --> BuffCurseManager
+Inventory --> WeaponFramework
+PlayerController --> CombatSystem
+CombatSystem --> DamageSystem

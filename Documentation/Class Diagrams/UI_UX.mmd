@@ -1,0 +1,32 @@
+classDiagram
+%% === UI SYSTEMS ===
+class HUD {
+    +DisplayHealth()
+    +DisplayMana()
+    +DisplayTension()
+}
+class InventoryUI {
+    +ShowInventory()
+    +EquipItem()
+}
+class ShopUI {
+    +DisplayItems()
+    +PurchaseItem()
+}
+class DialogueUI {
+    +ShowDialogue()
+    +AdvanceText()
+}
+class PauseMenu {
+    +Open()
+    +Close()
+}
+class OptionsUI {
+    +ApplyChanges()
+}
+
+HUD --> PlayerController
+InventoryUI --> Inventory
+ShopUI --> SafePointHub
+PauseMenu --> OptionsManager
+OptionsUI --> OptionsManager

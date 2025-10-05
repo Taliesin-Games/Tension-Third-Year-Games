@@ -1,0 +1,32 @@
+classDiagram
+%% === DUNGEON SYSTEMS ===
+class DungeonGenerator {
+    +GenerateLayout(seed)
+    +PlaceRooms()
+}
+class BiomeDefinition {
+    +EnvironmentType
+    +Modifiers
+}
+class FloorProgression {
+    +AdvanceFloor()
+    +ReturnToHub()
+}
+class SafePointHub {
+    +EnterHub()
+    +AccessShop()
+}
+class PermanentUpgradeSystem {
+    +UnlockUpgrade()
+    +ApplyUpgrade()
+}
+class ProceduralSeedManager {
+    +SetSeed()
+    +GetSeed()
+}
+
+DungeonGenerator --> BiomeDefinition
+GameManager --> FloorProgression
+FloorProgression --> SafePointHub
+SafePointHub --> PermanentUpgradeSystem
+DungeonGenerator --> ProceduralSeedManager
