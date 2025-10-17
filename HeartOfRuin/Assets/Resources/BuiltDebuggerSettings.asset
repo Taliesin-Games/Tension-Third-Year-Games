@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf9efbff86bfe42b823b962c34e5a5, type: 3}
+  m_Name: BuiltDebuggerSettings
+  m_EditorClassIdentifier: 
+  enableFileLogging: 1
+  singleCombinedLog: 1
+  storageStrategy: 2
+  logFilePath: Logs
+  logFileName: debug_log
+  globalLogLevel: 2
+  expandedLogLevel: -1
+  enableScreenLogging: 1
+  screenShowTime: 10
+  fontSize: 16
+  screenResolution: {x: 1920, y: 1080}
+  enableRemoteLogging: 0
+  remoteEndpoint: http://127.0.0.1:5000/logs
