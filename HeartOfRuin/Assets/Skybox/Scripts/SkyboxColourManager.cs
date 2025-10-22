@@ -117,8 +117,13 @@ public class SkyboxColourManager : MonoBehaviour
         int tileX = tileIndex % Mathf.Max(1, tileCountX);
         int tileY = tileIndex / Mathf.Max(1, tileCountX);
 
-        Vector2 tileSize = new Vector2(1f / Mathf.Max(1, tileCountX), 1f / Mathf.Max(1, tileCountY));
-        Vector2 tileOffset = new Vector2(tileX * tileSize.x, tileY * tileSize.y);
+        float sizeX = 1f / Mathf.Max(1, tileCountX);
+        float sizeY = 1f / Mathf.Max(1, tileCountY);
+        Vector2 tileSize = new Vector2(sizeX, sizeY);
+
+        float offsetX = tileX * sizeX;
+        float offsetY = tileY * sizeY;
+        Vector2 tileOffset = new Vector2(offsetX, offsetY);
 
         Shader.SetGlobalVector(TileOffsetId, tileOffset);
         Shader.SetGlobalVector(TileScaleId, tileSize);
