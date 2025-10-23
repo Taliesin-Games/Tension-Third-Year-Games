@@ -7,9 +7,11 @@ public class InventoryUI : MonoBehaviour
 
     }
 
+    /*
     bool EquipItem()
     {
 
     }
+    */
 }
 
