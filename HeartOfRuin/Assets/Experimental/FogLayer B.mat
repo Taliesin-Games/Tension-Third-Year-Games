@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: f99011530bf1a48449d7581062a7a583, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _DEPTH_OBSCURE
   m_InvalidKeywords:
   - _USEBLUE_ON
   m_LightmapFlags: 4
@@ -32,6 +33,10 @@ Material:
     m_Floats:
     - _AlphaThreshold: 0
     - _Density: 1
+    - _DepthFadeDistance: 10
+    - _DepthObscureMax: 81.6
+    - _DepthObscureMin: 9
+    - _DepthObscureStrength: 1.06
     - _DistanceFadeEnd: 50
     - _DistanceFadeStart: 26.5
     - _Falloff: 2
@@ -41,9 +46,10 @@ Material:
     - _Speed: 0.1
     - _UseAllChannels: 0
     - _UseBlue: 1
+    - _UseDepthObscure: 1
     - _UseGreen: 0
     - _UseRed: 0
     m_Colors:
-    - _BaseColor: {r: 0.6392157, g: 0.17254902, b: 0.92941177, a: 1}
+    - _BaseColor: {r: 0.19670457, g: 0.027055884, b: 0.3018868, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

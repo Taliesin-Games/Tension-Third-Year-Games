@@ -14,6 +14,12 @@ Shader "Custom/CustomClouds"
         _AlphaThreshold ("Alpha Cutoff Threshold", Range(0, 1)) = 0.1
         _DepthFadeDistance ("Depth Fade Distance", Range(0, 10)) = 2.0
 
+        [Header(Depth Obscure)]
+        [Toggle(_DEPTH_OBSCURE)] _UseDepthObscure ("Enable Depth Obscure", Float) = 0
+        _DepthObscureMin ("Depth Obscure Min", Range(0, 100)) = 5.0
+        _DepthObscureMax ("Depth Obscure Max", Range(0, 200)) = 50.0
+        _DepthObscureStrength ("Depth Obscure Strength", Range(0, 5)) = 2.0
+
         [Toggle]_UseRed ("Use Red Channel", Float) = 1
         [Toggle]_UseGreen ("Use Green Channel", Float) = 0
         [Toggle]_UseBlue ("Use Blue Channel", Float) = 0
@@ -36,6 +42,7 @@ Shader "Custom/CustomClouds"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma shader_feature _DEPTH_OBSCURE
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
@@ -69,6 +76,12 @@ Shader "Custom/CustomClouds"
             float _UseGreen;
             float _UseBlue;
 
+            #ifdef _DEPTH_OBSCURE
+            float _DepthObscureMin;
+            float _DepthObscureMax;
+            float _DepthObscureStrength;
+            #endif
+
             TEXTURE3D(_NoiseTex);
             SAMPLER(sampler_NoiseTex);
 
@@ -85,11 +98,13 @@ Shader "Custom/CustomClouds"
 
             half4 frag (Varyings IN) : SV_Target
             {
-                // Depth fade to hide fog layers near objects
+                // Depth calculations
                 float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
                 float sceneDepth = LinearEyeDepth(SampleSceneDepth(screenUV), _ZBufferParams);
                 float fragDepth = LinearEyeDepth(IN.positionCS.z, _ZBufferParams);
                 float depthDiff = sceneDepth - fragDepth;
+
+                // Calculate depth fade (soft particles) - always needed
                 float depthFade = saturate(depthDiff / _DepthFadeDistance);
 
                 // Edge fade (keep fog inside cube)
@@ -107,17 +122,29 @@ Shader "Custom/CustomClouds"
                                   noiseSample.g * _UseGreen +
                                   noiseSample.b * _UseBlue) / total;
 
-                // Density
-                float density = saturate(noiseVal * _Density * edgeFade);
+                // Base density with depth fade applied
+                float density = saturate(noiseVal * _Density * edgeFade * depthFade);
+
+                #ifdef _DEPTH_OBSCURE
+                // Add depth-based density increase for distant objects
+                // Only apply to geometry behind the fog (positive depthDiff)
+                if (depthDiff > 0.0)
+                {
+                    // Map scene depth to 0-1 range between min and max with smoothstep for gradual transition
+                    float normalizedDepth = saturate((sceneDepth - _DepthObscureMin) / max(0.01, _DepthObscureMax - _DepthObscureMin));
+                    float depthDensity = smoothstep(0.0, 1.0, normalizedDepth) * _DepthObscureStrength;
+                    
+                    // Add depth density on top of existing density (which already has depthFade applied)
+                    // This way soft particles still work, but we add more fog for distant objects
+                    density = saturate(density + depthDensity * depthFade);
+                }
+                #endif
 
                 // Distance fade
                 float3 camPos = GetCameraPositionWS();
                 float dist = distance(IN.positionWS, camPos);
                 float camFade = saturate(1.0 - smoothstep(_DistanceFadeStart, _DistanceFadeEnd, dist));
                 density *= camFade;
-
-                // Apply depth fade
-                density *= depthFade;
 
                 // Lighting
                 Light mainLight = GetMainLight();
