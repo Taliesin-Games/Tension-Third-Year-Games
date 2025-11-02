@@ -2,23 +2,23 @@ Shader "Custom/CustomClouds"
 {
     Properties
     {
-        _BaseColor ("Base Color", Color) = (0.6, 0.6, 0.7, 1)
-        _Density ("Density", Range(0, 5)) = 1.0
-        _Falloff ("Edge Falloff", Range(0, 2)) = 1.0
-        _NoiseTex ("3D Noise Texture", 3D) = "" {}
-        _NoiseScale ("Noise Scale", Range(0.1, 10)) = 2.0
-        _Speed ("Noise Scroll Speed", Range(0, 2)) = 0.2
-        _LightInfluence ("Light Influence", Range(0, 2)) = 1.0
-        _DistanceFadeStart ("Distance Fade Start", Range(0, 200)) = 10.0
-        _DistanceFadeEnd ("Distance Fade End", Range(1, 500)) = 50.0
-        _AlphaThreshold ("Alpha Cutoff Threshold", Range(0, 1)) = 0.1
-        _DepthFadeDistance ("Depth Fade Distance", Range(0, 10)) = 2.0
+        _BaseColor ("Base Color", Color) = (0.6, 0.6, 0.7, 1) // Colour of the fog
+        _Density ("Density", Range(0, 5)) = 1.0 // Overall density multiplier
+        _Falloff ("Edge Falloff", Range(0, 2)) = 1.0 // How quickly the fog fades out at the edges
+        _NoiseTex ("3D Noise Texture", 3D) = "" {} // 3D noise texture for volumetric effect
+        _NoiseScale ("Noise Scale", Range(0.1, 10)) = 2.0 // Scale of the noise texture
+        _Speed ("Noise Scroll Speed", Range(0, 2)) = 0.2 // Speed of noise animation
+        _LightInfluence ("Light Influence", Range(0, 2)) = 1.0 // How much the main light affects the fog
+        _DistanceFadeStart ("Distance Fade Start", Range(0, 200)) = 10.0 // Distance from camera where fog starts to fade
+        _DistanceFadeEnd ("Distance Fade End", Range(1, 500)) = 50.0 // Distance from camera where fog is fully faded
+        _AlphaThreshold ("Alpha Cutoff Threshold", Range(0, 1)) = 0.1 // Minimum alpha for rendering
+        _DepthFadeDistance ("Depth Fade Distance", Range(0, 10)) = 2.0 // Distance over which to fade based on depth difference, hides individual layers quite well.
 
         [Header(Depth Obscure)]
-        [Toggle(_DEPTH_OBSCURE)] _UseDepthObscure ("Enable Depth Obscure", Float) = 0
-        _DepthObscureMin ("Depth Obscure Min", Range(0, 100)) = 5.0
-        _DepthObscureMax ("Depth Obscure Max", Range(0, 200)) = 50.0
-        _DepthObscureStrength ("Depth Obscure Strength", Range(0, 5)) = 2.0
+        [Toggle(_DEPTH_OBSCURE)] _UseDepthObscure ("Enable Depth Obscure", Float) = 0 // Toggle for depth obscure feature
+        _DepthObscureMin ("Depth Obscure Min", Range(0, 100)) = 5.0 // Minimum depth for depth obscure effect
+        _DepthObscureMax ("Depth Obscure Max", Range(0, 200)) = 50.0 // Maximum depth for depth obscure effect
+        _DepthObscureStrength ("Depth Obscure Strength", Range(0, 5)) = 2.0 // Strength of depth obscure effect
 
         [Toggle]_UseRed ("Use Red Channel", Float) = 1
         [Toggle]_UseGreen ("Use Green Channel", Float) = 0
@@ -104,7 +104,7 @@ Shader "Custom/CustomClouds"
                 float fragDepth = LinearEyeDepth(IN.positionCS.z, _ZBufferParams);
                 float depthDiff = sceneDepth - fragDepth;
 
-                // Calculate depth fade (soft particles) - always needed
+                // Calculate depth fade (soft particles) - always needed. 
                 float depthFade = saturate(depthDiff / _DepthFadeDistance);
 
                 // Edge fade (keep fog inside cube)
