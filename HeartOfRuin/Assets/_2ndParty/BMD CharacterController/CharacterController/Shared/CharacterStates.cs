@@ -1,0 +1,19 @@
+public enum CharacterState
+{
+    Idle,
+    Walking,
+    Running,
+    Sprinting,
+    Jumping,
+    Falling,
+    Rolling,
+    Crouching,
+    Crawling,
+    Climbing,
+    Swimming,
+    Swinging,
+    Hookshot,
+    Flying,
+    Pushing,
+    Pulling
+}
