@@ -13,6 +13,7 @@ public class EnemyAI : MonoBehaviour
     static int count = 0;
     public static int EnemyCount => count;
 
+    //State Tracking Enums
     enum EnemyState
     {
         Idle,      // not moving or attacking
@@ -20,6 +21,8 @@ public class EnemyAI : MonoBehaviour
         Chasing,   // chasing a moving target (player)
         Attacking  // attacking current target (tower/player)
     }
+
+    // Target Type Enum
     enum TargetKind
     {
         None,
@@ -50,6 +53,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] LayerMask detectionLayerMask;     // Set to layers containing Player/Attackable. If 0, uses all layers.
     [SerializeField] LayerMask losObstructionMask;     // Set to environment/obstacles that block vision.
     [SerializeField] float loseTargetAfter = 2f;       // seconds to keep chasing after losing sight
+
+    [SerializeField] float patrolWaitTimeMax = 0.25f; // max wait time before trying to find a patrol point, used for failed patrol attempts
     #endregion
 
     #region Cached References
@@ -79,6 +84,7 @@ public class EnemyAI : MonoBehaviour
     #endregion
 
     /*
+     * Wasnt sure if the pooling system would use something similar to this so commented out for now
     private void OnEnable()
     {
         count++;
@@ -92,44 +98,52 @@ public class EnemyAI : MonoBehaviour
 
     void Awake()
     {
+        // Cache references
         enemyNavigation = GetComponent<EnemyNavigation>();
         animator = GetComponent<Animator>();
 
+        //Set initial origin for patrols
         patrolOrigin = transform.position; // patrol around spawn
     }
     void Update()
     {
+        // Dead enemies do nothing
         if (isDead) return;
+
+        // Temporary: die on P key for testing
         if (Input.GetKeyDown(KeyCode.P))
         {
             Die();
         }
 
+        // State machine tick
         switch (currentState)
         {
             case EnemyState.Idle:
-                TickIdle();
+                TickIdle(); // Intermediary state, tries to find targets or start patrols
                 break;
 
             case EnemyState.Walking:
-                TickWalking();
+                TickWalking(); // Moving to patrol point or static target
                 break;
 
             case EnemyState.Chasing:
-                TickChasing();
+                TickChasing(); // Pursuing a moving target
                 break;
 
             case EnemyState.Attacking:
-                TickAttacking();
+                TickAttacking(); // In attack range of target
                 break;
         }
 
+        // Debug drawing
         if (drawDebug)
         {
-            DebugDrawCircle(patrolOrigin, patrolRadius, Color.cyan);
-            DebugDrawCircle(transform.position + Vector3.up * 0.05f, detectionRadius, Color.yellow);
+            DebugDrawCircle(patrolOrigin, patrolRadius, Color.cyan); // Patrol area
+            DebugDrawCircle(transform.position + Vector3.up * 0.05f, detectionRadius, Color.yellow); // Detection radius
         }
     }
+
     void TickIdle()
     {
         // First, try to detect something to attack
@@ -143,8 +157,10 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        // Try to get a patrol point
         if (enemyNavigation.TryGetPatrolPoint(patrolOrigin, patrolRadius, patrolSampleMaxDistance, patrolSampleMaxTries, out patrolDestination))
         {
+            // Start moving to it if possible
             if (enemyNavigation.MoveTo(patrolDestination))
             {
                 isPatrolling = true;
@@ -156,7 +172,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // No valid point this frame; try shortly again
-        patrolWaitTimer = 0.25f;
+        patrolWaitTimer = patrolWaitTimeMax; 
         patrolOrigin = transform.position;
     }
     void TickWalking()
@@ -184,14 +200,17 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        // If we reached the target, start attacking
         if (IsWithinAttackRange(currentTarget.position))
         {
             currentState = EnemyState.Attacking;
             return;
         }
     }
+
     void TickChasing()
     {
+        // If target vanished (destroyed), reset state machine
         if (currentTarget == null)
         {
             ResetTarget();
@@ -255,7 +274,7 @@ public class EnemyAI : MonoBehaviour
             }
             else
             {
-                // For tower, walk back into range
+                // For static target, walk back into range
                 if (enemyNavigation.MoveTo(currentTarget.position))
                 {
                     currentState = EnemyState.Walking;
@@ -277,6 +296,7 @@ public class EnemyAI : MonoBehaviour
             animator.SetTrigger("Attack");
         }
 
+        // Debug drawing for attacks
         if (drawDebug)
         {
             DebugDrawCircle(transform.position, attackRange, Color.red);
@@ -296,6 +316,7 @@ public class EnemyAI : MonoBehaviour
     }
     void ResetTarget()
     {
+        // Clear target and return to idle, effectively restarting the state machine
         currentTarget = null;
         currentTargetKind = TargetKind.None;
         isPatrolling = false;
@@ -334,9 +355,9 @@ public class EnemyAI : MonoBehaviour
         target = null;
         kind = TargetKind.None;
 
-        int mask = detectionLayerMask.value == 0 ? ~0 : detectionLayerMask.value;
-        var hits = Physics.OverlapSphere(transform.position, detectionRadius, mask, QueryTriggerInteraction.Ignore);
-        if (hits == null || hits.Length == 0) return false;
+        int mask = detectionLayerMask.value == 0 ? ~0 : detectionLayerMask.value; // all layers if none specified
+        var hits = Physics.OverlapSphere(transform.position, detectionRadius, mask, QueryTriggerInteraction.Ignore); // get all colliders in radius
+        if (hits == null || hits.Length == 0) return false; // nothing found, return
 
         float bestDistSqr = float.MaxValue;
         Transform best = null;
@@ -354,7 +375,7 @@ public class EnemyAI : MonoBehaviour
             var rb = tr.GetComponent<Rigidbody>();
             if (rb != null) tr = rb.transform;
 
-            // Identify candidate by tag
+            // Identify candidate by tag and components
             TargetKind k = TargetKind.None;
             if (tr.CompareTag("Player") || tr.GetComponentInParent<CharacterController>() != null)
                 k = TargetKind.Player;
@@ -386,6 +407,7 @@ public class EnemyAI : MonoBehaviour
                 }
             }
 
+            // Better than previous best?
             if (distSqr < bestDistSqr)
             {
                 bestDistSqr = distSqr;
@@ -394,6 +416,7 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        // Return best found target
         if (best != null)
         {
             target = best;
@@ -436,7 +459,7 @@ public class EnemyAI : MonoBehaviour
         return true;
     }
 
-    // Overload that searches from a specific origin (kept for future use)
+    // Overload that searches from a specific origin (kept for future use). LEGACY CODE - currently not used.
     bool TryFindNearestAttackable(out GameObject target, out TargetKind kind, Vector3 origin)
     {
         target = null;
@@ -482,7 +505,7 @@ public class EnemyAI : MonoBehaviour
         return true;
     }
 
-    // Default origin = enemy position
+    // Default origin = enemy position. LEGACY CODE - currently not used.
     bool TryFindNearestAttackable(out GameObject target, out TargetKind kind)
     {
         return TryFindNearestAttackable(out target, out kind, transform.position);
