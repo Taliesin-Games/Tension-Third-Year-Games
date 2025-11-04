@@ -1,4 +1,4 @@
-Shader "Custom/CustomClouds"
+Shader "Custom/CustomFog"
 {
     Properties
     {
@@ -27,6 +27,7 @@ Shader "Custom/CustomClouds"
 
     SubShader
     {
+        //does not write to depth buffer and is transparent
         ZWrite Off
         Cull Off
         Blend SrcAlpha OneMinusSrcAlpha
