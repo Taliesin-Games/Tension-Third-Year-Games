@@ -1,4 +1,167 @@
 
+<a name="v0.0.7"></a>
+## [v0.0.7](https://github.com/bigmonmulgrew/Year2-Overscoped/compare/v0.0.6...v0.0.7)
+
+> 2025-11-09
+
+### Added
+
+* Added emissive, Cookies, post processing effects and GI - 2025-11-05 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+* Added prefabs - 2025-11-03 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+* Added Stevens meshes - 2025-11-03 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+* Added Current Concepts Profiles for NPC and Characters - 2025-11-02 (by [Dan Clamp](https://www.gravatar.com/avatar/153443324+Clampy-7@users.noreply.github.com?d=identicon))
+* Added a debug scene for enemy nav testing - 2025-11-02 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added test particles - 2025-10-19 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+
+
+### Added
+
+* added Weapon and Character MoSCoW - 2025-11-04 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+
+
+### Adding
+
+* Adding dodge phase - 2025-11-02 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+
+
+### Adjusted
+
+* Adjusted Params - 2025-11-02 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Auto
+
+* auto gen files - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Basic
+
+* Basic Blockout for Sword trail and dodge - 2025-11-02 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+* Basic Unity Lighting demo scene - 2025-10-29 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+* Basic lighting demo scene setup - 2025-10-29 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Character
+
+* Character MoSCoW - 2025-10-22 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+
+
+### Cleaned
+
+* Cleaned up file structure, adjusted file names to be more consistent, added test log - 2025-11-04 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Create
+
+* Create Asset Feminine Elf Base Mesh.txt - 2025-11-03 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+* Create testLogTemplate_Feature_SwordTrail.md - 2025-11-03 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+
+
+### Created
+
+* Created a Style Guide - 2025-11-09 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+
+
+### Depth
+
+* Depth based density increase to allow for Island pillar blurring - 2025-11-01 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Elf
+
+* Elf Base mesh - 2025-11-03 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+
+
+### Got
+
+* Got rid off bad meshes. - 2025-11-09 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+
+
+### Implemented
+
+* Implemented room based enemy spawner - 2025-11-06 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Layer
+
+* Layer hiding - 2025-11-01 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Merge
+
+* Merge branch 'v0.0.7-QA-' - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'CS_Light_Demo_Scene' into v0.0.7-QA- - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'Feature_SwordTrail' into v0.0.7-QA- - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'CS_Feature_Enemy_Gamejam_rip' - 2025-11-06 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'main' into CS_Light_Demo_Scene - 2025-10-29 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### NUDE
+
+* NUDE Elf Base Mesh - 2025-11-03 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+
+
+### Name
+
+* Name Change for lighting settings - 2025-10-29 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Redid
+
+* redid prefabs without blocks - 2025-11-03 (by [Bilbo6429](https://www.gravatar.com/avatar/djsullivan@sky.com?d=identicon))
+
+
+### Renamed
+
+* renamed elf - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Ripped
+
+* Ripped Enemy scripts from the gamejam project - 2025-10-23 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Scrolling
+
+* Scrolling Fog - 2025-11-01 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Test
+
+* Test Log - 2025-11-09 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Update
+
+* Update CHANGELOG.md - 2025-11-02 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Update
+
+* update templates - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Updated
+
+* Updated Feminine Elf Mesh - 2025-11-03 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+* Updated comments and created test log - 2025-11-02 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Upload
+
+* Upload of Logos, Alphabets and Overlays - 2025-11-04 (by [Claire Peacey](https://www.gravatar.com/avatar/cpeacey@hotmail.co.uk?d=identicon))
+
+
+### Pull Requests
+
+* Merge pull request [#169](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/169) from Taliesin-Games/CS_enemy_spawn_logic
+* Merge pull request [#173](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/173) from Taliesin-Games/Character-MoSCoW
+* Merge pull request [#166](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/166) from Taliesin-Games/CS_Claire_Scene_Basic_Setup
+* Merge pull request [#158](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/158) from Taliesin-Games/CS_Feature_Scrolling_Fog
+* Merge pull request [#149](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/149) from Taliesin-Games/Elf_Character_base_Mesh
+* Merge pull request [#148](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/148) from Taliesin-Games/DC_Character_Concept_Profile_Documentation
+
+
 <a name="v0.0.6"></a>
 ## [v0.0.6](https://github.com/bigmonmulgrew/Year2-Overscoped/compare/v0.0.5...v0.0.6)
 
