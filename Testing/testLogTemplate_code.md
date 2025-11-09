@@ -3,7 +3,7 @@
 This document tracks the testing of core features in the Unreal Engine project.
 
 ## Status Key
-✅ - Passed | ⚠️ - Issues Found | ❌ - Failed | ⏳ - Not Tested
+✅ - Passed | ⚠️ - Issues Found | ❌ - Failed | ⏳ - Not Tested | ✖ - Not Applicable
 
 ---
 

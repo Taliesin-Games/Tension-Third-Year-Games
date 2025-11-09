@@ -3,7 +3,7 @@
 This document outlines the testing plan for 3D models, UVs, textures, and design aesthetics.
 
 ## Status Key
-✅ - Passed | ⚠️ - Issues Found | ❌ - Failed | ⏳ - Not Tested | ❎ - Not Applicable
+✅ - Passed | ⚠️ - Issues Found | ❌ - Failed | ⏳ - Not Tested | ✖ - Not Applicable
 
 ---
 
