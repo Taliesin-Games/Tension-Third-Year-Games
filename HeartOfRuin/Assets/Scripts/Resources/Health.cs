@@ -13,6 +13,8 @@ public class Health : Resource
     bool isDead;
     public bool IsDead => isDead;
 
+    [Tooltip("Damage resistances applied to incoming damage as a percentage, eg 0.1 = 10%\n" + 
+        "True damage resistance will be ignored.")]
     [SerializeField] DamageStruct Resistances;
 
     //Demo purpose only - visualise Damage Numbers !!REMOVE AFTER DEMO!!

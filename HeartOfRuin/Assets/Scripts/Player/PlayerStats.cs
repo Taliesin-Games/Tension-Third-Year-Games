@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-    [SerializeField]int strength = 0;
+    [Header("Stats")]
+    [Tooltip("Strength stat: Physical, Fire and Earth damage (scalings found on DamageComponent of weapon)")]
+    [SerializeField] int strength = 0;
+    [Tooltip("Agility stat: Lightning and Wind damage (scalings found on DamageComponent of weapon)")]
     [SerializeField]int agility = 0;
+    [Tooltip("Intelligence stat: Magical, Ice and Water damage (scalings found on DamageComponent of weapon)")]
     [SerializeField]int intelligence = 0;
 
+    [Tooltip("Critical hit chance as a percentage, eg 0.1 = 10%")]
     [SerializeField]float criticalChance = 0f; //start at 0%
+    [Tooltip("Critical hit damage multiplier as a percentage, eg 0.5 = 50% extra damage.\n"+
+        "Bonus damage from critical hits is applied before resistances.")]
     [SerializeField]float criticalDamage = 0.5f; //start at 50% extra damage
 
     public int getStrength()
