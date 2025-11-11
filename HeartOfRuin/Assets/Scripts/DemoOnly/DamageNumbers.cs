@@ -1,11 +1,11 @@
 using TMPro;
 using UnityEngine;
 
-public class DemoDamageNumbers : MonoBehaviour
+public class DamageNumbers : MonoBehaviour
 {
-    public float floatSpeed = 1f;
-    public float lifetime = 1f;
-    public Vector3 floatOffset = new Vector3(0, 1.5f, 0);
+    [SerializeField]float floatSpeed = 1f;
+    [SerializeField]float lifetime = 1f;
+    [SerializeField]Vector3 floatOffset = new Vector3(0, 1.5f, 0);
 
     [SerializeField]private GameObject text;
     private TextMeshProUGUI textMesh;
@@ -20,6 +20,7 @@ public class DemoDamageNumbers : MonoBehaviour
 
     public void Initialize(float damage)
     {
+
         if (text != null)
         {
             textMesh = text.GetComponent<TextMeshProUGUI>();

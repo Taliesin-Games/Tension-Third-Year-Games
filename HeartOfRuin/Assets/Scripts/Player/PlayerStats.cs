@@ -38,6 +38,36 @@ public class PlayerStats : MonoBehaviour
         return criticalDamage;
     }
 
+    public void setStrength(int value)
+    {
+        strength = value;
+        ApplyModifiers();
+    }
+
+    public void setAgility(int value)
+    {
+        agility = value;
+        ApplyModifiers();
+    }   
+
+    public void setIntelligence(int value)
+    {
+        intelligence = value;
+        ApplyModifiers();
+    }
+
+    public void setCriticalChance(float value)
+    {
+        criticalChance = value;
+        ApplyModifiers();
+    }
+
+    public void setCriticalDamage(float value)
+    {
+        criticalDamage = value;
+        ApplyModifiers();
+    }
+
     void ApplyModifiers()
     {
 

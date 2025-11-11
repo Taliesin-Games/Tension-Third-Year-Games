@@ -31,12 +31,13 @@ public class Health : Resource
         decreaseResource(finalDamage);
 
         Debug.Log($"{transform.root.name} has taken {finalDamage} damage");
+        Debug.Log($"Remaining Health: {GetCurrentResource()} / {GetMaxResource()}");
 
         //DEMO PURPOSE ONLY - SHOW DAMAGE NUMBERS !!REMOVE AFTER DEMO!!
         if (DamageNumberPrefab != null)
         {
             GameObject instance = Instantiate(DamageNumberPrefab, transform.position, Quaternion.identity);
-            instance.GetComponent<DemoDamageNumbers>().Initialize(finalDamage);
+            instance.GetComponent<DamageNumbers>().Initialize(finalDamage);
         }
         //END DEMO PURPOSE ONLY
 

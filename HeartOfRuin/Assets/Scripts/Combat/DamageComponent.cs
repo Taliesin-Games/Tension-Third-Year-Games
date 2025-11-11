@@ -47,12 +47,8 @@ public class DamageComponent : MonoBehaviour
 
     public DamageStruct CalculatePlayerDamage(PlayerStats playerStats)
     {
-        float critMultiplier = criticalHitMultiplier(playerStats.getCriticalChance(), playerStats.getCriticalDamage());
-
         DamageStruct damageDealt = new DamageStruct();
         damageDealt = CalculatePlayerDamage(playerStats, damageScaling);
-        // Apply crit multiplier
-        damageDealt = damageDealt * (1f + critMultiplier);
 
         return damageDealt;
     }
