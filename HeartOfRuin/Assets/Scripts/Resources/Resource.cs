@@ -4,36 +4,37 @@ using UnityEngine.Rendering;
 public class Resource : MonoBehaviour
 {
 
-    [SerializeField] private float maxResource = 100;
-    private float currentResource;
+    [SerializeField] float maxValue = 100;
+    float currentValue;
+
 
     void Start()
     {
-        currentResource = maxResource;
+        currentValue = maxValue;
     }
 
     protected float GetMaxResource()
     {
-        return maxResource;
+        return maxValue;
     }
 
     protected float GetCurrentResource()
     {
-        return currentResource;
+        return currentValue;
     }
 
     protected void increaseResource(float amount)
     {
-        if (currentResource >= maxResource) return;
+        if (currentValue >= maxValue) return;
         if (amount <= 0) return;
-        currentResource = Mathf.Min(currentResource + amount, maxResource);
+        currentValue = Mathf.Min(currentValue + amount, maxValue);
     }
 
     protected void decreaseResource(float amount)
     {
-        if (currentResource <= 0) return;
+        if (currentValue <= 0) return;
         if (amount <= 0) return;
-        currentResource = Mathf.Max(currentResource - amount, 0);
+        currentValue = Mathf.Max(currentValue - amount, 0);
     }
 
 }

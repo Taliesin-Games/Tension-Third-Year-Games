@@ -1,20 +1,46 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 
 public class Health : Resource
 {
+   
 
     bool isDead;
     public bool IsDead => isDead;
 
-    public void TakeDamage(float damage)
+    [Tooltip("Damage resistances applied to incoming damage as a percentage, eg 0.1 = 10%\n" + 
+        "True damage resistance will be ignored.")]
+    [SerializeField] DamageStruct Resistances;
+
+    //Demo purpose only - visualise Damage Numbers !!REMOVE AFTER DEMO!!
+    [SerializeField] GameObject DamageNumberPrefab;
+
+
+    public void TakeDamage(DamageStruct damage)
     {
         if (isDead) return; // Ignore damage if already dead
 
-        decreaseResource(damage);
-        //Debugger.Log($"{transform.root.name} has taken {damage} damage");
+        // apply resistances
+        // incomingDamage * (1 - target.resistance.stat)
+        float finalDamage = (float)ApplyResistances(damage);
+        decreaseResource(finalDamage);
+
+        Debug.Log($"{transform.root.name} has taken {finalDamage} damage");
+        Debug.Log($"Remaining Health: {GetCurrentResource()} / {GetMaxResource()}");
+
+        //DEMO PURPOSE ONLY - SHOW DAMAGE NUMBERS !!REMOVE AFTER DEMO!!
+        if (DamageNumberPrefab != null)
+        {
+            GameObject instance = Instantiate(DamageNumberPrefab, transform.position, Quaternion.identity);
+            instance.GetComponent<DamageNumbers>().Initialize(finalDamage);
+        }
+        //END DEMO PURPOSE ONLY
+
         if (GetCurrentResource() <= 0)
         {
             Die();
@@ -28,6 +54,13 @@ public class Health : Resource
         //Debugger.Log($"{transform.root.name} has healed {amount} health");
     }
 
+    DamageStruct ApplyResistances(DamageStruct damage)
+    {
+        // apply resistances
+        // incomingDamage * (1 - target.resistance.stat)
+        DamageStruct adjustedDamage = damage * (1 - Resistances);
+        return adjustedDamage;
+    }
 
     void Die()
     {
