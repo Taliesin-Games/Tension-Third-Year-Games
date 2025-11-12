@@ -889,6 +889,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.805
       objectReference: {fileID: 0}
+    - target: {fileID: 3902554408843922817, guid: e52d03024af2c2949ae1179207b11df8, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -902,6 +906,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 340929425450440136, guid: e52d03024af2c2949ae1179207b11df8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1841834156}
+    - targetCorrespondingSourceObject: {fileID: 340929425450440136, guid: e52d03024af2c2949ae1179207b11df8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1841834158}
   m_SourcePrefab: {fileID: 100100000, guid: e52d03024af2c2949ae1179207b11df8, type: 3}
 --- !u!1 &1806805533
 GameObject:
@@ -1075,31 +1082,102 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1841834140}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fc5a6afe13ce3442b09fb42f99a77f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sourceRenderer: {fileID: 245301416}
   ghostMaterial: {fileID: 2100000, guid: 65403b5c31f15554fb2e9545b80b5846, type: 2}
-  playerInput: {fileID: 1841834157}
   ghostCount: 4
   ghostLifetime: 0.7
   radius: 2.5
   faceCenter: 0
   motionEase: 5
   fadeEase: 0.8
---- !u!114 &1841834157 stripped
+--- !u!114 &1841834158
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3955896347130784398, guid: e52d03024af2c2949ae1179207b11df8, type: 3}
-  m_PrefabInstance: {fileID: 1536117720}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1841834140}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Script: {fileID: 11500000, guid: b2b07519de765ee4da5413a4a869ec76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skinnedRenderer: {fileID: 245301416}
+  ghostMaterial: {fileID: 2100000, guid: 65403b5c31f15554fb2e9545b80b5846, type: 2}
+  ghostCount: 4
+  radius: 2.5
+  duration: 0.7
+  fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.7588455
+      value: 0.6081618
+      inSlope: -1.4356935
+      outSlope: -1.4356935
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.32615802
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  movementCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.22080183
+      value: 0.6921464
+      inSlope: 1.6804745
+      outSlope: 1.6804745
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.16808905
+    - serializedVersion: 3
+      time: 0.6
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1866269551
 GameObject:
   m_ObjectHideFlags: 0

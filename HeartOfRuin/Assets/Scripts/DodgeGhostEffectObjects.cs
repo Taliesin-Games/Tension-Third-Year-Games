@@ -2,15 +2,13 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 
-public class DodgeGhostEffect : MonoBehaviour
+public class DodgeGhostEffectObjects : MonoBehaviour
 {
     [Header("References")]
     [Tooltip("The SkinnedMeshRenderer of the character to create ghosts from")]
     [SerializeField] SkinnedMeshRenderer sourceRenderer; // the main character mesh
     [Tooltip("Material used for the ghost (should support _GhostAlpha)")]
     [SerializeField] Material ghostMaterial;// material used for the ghost (should support _GhostAlpha)
-    [Tooltip("Reference to PlayerInput component for detecting dodge action")]
-    [SerializeField] private PlayerInput playerInput; // Reference to PlayerInput component
 
     [Header("Settings")]
     [Tooltip("Number of ghosts to create during dodge")]
@@ -32,9 +30,8 @@ public class DodgeGhostEffect : MonoBehaviour
     //TODO: Integrate with dodge action in player controller
     private void Update()
     {
-        if (playerInput == null)
-            return;
-        if (playerInput.actions["Roll"].triggered)
+        // Optional: Trigger ghost creation with a key press for testing
+        if (Input.GetKeyDown(KeyCode.R))
         {
             CreateGhosts();
         }
