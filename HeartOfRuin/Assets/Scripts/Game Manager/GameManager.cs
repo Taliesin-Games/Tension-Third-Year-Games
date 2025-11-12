@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Utils;
 
 [RequireComponent(typeof(MusicManager))]
 [RequireComponent(typeof(LevelManager))]
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Cached References
+    EnemySpawner enemySpawner;
     #endregion
 
     #region Runtime Variables
@@ -75,6 +77,14 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        FindRefereces();
+    }
+
+    private void FindRefereces()
+    {
+        enemySpawner = GetComponent<EnemySpawner>();
+        if (!enemySpawner) enemySpawner = FindFirstObjectByType<EnemySpawner>();
+        if (!enemySpawner) Debugger.LogError("EnemySpawner not found by GameManager.");
         
     }
 
@@ -97,7 +107,10 @@ public class GameManager : MonoBehaviour
     
     public void OnEnemyDefeated()
     {
-        if(EnemySpawner.EnemyCount <= 0 && EnemySpawner.IsSpawningComplete)
+        if (
+            !enemySpawner ||
+            (EnemySpawner.EnemyCount <= 0 && EnemySpawner.IsSpawningComplete)
+            )
         {
             WinGame();
         }

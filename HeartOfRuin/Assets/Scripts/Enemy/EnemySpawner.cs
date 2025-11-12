@@ -43,8 +43,17 @@ public class EnemySpawner : MonoBehaviour
     {
         get
         {
-            Instance.ValidateTrackedEnemies();
-            return Instance.spawnedEnemies.Count;
+            if (Instance is EnemySpawner e)
+            {
+                e.ValidateTrackedEnemies();
+                return e.spawnedEnemies.Count;
+            }
+            else
+            {
+                Debug.LogWarning("EnemySpawner instance not found when accessing EnemyCount.");
+                return 0;
+            }
+
         }
     }
     public static bool IsSpawningComplete { get => Instance.isSpawningComplete; }
@@ -76,7 +85,11 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemies()
     {
 
-        if (enemiesToSpawn.Count == 0) return;
+        if (enemiesToSpawn.Count == 0)
+        {
+            isSpawningComplete = true;
+            return;
+        }
 
         //Iterate through all enemy spawn structs
         for (int i = 0; i < enemiesToSpawn.Count; i++)

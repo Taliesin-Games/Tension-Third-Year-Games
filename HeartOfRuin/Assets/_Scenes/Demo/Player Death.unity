@@ -1136,8 +1136,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1277,6 +1277,75 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8164704382505319014, guid: 3c1e08e6d0806a3498f9da68cd9c0a9e, type: 3}
   m_PrefabInstance: {fileID: 1559181001}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1576913009
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1303387034596802045, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: enemiesToSpawn.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1303387034596802045, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: enemiesToSpawn.Array.data[0].quantity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683589757631479821, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5266072877780842841, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: 8e69ec4c365012c46972c2e71f761bfd, type: 2}
+    - target: {fileID: 7131821321385269221, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
+      propertyPath: m_Name
+      value: EnemySpawner
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 473f70c75ed718a41bc9f0505b931f46, type: 3}
 --- !u!1 &1806805533
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,14 +1462,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1550635328776648045, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
-      propertyPath: m_Resource
-      value: 
-      objectReference: {fileID: 8300000, guid: 8fc6cddd5845c924fb73d9cd1de8a1d0, type: 3}
-    - target: {fileID: 1550635328776648045, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 8fc6cddd5845c924fb73d9cd1de8a1d0, type: 3}
     - target: {fileID: 2840795870922317870, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1768,3 +1829,4 @@ SceneRoots:
   - {fileID: 1192555535}
   - {fileID: 972137617}
   - {fileID: 1848647042}
+  - {fileID: 1576913009}
