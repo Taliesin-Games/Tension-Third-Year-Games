@@ -9,7 +9,6 @@ using UnityEngine.UIElements;
 public class Health : Resource
 {
    
-
     bool isDead;
     public bool IsDead => isDead;
 
@@ -20,6 +19,17 @@ public class Health : Resource
     //Demo purpose only - visualise Damage Numbers !!REMOVE AFTER DEMO!!
     [SerializeField] GameObject DamageNumberPrefab;
 
+    #region Cached References
+    BMD.CharacterController characterController;
+    #endregion
+
+    protected override void Start()
+    {
+        base.Start();
+        
+        // Cache references
+        characterController = GetComponent<BMD.CharacterController>();
+    }
 
     public void TakeDamage(DamageStruct damage)
     {
@@ -46,14 +56,12 @@ public class Health : Resource
             Die();
         }
     }
-
     public void Heal(float amount)
     {
         if (isDead) return; // Cannot heal if dead
         increaseResource(amount);
         //Debugger.Log($"{transform.root.name} has healed {amount} health");
     }
-
     DamageStruct ApplyResistances(DamageStruct damage)
     {
         // apply resistances
@@ -61,11 +69,19 @@ public class Health : Resource
         DamageStruct adjustedDamage = damage * (1 - Resistances);
         return adjustedDamage;
     }
-
     void Die()
     {
         if (isDead) return; // Prevent multiple death triggers
+
         isDead = true;
+
+        // Notify Character controller of death, if is player controller then trigger game manager game over
+        if (characterController != null && characterController.GetType() == typeof(BMD.PlayerController))
+        {
+            GameManager.Instance.GameOver();
+        }
+
+
         //Debugger.Log($"{gameObject.name} has died");
         SendMessage("Die", SendMessageOptions.DontRequireReceiver);
     }
