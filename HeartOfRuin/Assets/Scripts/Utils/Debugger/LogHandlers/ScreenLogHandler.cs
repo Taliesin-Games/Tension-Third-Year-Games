@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 using static Utils.DebuggerConfig; // Allows properties to be called as if they belong to this object
 
 public class ScreenLogHandler : BaseLogHandler, IUpdatableHandler, ICanvasHandler 
@@ -18,25 +19,10 @@ public class ScreenLogHandler : BaseLogHandler, IUpdatableHandler, ICanvasHandle
     private RectTransform scrollContent;
     #endregion
 
-    public void InitCanvas(Transform parent)
-    {
-        this.parent = parent;
-
-        // Create a canvas and set it to be the child of the Debugger GameObject
-        // Add canvas with screen space overlay, sort order 1000
-        // Add a CanvasScaler component to the canvas and set the UI Scale Mode to Scale With Screen Size to 1080p
-        // Add a GraphicRaycaster component to the canvas
-        canvas = new GameObject("DebuggerCanvas").AddComponent<Canvas>();
-        canvas.transform.SetParent(parent);
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-        CanvasScaler canvasScaler = canvas.gameObject.AddComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScaler.referenceResolution = ScreenResolution;
-        canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        canvasScaler.matchWidthOrHeight = 0.5f;
-
-        canvas.gameObject.AddComponent<GraphicRaycaster>();
+    public void InitCanvas()
+    {        
+        canvas = Debugger.DebuggerCanvas;
+        this.parent = canvas.transform.parent;
     }
 
     public void OnUpdate()
