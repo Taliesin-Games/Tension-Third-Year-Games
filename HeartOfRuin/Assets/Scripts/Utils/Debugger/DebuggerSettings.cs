@@ -57,6 +57,8 @@ namespace Utils
 
         [Header("Advanced FPS Settings")]
         public bool enableAdvancedFPS = false;
+        [Tooltip("This has a minor performance overhead.")]
+        public bool showAdvancedFPSOnScreen = false;
 
         [Tooltip("Number of frames used to compute the moving average.")]
         public int frameSamples = 60;

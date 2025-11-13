@@ -40,6 +40,7 @@ namespace Utils
 
         // Advanced FPS settings
         public static bool EnableAdvancedFPS => settings?.enableAdvancedFPS ?? false;
+        public static bool ShowAdvancedFPSOnScreen => settings?.showAdvancedFPSOnScreen ?? false;
         public static int FrameSamples => settings?.frameSamples ?? 60;
         public static float FPSLogInterval => settings?.fpsLogInterval ?? 0.5f;
         #endregion
