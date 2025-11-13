@@ -11,7 +11,6 @@ using static Utils.DebuggerConfig; // Allows properties to be called as if they 
 
 using Debug = UnityEngine.Debug;
 
-
 namespace Utils
 {
     public class Debugger : MonoBehaviour
@@ -56,7 +55,17 @@ namespace Utils
                 if (handler is ICanvasHandler hasCanvas)
                     hasCanvas.InitCanvas(debuggerGameObject.transform);
             }
-
+            SpawnSubDebuggers();
+        }
+        private static void SpawnSubDebuggers()
+        {
+            // Spawn an advanced FPS readout if enabled as a child of the Debugger
+            if (EnableAdvancedFPS)
+            {
+                GameObject fpsObject = new GameObject("AdvancedFPS");
+                fpsObject.transform.SetParent(Instance.transform);
+                fpsObject.AddComponent<AdvancedFPS>();
+            }
         }
         private void Awake()
         {
@@ -85,7 +94,6 @@ namespace Utils
         {
             RunHandlerUpdates();
         }
-
         private static void RunHandlerUpdates()
         {
             foreach (ILogHandler handler in handlers)
@@ -94,7 +102,6 @@ namespace Utils
                     updatable.OnUpdate();
             }
         }
-
         public static void Log(object message, UnityEngine.Object  context = null, LogType logType = LogType.Log, int logLevel = 2)
         {
             if (Instance == null) return;
