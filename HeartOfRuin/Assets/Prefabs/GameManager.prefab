@@ -46,8 +46,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 088b4534faa7419429123aeca7ffb77e, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8fc6cddd5845c924fb73d9cd1de8a1d0, type: 3}
+  m_Resource: {fileID: 8300000, guid: 8fc6cddd5845c924fb73d9cd1de8a1d0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -145,6 +145,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbde18e489fceef4da9e41066e6781cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tensionLimit: 120
+  defaultTensionRate: 1
   playCanvas: {fileID: 1829795561804906577}
 --- !u!114 &7057362881630815874
 MonoBehaviour:
@@ -170,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b0fda6145c96d4babde29feae45450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundMusic: {fileID: 8300000, guid: 086c6ddbe3595334d8218f9c107f9e91, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: 8fc6cddd5845c924fb73d9cd1de8a1d0, type: 3}
 --- !u!1001 &3422552397044905043
 PrefabInstance:
   m_ObjectHideFlags: 0

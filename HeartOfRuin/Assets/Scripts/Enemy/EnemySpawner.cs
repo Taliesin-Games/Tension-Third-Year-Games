@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Unity.AI.Navigation;
 using UnityEditor.Rendering;
@@ -13,6 +14,8 @@ using Vector3 = UnityEngine.Vector3;
 [RequireComponent(typeof(NavMeshSurface))]
 public class EnemySpawner : MonoBehaviour
 {
+    public static EnemySpawner Instance { get; private set; }
+
     [Serializable]
     struct EnemySpawnStruct
     {
@@ -20,14 +23,58 @@ public class EnemySpawner : MonoBehaviour
         public int quantity;
     }
 
-    [SerializeField]NavMeshSurface navMesh;
-    [SerializeField]List<EnemySpawnStruct> enemiesToSpawn; 
-    [SerializeField]private int maxSampleTries = 20; //max number of attempts to spawn single enemy
+    [SerializeField] NavMeshSurface navMesh;
+    [SerializeField] List<EnemySpawnStruct> enemiesToSpawn; 
+    [SerializeField] private int maxSampleTries = 20; //max number of attempts to spawn single enemy
     [SerializeField] private float minSpawnSpacing = 2.5f; //minimum space between spawn points
 
-    private List<GameObject> spawnedEnemies = new List<GameObject>(); //used to track enemies that are spawned
 
+    #region Variables
+    private List<GameObject> spawnedEnemies = new List<GameObject>(); //used to track enemies that are spawned
     private List<Vector3> spawnedPositions = new List<Vector3>(); // used to track used spawn locations to help prevent overlapping spawns
+
+    bool isSpawningComplete = false;
+    
+    #endregion
+
+    #region Properties
+    // Number of not null spawned enemies being tracked
+    public static int EnemyCount
+    {
+        get
+        {
+            if (Instance is EnemySpawner e)
+            {
+                e.ValidateTrackedEnemies();
+                return e.spawnedEnemies.Count;
+            }
+            else
+            {
+                Debug.LogWarning("EnemySpawner instance not found when accessing EnemyCount.");
+                return 0;
+            }
+
+        }
+    }
+    public static bool IsSpawningComplete { get => Instance.isSpawningComplete; }
+
+    #endregion
+
+    #region Helper Methods
+    public void RemoveEnemy(GameObject enemy) { spawnedEnemies.Remove(enemy); }
+    #endregion
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -38,7 +85,11 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemies()
     {
 
-        if (enemiesToSpawn.Count == 0) return;
+        if (enemiesToSpawn.Count == 0)
+        {
+            isSpawningComplete = true;
+            return;
+        }
 
         //Iterate through all enemy spawn structs
         for (int i = 0; i < enemiesToSpawn.Count; i++)
@@ -54,6 +105,7 @@ public class EnemySpawner : MonoBehaviour
                 {
                     //REPLACE WITH SPAWN REQUEST FROM OBJECT POOLER
                     GameObject tempEnemy = Instantiate(enemiesToSpawn[i].enemy, randomPosition, UnityEngine.Quaternion.identity);
+                    
                     if (tempEnemy != null)
                     {
                         spawnedPositions.Add(randomPosition);
@@ -62,6 +114,8 @@ public class EnemySpawner : MonoBehaviour
                 }
             }
         }
+
+        isSpawningComplete = true;
     }
 
     void DespawnAll()

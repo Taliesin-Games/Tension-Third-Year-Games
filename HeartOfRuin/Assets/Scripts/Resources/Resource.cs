@@ -8,7 +8,7 @@ public class Resource : MonoBehaviour
     float currentValue;
 
 
-    void Start()
+    protected virtual void Start()
     {
         currentValue = maxValue;
     }

@@ -16,4 +16,9 @@ public class Enemy : MonoBehaviour
     {
 
     }
+    private void OnDestroy()
+    {
+        EnemySpawner.Instance.RemoveEnemy(gameObject);
+        GameManager.Instance.OnEnemyDefeated(); // TODO need to move this to object pooler, die method or on disable with a flag to prevent multiple calls
+    }
 }
