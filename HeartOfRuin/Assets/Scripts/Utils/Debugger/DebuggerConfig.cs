@@ -12,6 +12,8 @@ namespace Utils
         static readonly Vector2 DEFAULT_SCREEN_RESOLUTION = new(1920, 1080);   // Vectors are classes so cannot be constant, make readonly for assignment only during construction.
         
         #region Properties
+        // Logging system settings
+
         // Advisory log levels
         // 0 = None, logs with a higher defined level will be ignored.
         // 1 = Minimal - only include the most important error information. Not this is not to be confused with LogType which is acceed through LogError, LogWarning, Log, etc.
@@ -35,6 +37,12 @@ namespace Utils
         public static int FontSize => settings?.fontSize ?? 16;
         public static Vector2 ScreenResolution => settings?.screenResolution ?? DEFAULT_SCREEN_RESOLUTION;  // Using a predefined default here to save running the Vector2 Constructor every time
         public static string RemoteEndpoint => settings?.remoteEndpoint ?? "http://127.0.0.1:5000/logs";
+
+        // Advanced FPS settings
+        public static bool EnableAdvancedFPS => settings?.enableAdvancedFPS ?? false;
+        public static bool ShowAdvancedFPSOnScreen => settings?.showOnScreen ?? false;
+        public static int FrameSamples => settings?.frameSamples ?? 60;
+        public static float FPSLogInterval => settings?.fpsLogInterval ?? 0.5f;
         #endregion
         static DebuggerConfig()
         {

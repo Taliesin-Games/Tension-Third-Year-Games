@@ -1,16 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Diagnostics;
 using static Utils.DebuggerConfig; // Allows properties to be called as if they belong to this object
 
 using Debug = UnityEngine.Debug;
-
 
 namespace Utils
 {
@@ -19,6 +14,38 @@ namespace Utils
         
         #region Statics
         public static Debugger Instance;
+        public static Canvas DebuggerCanvas
+        {
+            get
+            {
+                if (Instance == null) return null;
+                if (Instance.debuggerCanvas == null)
+                {
+                    // Create a canvas and set it to be the child of the Debugger GameObject
+                    // Add canvas with screen space overlay, sort order 1000
+                    // Add a CanvasScaler component to the canvas and set the UI Scale Mode to Scale With Screen Size to 1080p
+                    // Add a GraphicRaycaster component to the canvas
+                    Instance.debuggerCanvas = new GameObject("DebuggerCanvas").AddComponent<Canvas>();
+                    Instance.debuggerCanvas.transform.SetParent(Instance.transform);
+                    Instance.debuggerCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                    Instance.debuggerCanvas.sortingOrder = 9999;
+
+                    CanvasScaler canvasScaler = Instance.debuggerCanvas.gameObject.AddComponent<CanvasScaler>();
+                    canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                    canvasScaler.referenceResolution = ScreenResolution;
+                    canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+                    canvasScaler.matchWidthOrHeight = 0.5f;
+
+                    Instance.debuggerCanvas.gameObject.AddComponent<GraphicRaycaster>();
+                }
+                return Instance.debuggerCanvas;
+            }
+            set
+            {
+                Instance.debuggerCanvas = value;
+            }
+        }
+
         //static DebuggerSettings settings;
         static readonly Dictionary<Type, int> logLevelCache = new();
      
@@ -29,6 +56,10 @@ namespace Utils
             new ScreenLogHandler(),
             new RemoteLogHandler()
         };
+        #endregion
+
+        #region Runtime Variables
+        Canvas debuggerCanvas;
         #endregion
 
         /// <summary>
@@ -54,9 +85,19 @@ namespace Utils
             foreach (ILogHandler handler in handlers)
             {
                 if (handler is ICanvasHandler hasCanvas)
-                    hasCanvas.InitCanvas(debuggerGameObject.transform);
+                    hasCanvas.InitCanvas();
             }
-
+            SpawnSubDebuggers();
+        }
+        private static void SpawnSubDebuggers()
+        {
+            // Spawn an advanced FPS readout if enabled as a child of the Debugger
+            if (EnableAdvancedFPS)
+            {
+                GameObject fpsObject = new GameObject("AdvancedFPS");
+                fpsObject.transform.SetParent(Instance.transform);
+                fpsObject.AddComponent<AdvancedFPS>();
+            }
         }
         private void Awake()
         {
@@ -85,7 +126,6 @@ namespace Utils
         {
             RunHandlerUpdates();
         }
-
         private static void RunHandlerUpdates()
         {
             foreach (ILogHandler handler in handlers)
@@ -94,7 +134,6 @@ namespace Utils
                     updatable.OnUpdate();
             }
         }
-
         public static void Log(object message, UnityEngine.Object  context = null, LogType logType = LogType.Log, int logLevel = 2)
         {
             if (Instance == null) return;
