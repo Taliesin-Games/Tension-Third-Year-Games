@@ -1,4 +1,224 @@
 
+<a name="v0.0.10"></a>
+## [v0.0.10](https://github.com/bigmonmulgrew/Year2-Overscoped/compare/v0.0.9...v0.0.10)
+
+> 2025-11-17
+
+### Update
+
+* update unity built in packages - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Updated
+
+* updated integrated packages - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* updated real materials sample - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Upgraded
+
+* Upgraded unity version - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+
+<a name="v0.0.9"></a>
+## [v0.0.9](https://github.com/bigmonmulgrew/Year2-Overscoped/compare/v0.0.8...v0.0.9)
+
+> 2025-11-17
+
+### Add
+
+* add rect window for on screen layout - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Added
+
+* added programmer block out sample - 2025-11-16 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* added documentation - 2025-11-14 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* added additional validation - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* added an accidental dodge sample - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* added accidental dodge prefab - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* added a player prefab copied from the provided demo one to retain the template for testing. - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Added
+
+* Added material testing for pulse - 2025-11-14 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added new settings for advnaced fps show - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added min an max logging - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added advanced FPS readout debugger tool - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added a demo enemy script for debugging - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added a player death scene - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added DEMO_MODE conditional compilation to health, call game manager when player dies - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added music to options menu - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added all levels to build settings - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added simple red amaterial - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added custom build settings - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added real time removal of spawned enemies - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added some external acessors to game state from enemy spawner - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added check to health die if haracter is player controller trigger game over - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Addeed
+
+* Addeed actions for common game state changes. and tension meter management - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Adding
+
+* Adding MoSCoW - 2025-11-17 (by [Dan Clamp](https://www.gravatar.com/avatar/153443324+Clampy-7@users.noreply.github.com?d=identicon))
+
+
+### Change
+
+* change variable name on FPS counter - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Cleanup
+
+* cleanup unused usings - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Create
+
+* Create workflow_practice_session.pptx - 2025-11-16 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Create Player.prefab.meta - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Edited
+
+* Edited define symbols (autoimated) - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### IA
+
+* IA version update - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Merge
+
+* Merge Testing - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'DC_Documentation' - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'DM-ParticlePerformanceTesting' - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'DM-Material-testing' - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge remote-tracking branch 'origin/Serperated-elf-mesh' - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Merge branch 'DM-Game-manager-and-death-loop' - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Placeholder
+
+* placeholder test log - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Reworked
+
+* Reworked Debugger to use shared canvas - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Separated
+
+* Separated parts of the NUDE Eld base mesh - 2025-11-14 (by [Daemoh](https://www.gravatar.com/avatar/aadentalspark@gmail.com?d=identicon))
+
+
+### Set
+
+* set music enabled in game manager - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Testing
+
+* testing particle performance - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Unity
+
+* unity import nonesense - 2025-11-17 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Update
+
+* Update EditorDebuggerSettings.asset - 2025-11-16 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Update EditorDebuggerSettings.asset - 2025-11-13 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Update testLogPlayerDeath_01.md - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Update Electronic Highway Sign SDF.asset - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+
+<a name="v0.0.8"></a>
+## [v0.0.8](https://github.com/bigmonmulgrew/Year2-Overscoped/compare/v0.0.7...v0.0.8)
+
+> 2025-11-17
+
+### Added
+
+* Added Damage Calculator, health debug log and renamed damage numbers - 2025-11-11 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+* Added character controller from DM portfolio project - 2025-11-02 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Added simple materials used by character controller and converted debug materials to prefab variants - 2025-11-02 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Audio
+
+* audio asset dump 2/2 - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* audio asset dump 1/2 - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Change
+
+* change resource value name - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Create
+
+* Create _Credits.txt.meta - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+* Create Artist Blender Migration.docx - 2025-11-10 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Created
+
+* Created a new simple grid material thats helping me visualise momentum and movement of the character controller - 2025-11-03 (by [Steven Holmes](https://www.gravatar.com/avatar/53945041+CrystalGear@users.noreply.github.com?d=identicon))
+
+
+### Damage
+
+* Damage Component implementation - 2025-11-05 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Moved
+
+* Moved demo scenes to their own folder - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Reorganised
+
+* reorganised files - 2025-11-12 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Reorganised
+
+* Reorganised files and cleaned duplicates - 2025-11-10 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Tooltips
+
+* Tooltips added, code cleaned up - 2025-11-11 (by [callumstreets21](https://www.gravatar.com/avatar/149797713+callumstreets21@users.noreply.github.com?d=identicon))
+
+
+### Unity
+
+* unity meta file added - 2025-11-02 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Update
+
+* Update CHANGELOG.md - 2025-11-09 (by [David Mulgrew](https://www.gravatar.com/avatar/bigmonmulgrew@users.noreply.github.com?d=identicon))
+
+
+### Pull Requests
+
+* Merge pull request [#168](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/168) from Taliesin-Games/CS_Damage_System
+* Merge pull request [#147](https://github.com/bigmonmulgrew/Year2-Overscoped/issues/147) from Taliesin-Games/DM-Porting-Character-controller-from-demo-kit
+
+
 <a name="v0.0.7"></a>
 ## [v0.0.7](https://github.com/bigmonmulgrew/Year2-Overscoped/compare/v0.0.6...v0.0.7)
 
