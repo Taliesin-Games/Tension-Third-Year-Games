@@ -125,7 +125,7 @@ public class DodgeGhostEffectTrail : MonoBehaviour
         for (int i = 0; i < ghosts.Count; i += 1023)
         {
             int count = Mathf.Min(1023, ghosts.Count - i);
-            block.SetFloat("_GhostAlpha", 1f); // default per-material control
+            block.SetFloat("_GhostAlpha", 1f);
             Graphics.DrawMeshInstanced(bakedMesh, 0, ghostMaterial, matrices, count, block,
                 UnityEngine.Rendering.ShadowCastingMode.Off, false);
         }
