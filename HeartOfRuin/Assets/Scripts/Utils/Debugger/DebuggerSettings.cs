@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Utils
 {
@@ -54,5 +53,16 @@ namespace Utils
 
         [Tooltip("Remote server URL or IP if remote logging is enabled.")]
         public string remoteEndpoint = "http://127.0.0.1:5000/logs";
+
+        [Header("Advanced FPS Settings")]
+        public bool enableAdvancedFPS = false;
+        [Tooltip("This has a minor performance overhead.")]
+        public bool showOnScreen = false;
+
+        [Tooltip("Number of frames used to compute the moving average.")]
+        public int frameSamples = 60;
+
+        [Tooltip("How often to log the average FPS (seconds). Set to 0 for every frame.")]
+        public float fpsLogInterval = 0.5f;
     }
 }
