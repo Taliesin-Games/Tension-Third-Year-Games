@@ -61,6 +61,7 @@ public class InventoryUIController : MonoBehaviour
             return false; 
         }
 
+        inventory.ValidateInventorySize();
         existingSlots = gridUI.GetComponentsInChildren<ItemSlotUI>().ToList<ItemSlotUI>();
 
         if (existingSlots.Count < inv.GetInventorySize())
@@ -70,6 +71,16 @@ public class InventoryUIController : MonoBehaviour
             {
                 GameObject newSlotUI = Instantiate(itemSlotUIDisplay, gridUI.transform);
                 existingSlots.Add(newSlotUI.GetComponent<ItemSlotUI>());
+            }
+        }
+
+        if (existingSlots.Count > inv.GetInventorySize())
+        {
+            int ammountToRemove = existingSlots.Count - inv.GetInventorySize();
+            for (int i = 0;i < ammountToRemove; i++)
+            {
+                Destroy(existingSlots[existingSlots.Count - 1].gameObject);
+                existingSlots.RemoveAt(existingSlots.Count - 1);
             }
         }
 

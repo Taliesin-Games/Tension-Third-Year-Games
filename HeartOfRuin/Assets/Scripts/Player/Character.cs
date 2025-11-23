@@ -3,14 +3,15 @@ using UnityEngine;
 
 [RequireComponent(typeof(BMD.CharacterController))] // Ensure that a CharacterController component is attached
 [RequireComponent(typeof(Inventory))]
+[RequireComponent(typeof(Health))]
 public abstract class Character : MonoBehaviour
 {
-    [SerializeField] string characterName = "Dan";
+    [SerializeField] string characterName = "Glorp Gleep";
     
 
 
     List<ItemEffect> activeEffects;
-    Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
+    protected Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
     [SerializeField] protected Inventory inventory;
 
     public ItemSlot Head
@@ -98,19 +99,11 @@ public abstract class Character : MonoBehaviour
                 if (tempItem != null)
                 {
                     tempItem.OnEquip(this);
-
                 }
             }
         }
     }
-
-    // Update is called once per frame
-    protected virtual void Update()
-    {
-
-    }
    
-
     public void AddItemEffect(ItemEffect effect)
     {
         activeEffects.Add(effect);

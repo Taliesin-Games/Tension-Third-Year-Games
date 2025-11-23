@@ -2,20 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public enum EquipSlotType
-{
-    None,
-    Head,
-    Chest,
-    Legs,
-    Feet,
-    Hands,
-    LeftHand,
-    RightHand,
-    TwoHanded,
-    Passive,
-}
+
 
 public abstract class EquippableItem : Item
 {

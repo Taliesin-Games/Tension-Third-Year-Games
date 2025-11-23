@@ -1,28 +1,45 @@
+using JetBrains.Annotations;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 
 public class Inventory : MonoBehaviour
 {
 
     [SerializeField] int inventorySize = 20;
-    [SerializeField] ItemSlot[] inventorySlots;
+    int validatedInventorySize = 0;
+    [SerializeField] ItemSlot[] startingItems;
     List<ItemSlot> _inventorySlots ;
+    [SerializeField] GameObject itemDropPrefab;
 
     Inventory()
     {
-        inventorySlots = new ItemSlot[inventorySize];
+        startingItems = new ItemSlot[inventorySize];
     }
 
     private void Start()
     {
-        _inventorySlots = inventorySlots.ToList<ItemSlot>();
-        EnsureInventorySize(_inventorySlots, inventorySize);
+        _inventorySlots = startingItems.ToList<ItemSlot>();
+        validatedInventorySize = _inventorySlots.Count;
+        ValidateInventorySize();
     }
 
-    // Compacts the inventory by removing empty slots and shifting items to the front, maintaining their order.
+    private void Update()
+    {
+        ValidateInventorySize();
+    }
+
+
+
+    /// <summary>
+    /// Compacts the inventory by removing empty slots and shifting items to the front, maintaining their order. 
+    /// DO NOT USE FOR INVENTORY SIZE CHANGES, USE <see cref="ValidateInventorySize"/> INSTEAD
+    /// </summary>
     public void CompactInventoryNonStacking(List<ItemSlot> items)
     {
         int write = 0;
@@ -51,28 +68,97 @@ public class Inventory : MonoBehaviour
             items.Add(new ItemSlot());
     }
 
-    void EnsureInventorySize(List<ItemSlot> slots, int requiredSize)
+    /// <summary>
+    /// Ensures inventory is no larger than the input size. Drops items on floor if too many in inventory after removing empty slots
+    /// </summary>
+    void EnsureMaximumInventorySize()
+    {
+        //remove empty slots from the back first
+        for (int i = _inventorySlots.Count - 1; i >= 0; i--)
+        {
+            if (_inventorySlots.Count == inventorySize)
+            {
+                break;
+            }
+
+            if (_inventorySlots[i] == null || _inventorySlots[i].IsEmpty())
+            {
+                _inventorySlots.RemoveAt(i);
+            }
+            
+        }
+        Debug.Log($"size after empties cleared: {_inventorySlots.Count}");
+        //If still too large, remove items from the back
+        while (_inventorySlots.Count > inventorySize)
+        {
+            DropItem(_inventorySlots.Count - 1);
+            _inventorySlots.RemoveAt(_inventorySlots.Count - 1);
+        }
+    }
+
+    /// <summary>
+    /// Ensures inventory is at least the input size. Does not account for if inventory is larger than required size
+    /// </summary>
+    void EnsureMinimumInventorySize()
     {
         // Replace nulls and ensure existing slots are valid
-        for (int i = 0; i < slots.Count; i++)
+        for (int i = 0; i < _inventorySlots.Count; i++)
         {
-            if (slots[i] == null)
-                slots[i] = new ItemSlot();
+            if (_inventorySlots[i] == null)
+                _inventorySlots[i] = new ItemSlot();
         }
 
         // Add missing slots if list is too small
-        while (slots.Count < requiredSize)
-            slots.Add(new ItemSlot());
+        while (_inventorySlots.Count < inventorySize)
+            _inventorySlots.Add(new ItemSlot());
     }
 
-    // Returns remaining quantity that could not be added (0 if all added successfully)
+    /// <summary>
+    /// Ensures inventory matches inventorySize, will drop items from inventory if reduction requires it
+    /// </summary>
+    public void ValidateInventorySize()
+    {
+        if (inventorySize == validatedInventorySize)
+        {
+            Debug.Log("Inventory size ok");
+            return;
+        }
+
+        if (inventorySize < 0)
+        {
+            return;
+        }
+
+        if (inventorySize > validatedInventorySize)
+        {
+            Debug.Log("Inventory size to small");
+            EnsureMinimumInventorySize();
+            validatedInventorySize = inventorySize;
+        }
+
+        if (inventorySize < validatedInventorySize)
+        {
+            Debug.Log("Inventory size too big");
+            EnsureMaximumInventorySize();
+            validatedInventorySize = inventorySize;
+        }
+    }
+
+    /// <summary>
+    /// Add item to an inventory.
+    /// First fills any stacks of existing items first, then fills empty slots.
+    /// Ensures inventory size before adding.
+    /// </summary>
+    /// <returns>
+    /// Quantity of items that could not be added
+    /// </returns>
     public int AddItem(Item item, int quantity)
     {
         if (item == null || quantity <= 0)
             return 0;
 
         //ensure the list has exactly InventorySize usable slots
-        EnsureInventorySize(_inventorySlots, inventorySize);
+        ValidateInventorySize();
 
         //pass 1: Stack into existing matching stacks
         quantity = FillStacks(item, quantity, true);
@@ -84,6 +170,14 @@ public class Inventory : MonoBehaviour
         return quantity;
     }
 
+    /// <summary>
+    /// Add item to an inventory.
+    /// First fills any stacks of existing items first, then fills empty slots.
+    /// Ensures inventory size before adding.
+    /// </summary>
+    /// <returns>
+    /// Quantity of items that could not be added
+    /// </returns>
     public int AddItem(ItemSlot itemSlot)
     {
         if (itemSlot == null || itemSlot.GetItem() == null || itemSlot.GetQuantity() <= 0)
@@ -94,6 +188,12 @@ public class Inventory : MonoBehaviour
         return AddItem(itemSlot.GetItem(), itemSlot.GetQuantity());
     }
 
+    /// <summary>
+    /// Attempts to fill existing inventory slots with matching item. Does not fill empty slots.
+    /// </summary>
+    /// <returns>
+    /// Quantity of items remaining after attempting to add.
+    /// </returns>
     int FillStacks(Item item, int quantity, bool prevalidated)
     {
         //prevalidation check, ensure inventory and attempted inputs are valid
@@ -102,7 +202,7 @@ public class Inventory : MonoBehaviour
             if (item == null || quantity <= 0)
                 return quantity;
 
-            EnsureInventorySize(_inventorySlots, inventorySize);
+            ValidateInventorySize();
         }
 
         // First pass: Try to fill existing stacks
@@ -131,7 +231,12 @@ public class Inventory : MonoBehaviour
         return quantity;
     }
 
-    // Returns remaining quantity that could not be added
+    /// <summary>
+    /// Attempts to fill empty inventory slots with item. Does not fill existing stacks of item.
+    /// </summary>
+    /// <returns>
+    /// Quantity of items remaining after attempting to add.
+    /// </returns>
     int PlaceInEmptySlots(Item item, int quantity, bool prevalidated)
     {
         //prevalidation check, ensure inventory and attempted inputs are valid
@@ -140,7 +245,7 @@ public class Inventory : MonoBehaviour
             if (item == null || quantity <= 0)
                 return quantity;
 
-            EnsureInventorySize(_inventorySlots, inventorySize);
+            ValidateInventorySize();
         }
 
         for (int i = 0; i < _inventorySlots.Count; i++)
@@ -160,7 +265,9 @@ public class Inventory : MonoBehaviour
         return quantity;
     }
 
-    // Transfers item to another inventory, returns true if successful
+    /// <summary>
+    /// Attempts to transfer an item from this inventory to an inventory. Does not swap two items.
+    /// </summary>
     public void TransferItemToAnotherInventory(Inventory outputInv, int indexOfItemToTransfer)
     {
         if (outputInv == null || indexOfItemToTransfer < 0 || indexOfItemToTransfer >= _inventorySlots.Count)
@@ -183,6 +290,9 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Attempts to transfer an one this inventory to another. Does not swap items.
+    /// </summary>
     public void TransferEntireInventory(Inventory outputInv)
     {
         if (outputInv == null)
@@ -215,6 +325,12 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Attempts to remove an a set quantity of an item from inventory.
+    /// </summary>
+    /// <returns>
+    /// returns true if successfully removed.
+    /// </returns>
     public bool RemoveItem(int index, int quantity)
     {
         if (index < 0 || index >= _inventorySlots.Count)
@@ -231,6 +347,12 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Checks if the inventory is empty
+    /// </summary>
+    /// <returns>
+    /// Returns true if empty
+    /// </returns>
     public bool IsEmpty()
     {
         foreach (var slot in _inventorySlots)
@@ -263,10 +385,47 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Drops an item from the inventory as an object into the world placed at the characters location, -1 quantity drops index's full quantity
+    /// </summary>
+    public void DropItem(int index, int quantity = -1)
+    {
+        //validate input
+        if (index >= _inventorySlots.Count || index < 0) { return; }
+        if (quantity == 0 || quantity < -1) { return; }
+        if (itemDropPrefab == null) { return; }
 
+        GameObject droppedItem = Instantiate(itemDropPrefab); //drpped item prefab
+        droppedItem.transform.position = gameObject.transform.position; //place prefab at players location
+
+        if (droppedItem.GetComponent<ItemPickup>() != null) //Ensure the "dropped item" prefab that is set has an item pickup component
+        {
+            //copy existing slot to dropped item
+            var slot = _inventorySlots[index];
+            if (slot.IsEmpty()) { return; }
+            droppedItem.GetComponent<ItemPickup>().itemSlot.SetItem(slot.GetItem(), slot.GetQuantity());
+            
+
+            //dropped all or attempted to drop more than available, can return
+            if (quantity == -1 || quantity > _inventorySlots[index].GetQuantity())
+            {
+                _inventorySlots[index].ClearSlot();
+                return;
+            }
+
+            //dropped specific quantity
+            droppedItem.GetComponent<ItemPickup>().itemSlot.SetQuantity(quantity); 
+            _inventorySlots[index].SetQuantity(_inventorySlots[index].GetQuantity() - quantity);
+        }
+
+    }
+
+    /// <summary>
+    /// Swaps two item slots in the inventory
+    /// </summary>
     public void Swap(int a, int b)
     {
-        (inventorySlots[a], inventorySlots[b]) = (inventorySlots[b], inventorySlots[a]);
+        (startingItems[a], startingItems[b]) = (startingItems[b], startingItems[a]);
     }
 
     public List<ItemSlot> GetInventorySlots()

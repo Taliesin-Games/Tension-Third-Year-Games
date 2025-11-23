@@ -7,6 +7,7 @@ using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
 [RequireComponent(typeof(BMD.PlayerController))] // Ensure that a CharacterController component is attached
+[RequireComponent(typeof(PlayerStats))]
 public class Player : Character
 {
     [SerializeField] GameObject inventoryUI;
@@ -20,7 +21,6 @@ public class Player : Character
         {
             inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
         }
-        else { Debug.Log("null inventory ui ref"); }
     }
 
     private void Update()
