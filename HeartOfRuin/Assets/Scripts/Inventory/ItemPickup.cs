@@ -30,9 +30,9 @@ public class ItemPickup : MonoBehaviour
         if (!other.CompareTag("Player") || pickupLockoutTimer > 0) return;
 
         var inventory = other.GetComponent<Inventory>();
-        int quantity = inventory.AddItem(itemSlot);
-
-        if (quantity <= 0)
+        itemSlot = inventory.AddItem(itemSlot);
+        Debug.Log($"ItemPickup Quantity after pickup {itemSlot.GetQuantity()}");
+        if (itemSlot.IsEmpty())
         {
             Destroy(gameObject);
         }

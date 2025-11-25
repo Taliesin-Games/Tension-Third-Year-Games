@@ -24,7 +24,7 @@ public abstract class EquippableItem : Item
     [SerializeField] ItemEffect[] itemEffects;
 
 
-    public EquipSlotType GetEquipSlotType()
+    public override EquipSlotType GetEquipSlotType()
     {
         return equipSlotType;
     }

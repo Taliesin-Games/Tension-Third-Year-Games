@@ -7,28 +7,45 @@ using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
 [RequireComponent(typeof(BMD.PlayerController))] // Ensure that a CharacterController component is attached
-[RequireComponent(typeof(PlayerStats))]
+
 public class Player : Character
 {
     [SerializeField] GameObject inventoryUI;
+    [SerializeField] GameObject equipmentUI;
     InventoryUIController inventoryUiController;
+    InventoryUIController equipmentUiController;
 
     bool invToggle;
 
     private void Awake()
     {
-        if (inventoryUI != null )
+        if (inventoryUI != null) 
         {
             inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
+            inventoryUiController.SetInventory(inventory);
+        }
+        if (equipmentUI != null)
+        {
+            equipmentUiController = equipmentUI.GetComponent<InventoryUIController>();
+            equipmentUiController.SetInventory(equipmentSlots);
+        
         }
     }
 
     private void Update()
     {
-        if (inventoryUI != null && Input.GetKeyDown(KeyCode.Tab)){
+        if (inventoryUI != null && equipmentUI != null  && Input.GetKeyDown(KeyCode.Tab)){
             invToggle = !invToggle;
-            if (invToggle) { inventoryUiController.displayInventory() ; }
-            else {  inventoryUiController.hideInventory() ; }
+            if (invToggle) 
+            {
+                inventoryUiController.displayInventory();
+                equipmentUiController.displayInventory();
+            }
+            else 
+            { 
+                inventoryUiController.hideInventory();
+                equipmentUiController.hideInventory();
+            }
         }
 
         RefreshUIView();
@@ -43,7 +60,9 @@ public class Player : Character
     private void RefreshInvenotryView()
     {
         if (!invToggle || inventoryUI == null || inventoryUiController == null) { return; }
+        if (equipmentUI == null || equipmentUiController == null) { return ; }
 
         inventoryUiController.RefreshInventoryView();
+        equipmentUiController.RefreshInventoryView();
     }
 }

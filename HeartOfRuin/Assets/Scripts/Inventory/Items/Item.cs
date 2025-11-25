@@ -48,4 +48,9 @@ public class Item : ScriptableObject
         return maxStackSize;
     }
 
+    public virtual EquipSlotType GetEquipSlotType()
+    {
+        return EquipSlotType.None;
+    }
+
 }

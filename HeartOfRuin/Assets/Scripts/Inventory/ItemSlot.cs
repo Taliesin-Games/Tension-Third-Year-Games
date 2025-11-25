@@ -7,6 +7,7 @@ public class ItemSlot
     [SerializeField] Item item;
     [SerializeField] int quantity;
     [SerializeField] EquipSlotType SlotType;
+    int inventoryIndex = -1;
 
     public Item GetItem()
     {
@@ -36,16 +37,22 @@ public class ItemSlot
 
     public EquipSlotType GetSlotType()
     {
-        if (item is EquippableItem equippable)
-        {
-            return equippable.GetEquipSlotType();
-        }
-        return EquipSlotType.None;
+        return SlotType;
     }
 
     public void SetSlotType(EquipSlotType slotType)
     {
         this.SlotType = slotType;
+    }
+
+    public void SetIndex(int index)
+    {
+        inventoryIndex = index;
+    }
+
+    public int GetIndex()
+    {
+        return inventoryIndex;
     }
 
 

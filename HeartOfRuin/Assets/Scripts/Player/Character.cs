@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(BMD.CharacterController))] // Ensure that a CharacterController component is attached
 [RequireComponent(typeof(Inventory))]
 [RequireComponent(typeof(Health))]
+[RequireComponent(typeof(PlayerStats))]
 public abstract class Character : MonoBehaviour
 {
     [SerializeField] string characterName = "Glorp Gleep";
@@ -11,80 +12,10 @@ public abstract class Character : MonoBehaviour
 
 
     List<ItemEffect> activeEffects;
-    protected Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
+    //protected Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
+    [SerializeField] protected Inventory equipmentSlots;
     [SerializeField] protected Inventory inventory;
-
-    public ItemSlot Head
-    {
-        get
-        {
-            return equipmentSlots[EquipSlotType.Head];
-        }
-        set
-        {
-            equipmentSlots[EquipSlotType.Head] = value;
-        }
-    }
-
-    public ItemSlot Chest
-    {
-        get
-        {
-            return equipmentSlots[EquipSlotType.Chest];
-        }
-        set
-        {
-            equipmentSlots[EquipSlotType.Chest] = value;
-        }
-    }
-
-    public ItemSlot Legs
-    {
-        get
-        {
-            return equipmentSlots[EquipSlotType.Legs];
-        }
-        set
-        {
-            equipmentSlots[EquipSlotType.Legs] = value;
-        }
-    }
-
-    public ItemSlot Feet
-    {
-        get
-        {
-            return equipmentSlots[EquipSlotType.Feet];
-        }
-        set
-        {
-            equipmentSlots[EquipSlotType.Feet] = value;
-        }
-    }
-
-    public ItemSlot LeftHand
-    {
-        get
-        {
-            return equipmentSlots[EquipSlotType.LeftHand];
-        }
-        set
-        {
-            equipmentSlots[EquipSlotType.LeftHand] = value;
-        }
-    }
-
-    public ItemSlot RightHand
-    {
-        get
-        {
-            return equipmentSlots[EquipSlotType.RightHand];
-        }
-        set
-        {
-            equipmentSlots[EquipSlotType.RightHand] = value;
-        }
-    }
+    [SerializeField] protected PlayerStats playerStats;
 
 
     protected virtual void Start()
@@ -93,7 +24,7 @@ public abstract class Character : MonoBehaviour
         Debug.Log("Character Name: " + characterName);
         if (equipmentSlots != null)
         {
-            foreach (ItemSlot slot in equipmentSlots.Values)
+            foreach (ItemSlot slot in equipmentSlots.GetInventorySlots())
             {
                 EquippableItem tempItem = slot.GetItem() as EquippableItem;
                 if (tempItem != null)

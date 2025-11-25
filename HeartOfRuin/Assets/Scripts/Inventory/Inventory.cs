@@ -4,18 +4,21 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Splines;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Utils;
 
 
 public class Inventory : MonoBehaviour
 {
-
+    [SerializeField] string inventoryName = "";
     [SerializeField] int inventorySize = 20;
     int validatedInventorySize = 0;
     [SerializeField] ItemSlot[] startingItems;
     List<ItemSlot> _inventorySlots ;
     [SerializeField] GameObject itemDropPrefab;
+    List<ItemSlot> addNextFrame;
 
     Inventory()
     {
@@ -25,8 +28,10 @@ public class Inventory : MonoBehaviour
     private void Start()
     {
         _inventorySlots = startingItems.ToList<ItemSlot>();
+        startingItems = new ItemSlot[0];
         validatedInventorySize = _inventorySlots.Count;
         ValidateInventorySize();
+        IndexItemSlots();
     }
 
     private void Update()
@@ -120,7 +125,7 @@ public class Inventory : MonoBehaviour
     {
         if (inventorySize == validatedInventorySize)
         {
-            Debug.Log("Inventory size ok");
+            //Debug.Log("Inventory size ok");
             return;
         }
 
@@ -131,43 +136,59 @@ public class Inventory : MonoBehaviour
 
         if (inventorySize > validatedInventorySize)
         {
-            Debug.Log("Inventory size to small");
+            //Debug.Log("Inventory size to small");
             EnsureMinimumInventorySize();
+            IndexItemSlots();
             validatedInventorySize = inventorySize;
         }
 
         if (inventorySize < validatedInventorySize)
         {
-            Debug.Log("Inventory size too big");
+            //Debug.Log("Inventory size too big");
             EnsureMaximumInventorySize();
+            IndexItemSlots();
             validatedInventorySize = inventorySize;
         }
     }
 
+    public void IndexItemSlots()
+    {
+        if (validatedInventorySize == inventorySize)
+        {
+            for(int i = 0; i < _inventorySlots.Count; i++)
+            {
+                _inventorySlots[i].SetIndex(i);
+            }
+        }
+    }
+
     /// <summary>
     /// Add item to an inventory.
     /// First fills any stacks of existing items first, then fills empty slots.
     /// Ensures inventory size before adding.
     /// </summary>
     /// <returns>
-    /// Quantity of items that could not be added
+    /// items that could not be added. RETURN SLOT TYPE MATCHES INPUT
     /// </returns>
-    public int AddItem(Item item, int quantity)
+    public ItemSlot AddItem(Item item, int quantity, EquipSlotType slotType)
     {
         if (item == null || quantity <= 0)
-            return 0;
+            return null;
 
+        ItemSlot returnSlot = new ItemSlot();
         //ensure the list has exactly InventorySize usable slots
         ValidateInventorySize();
 
         //pass 1: Stack into existing matching stacks
-        quantity = FillStacks(item, quantity, true);
-
-        //pass 2: Place new stacks into empty slots
-        quantity = PlaceInEmptySlots(item, quantity, true);
+        returnSlot = FillStacks(item, quantity, true);
+        if(returnSlot.GetItem() != null)
+        {
+            returnSlot = PlaceInEmptySlots(returnSlot.GetItem(), returnSlot.GetQuantity(), true);
+        }
 
         // Inventory full, return remaining quantity
-        return quantity;
+        returnSlot.SetSlotType(slotType);
+        return returnSlot;
     }
 
     /// <summary>
@@ -176,31 +197,109 @@ public class Inventory : MonoBehaviour
     /// Ensures inventory size before adding.
     /// </summary>
     /// <returns>
-    /// Quantity of items that could not be added
+    /// items that could not be added. RETURN SLOT TYPE MATCHES INPUT
     /// </returns>
-    public int AddItem(ItemSlot itemSlot)
+    public ItemSlot AddItem(ItemSlot itemSlot)
     {
         if (itemSlot == null || itemSlot.GetItem() == null || itemSlot.GetQuantity() <= 0)
         {
-            return 0; 
+            return null; 
         }
 
-        return AddItem(itemSlot.GetItem(), itemSlot.GetQuantity());
+        return AddItem(itemSlot.GetItem(), itemSlot.GetQuantity(), itemSlot.GetSlotType());
     }
 
     /// <summary>
-    /// Attempts to fill existing inventory slots with matching item. Does not fill empty slots.
+    /// Add item at a specific inventory index. Use for "equipment slot" inventories. Will swap item if slot is valid for item and is filled
     /// </summary>
     /// <returns>
-    /// Quantity of items remaining after attempting to add.
+    /// remaining items that could not be added or swapped item. RETURN SLOT TYPE MATCHES INPUT
     /// </returns>
-    int FillStacks(Item item, int quantity, bool prevalidated)
+    public ItemSlot AddItemAtIndex(int index, ItemSlot itemSlot)
     {
+        if (itemSlot == null || itemSlot.GetItem() == null || itemSlot.GetQuantity() <= 0)
+        {
+            return null;
+        }
+
+        if (index > inventorySize || index < 0)
+        {
+            return itemSlot;
+        }
+        //ensure inventory is correct size and all slots are valid
+        ValidateInventorySize();
+
+        //ensure can fit in slot type
+        if (_inventorySlots[index].GetSlotType() == EquipSlotType.None || _inventorySlots[index].GetSlotType() == itemSlot.GetItem().GetEquipSlotType())
+        {
+            //if the slot is empty, add to it.
+            if (_inventorySlots[index].IsEmpty())
+            {
+                EquipSlotType oldType = _inventorySlots[index].GetSlotType();
+                _inventorySlots[index] = itemSlot;
+                _inventorySlots[index].SetSlotType(oldType);
+                Debug.Log("slot was empty, adding and returning new slot");
+                ItemSlot returnSlot = new ItemSlot();
+                returnSlot.SetIndex(itemSlot.GetIndex());
+                return returnSlot;
+            }
+            else
+            {
+                ItemSlot returnSlot = new ItemSlot();
+                returnSlot.SetSlotType(itemSlot.GetSlotType()); //MAKE SURE RETURN SLOT MATCHES INPUT SLOT
+                //if slots match
+                if (_inventorySlots[index].GetItem() == itemSlot.GetItem())
+                {
+                    //compare quantity
+                    int quantity = itemSlot.GetQuantity();
+                    
+                    int maxStack = itemSlot.GetItem().GetMaxStackSize();
+                    int freeSpace = maxStack - _inventorySlots[index].GetQuantity();
+                    
+                    if (freeSpace <= 0) //if cant stack further
+                    {
+                        //swap items
+                         returnSlot.SetItem(_inventorySlots[index].GetItem(), _inventorySlots[index].GetQuantity());
+                        _inventorySlots[index] = itemSlot;
+                        Debug.Log("Item Stacked to max, swapping");
+                        return returnSlot;
+                    }
+                    //add to stack
+                    int add = Mathf.Min(quantity, freeSpace);
+                    _inventorySlots[index].SetQuantity(_inventorySlots[index].GetQuantity() + add);
+                    quantity -= add;
+                    //return remaining items
+                    returnSlot.SetItem(itemSlot.GetItem(),quantity);
+                    return returnSlot;
+                }
+
+                //if dont match
+                //swap items
+                returnSlot.SetItem(_inventorySlots[index].GetItem(), _inventorySlots[index].GetQuantity());
+                _inventorySlots[index] = itemSlot;
+                Debug.Log("swapping");
+                return returnSlot;
+            }
+        }
+
+
+        return itemSlot;
+    }
+
+    /// <summary>
+    /// Attempts to fill existing inventory slots with matching item. Does not fill empty slots. 
+    /// </summary>
+    /// <returns>
+    /// Quantity of items remaining after attempting to add. DOES NOT ENSURE ITEM SLOT TYPE MATCHES ON RETURN
+    /// </returns>
+    ItemSlot FillStacks(Item item, int quantity, bool prevalidated)
+    {
+        ItemSlot returnSlot = new ItemSlot();
         //prevalidation check, ensure inventory and attempted inputs are valid
         if (!prevalidated)
         {
             if (item == null || quantity <= 0)
-                return quantity;
+                return returnSlot;
 
             ValidateInventorySize();
         }
@@ -224,26 +323,29 @@ public class Inventory : MonoBehaviour
                 quantity -= add;
 
                 if (quantity <= 0)
-                    return 0;
+                    return returnSlot;
             }
         }
 
-        return quantity;
+        returnSlot.SetItem(item);
+        returnSlot.SetQuantity(quantity);
+        return returnSlot;
     }
 
     /// <summary>
     /// Attempts to fill empty inventory slots with item. Does not fill existing stacks of item.
     /// </summary>
     /// <returns>
-    /// Quantity of items remaining after attempting to add.
+    /// Quantity of items remaining after attempting to add. DOES NOT ENSURE ITEM SLOT TYPE MATCHES ON RETURN
     /// </returns>
-    int PlaceInEmptySlots(Item item, int quantity, bool prevalidated)
+    ItemSlot PlaceInEmptySlots(Item item, int quantity, bool prevalidated)
     {
+        ItemSlot returnSlot = new ItemSlot();
         //prevalidation check, ensure inventory and attempted inputs are valid
         if (!prevalidated)
         {
             if (item == null || quantity <= 0)
-                return quantity;
+                return returnSlot;
 
             ValidateInventorySize();
         }
@@ -253,16 +355,21 @@ public class Inventory : MonoBehaviour
             var slot = _inventorySlots[i];
             if (!slot.IsEmpty())
                 continue;
+            if (slot.GetSlotType() == EquipSlotType.None || slot.GetSlotType() == item.GetEquipSlotType())
+            {
+                int add = Mathf.Min(quantity, item.GetMaxStackSize());
+                slot.SetItem(item, add);
+                quantity -= add;
 
-            int add = Mathf.Min(quantity, item.GetMaxStackSize());
-            slot.SetItem(item, add);
-            quantity -= add;
+                if (quantity <= 0)
+                {
+                    break;
+                }
+            }
 
-            if (quantity <= 0)
-                return 0;
         }
-
-        return quantity;
+        returnSlot.SetItem(item, quantity);
+        return returnSlot;
     }
 
     /// <summary>
@@ -277,17 +384,7 @@ public class Inventory : MonoBehaviour
             return;
 
         ItemSlot slotToTransfer = _inventorySlots[indexOfItemToTransfer];
-        int remaining = outputInv.AddItem(slotToTransfer.GetItem(), slotToTransfer.GetQuantity());
-        if (remaining == 0)
-        {
-            // All items transferred, clear the slot
-            slotToTransfer.ClearSlot();
-        }
-        else
-        {
-            // Some items could not be transferred, update the quantity
-            slotToTransfer.SetQuantity(remaining);
-        }
+        _inventorySlots[indexOfItemToTransfer] = outputInv.AddItem(slotToTransfer);
     }
 
     /// <summary>
@@ -303,17 +400,7 @@ public class Inventory : MonoBehaviour
             var slot = _inventorySlots[i];
             if (slot.IsEmpty())
                 continue;
-            int remaining = outputInv.AddItem(slot.GetItem(), slot.GetQuantity());
-            if (remaining == 0)
-            {
-                // All items transferred, clear the slot
-                slot.ClearSlot();
-            }
-            else
-            {
-                // Some items could not be transferred, update the quantity
-                slot.SetQuantity(remaining);
-            }
+            _inventorySlots[i] = outputInv.AddItem(slot);
         }
     }
 
@@ -421,11 +508,40 @@ public class Inventory : MonoBehaviour
     }
 
     /// <summary>
-    /// Swaps two item slots in the inventory
+    /// Swaps two item slots in the inventory if items can fit in slots.
     /// </summary>
-    public void Swap(int a, int b)
+    /// <returns>
+    /// True if successfully swapped
+    /// </returns>
+    public bool Swap(int a, int b)
     {
-        (startingItems[a], startingItems[b]) = (startingItems[b], startingItems[a]);
+        if (a == b) return true;
+        if (a < 0 || a > validatedInventorySize) return false;
+        if (b < 0 || b > validatedInventorySize) return false;
+        if (_inventorySlots[a] == null || _inventorySlots[b] == null) { return false; };
+
+
+        if (CanGoInSlot(a, _inventorySlots[b].GetItem()) && CanGoInSlot(b, _inventorySlots[a].GetItem()))
+        {
+            (_inventorySlots[a], _inventorySlots[b]) = (_inventorySlots[b], _inventorySlots[a]);
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /// <summary>
+    /// Finds if an item can go into a particular slot within this inventory
+    /// </summary>
+    /// <returns>
+    /// True if can go into slot, null items also return true
+    /// </returns>
+    public bool CanGoInSlot(int index, Item item)
+    {
+        if (_inventorySlots[index] == null){ return false; }
+        if (item == null) { return true; }
+        return (_inventorySlots[index].GetSlotType() == EquipSlotType.None || _inventorySlots[index].GetSlotType() == item.GetEquipSlotType());
     }
 
     public List<ItemSlot> GetInventorySlots()
@@ -433,6 +549,25 @@ public class Inventory : MonoBehaviour
         return _inventorySlots;
     }
 
+
+    /// <summary>
+    /// Get an itemSlot at a specific index in inventory
+    /// </summary>
+    /// <returns>
+    /// the itemSlot at given index, null if invalid input
+    /// </returns>
+    public ItemSlot GetSlotAtIndex(int index)
+    {
+        if (index < 0 || index > _inventorySlots.Count) { return null; }
+        return _inventorySlots[index];
+    }
+
     public int GetInventorySize() { return _inventorySlots.Count; }
 
+    public void UISlotWriteBack(ItemSlot itemSlot)
+    {
+        if(itemSlot == null){ return; }
+        _inventorySlots[itemSlot.GetIndex()] = itemSlot;
+        IndexItemSlots();
+    }
 }

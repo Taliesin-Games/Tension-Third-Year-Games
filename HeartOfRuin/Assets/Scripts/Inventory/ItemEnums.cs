@@ -10,8 +10,7 @@ public enum EquipSlotType
     Legs,
     Feet,
     Hands,
-    LeftHand,
-    RightHand,
+    OneHand,
     TwoHanded,
     Passive,
 }

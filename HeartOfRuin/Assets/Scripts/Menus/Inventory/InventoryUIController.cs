@@ -10,6 +10,7 @@ public class InventoryUIController : MonoBehaviour
     [SerializeField] Inventory inventory;
     [SerializeField] GameObject gridUI;
     [SerializeField] GameObject itemSlotUIDisplay;
+    [SerializeField] Mouse mouse;
     private List<ItemSlotUI> existingSlots = new List<ItemSlotUI>();
 
     bool isVisible = false;
@@ -87,7 +88,8 @@ public class InventoryUIController : MonoBehaviour
         int index = 0;
         foreach (ItemSlot item in inv.GetInventorySlots())
         {
-            existingSlots[index].Set(inv, item);
+            existingSlots[index].Set(inv, item, false);
+            existingSlots[index].SetMouse(mouse);
             index++;
         }
         return true;
@@ -95,5 +97,8 @@ public class InventoryUIController : MonoBehaviour
     }
 
 
-
+    public void SetInventory(Inventory inv)
+    {
+        inventory = inv;
+    }
 }
