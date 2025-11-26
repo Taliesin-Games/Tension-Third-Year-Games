@@ -17,6 +17,7 @@ This document outlines the testing plan for 3D models, UVs, textures, and design
 | Is the model going to be animated? | If animated, topology supports clean deformation | ⏳ |
 | Are there any back-facing polygons, N-gons, or bad geometry? | Model is clean and optimized with no geometry issues | ⏳ |
 | Are the pivot points in the correct places | Bottom of mesh to place on floor in the scene | ⏳ |
+| Has the model been triangulate, and did it need to be? | Model is a game ready asset and has been imported to engine triangulated | ⏳ |
 ---
 
 ## UV Testing
