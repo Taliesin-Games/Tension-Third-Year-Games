@@ -16,8 +16,9 @@ public class ItemPickup : MonoBehaviour
             if (itemSlot.GetItem().GetItemMesh() != null)
             {
                 worldRepresentation = Instantiate(itemSlot.GetItem().GetItemMesh(), gameObject.transform);
-                itemSet = true;
+               
             }
+            itemSet = true;
         }
         if (itemSet)
         {

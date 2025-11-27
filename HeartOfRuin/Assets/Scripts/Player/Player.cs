@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using static UnityEditor.Experimental.GraphView.Port;
 using static UnityEditor.Profiling.HierarchyFrameDataView;
 
@@ -17,8 +19,9 @@ public class Player : Character
 
     bool invToggle;
 
-    private void Awake()
+    private void Start()
     {
+        
         if (inventoryUI != null) 
         {
             inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
@@ -30,6 +33,8 @@ public class Player : Character
             equipmentUiController.SetInventory(equipmentSlots);
         
         }
+
+        RefreshUIView();
     }
 
     private void Update()
@@ -48,6 +53,11 @@ public class Player : Character
             }
         }
 
+        if (invToggle && Input.GetKeyDown(KeyCode.V))
+        {
+            inventoryUiController.GetMouse().DropHeldItemToWorld();
+        }
+
         RefreshUIView();
             
     }
@@ -61,7 +71,7 @@ public class Player : Character
     {
         if (!invToggle || inventoryUI == null || inventoryUiController == null) { return; }
         if (equipmentUI == null || equipmentUiController == null) { return ; }
-
+        
         inventoryUiController.RefreshInventoryView();
         equipmentUiController.RefreshInventoryView();
     }

@@ -36,16 +36,6 @@ public class Mouse : MonoBehaviour
 
     public void Set(Inventory inv, ItemSlot itm)
     {
-        if (inv != itemSlotUI.GetInventory())
-        {
-            Debug.Log("differeint inv");
-        }
-
-        if (itm != itemSlotUI.GetItemSlot())
-        {
-            Debug.Log("different item slot");
-
-        }
         itemSlotUI.Set(inv, itm, false);
     }
 
@@ -63,6 +53,17 @@ public class Mouse : MonoBehaviour
         }
         
         return false;
+    }
+
+    public void DropHeldItemToWorld()
+    {
+        if (HasItem())
+        {
+            //return item to inventory
+            itemSlotUI.GetInventory().AddItemAtIndex(itemSlotUI.GetItemSlot().GetIndex(), itemSlotUI.GetItemSlot());
+            itemSlotUI.GetInventory().DropItem(itemSlotUI.GetItemSlot().GetIndex());
+            Clear();
+        }
     }
 
     public ItemSlot GetItemSlot() { return itemSlotUI.GetItemSlot(); }

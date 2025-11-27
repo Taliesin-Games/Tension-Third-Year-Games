@@ -61,7 +61,7 @@ public class InventoryUIController : MonoBehaviour
         {
             return false; 
         }
-
+        
         inventory.ValidateInventorySize();
         existingSlots = gridUI.GetComponentsInChildren<ItemSlotUI>().ToList<ItemSlotUI>();
 
@@ -101,4 +101,6 @@ public class InventoryUIController : MonoBehaviour
     {
         inventory = inv;
     }
+
+    public Mouse GetMouse() {return mouse;}
 }

@@ -18,7 +18,11 @@ public class Inventory : MonoBehaviour
     [SerializeField] ItemSlot[] startingItems;
     List<ItemSlot> _inventorySlots ;
     [SerializeField] GameObject itemDropPrefab;
-    List<ItemSlot> addNextFrame;
+    bool initialised = false;
+
+
+    public System.Action<Item> OnAddItem;
+    public System.Action<Item> OnRemoveItem;
 
     Inventory()
     {
@@ -27,11 +31,7 @@ public class Inventory : MonoBehaviour
 
     private void Start()
     {
-        _inventorySlots = startingItems.ToList<ItemSlot>();
-        startingItems = new ItemSlot[0];
-        validatedInventorySize = _inventorySlots.Count;
-        ValidateInventorySize();
-        IndexItemSlots();
+        Initialise();
     }
 
     private void Update()
@@ -39,8 +39,24 @@ public class Inventory : MonoBehaviour
         ValidateInventorySize();
     }
 
+    public void Initialise()
+    {
+        if (initialised) { return; }
+        _inventorySlots = startingItems.ToList<ItemSlot>();
+        startingItems = new ItemSlot[0];
+        validatedInventorySize = _inventorySlots.Count;
+        ValidateInventorySize();
+        IndexItemSlots();
+        initialised = true;
+    }
 
-
+    public void ForceReAddItemInvoke()
+    {
+        foreach (ItemSlot slot in _inventorySlots)
+        {
+            OnAddItem?.Invoke(slot.GetItem());
+        }
+    }
     /// <summary>
     /// Compacts the inventory by removing empty slots and shifting items to the front, maintaining their order. 
     /// DO NOT USE FOR INVENTORY SIZE CHANGES, USE <see cref="ValidateInventorySize"/> INSTEAD
@@ -188,6 +204,7 @@ public class Inventory : MonoBehaviour
 
         // Inventory full, return remaining quantity
         returnSlot.SetSlotType(slotType);
+        OnAddItem?.Invoke(item);
         return returnSlot;
     }
 
@@ -238,9 +255,10 @@ public class Inventory : MonoBehaviour
                 EquipSlotType oldType = _inventorySlots[index].GetSlotType();
                 _inventorySlots[index] = itemSlot;
                 _inventorySlots[index].SetSlotType(oldType);
-                Debug.Log("slot was empty, adding and returning new slot");
+                //Debug.Log("slot was empty, adding and returning new slot");
                 ItemSlot returnSlot = new ItemSlot();
                 returnSlot.SetIndex(itemSlot.GetIndex());
+                OnAddItem?.Invoke(itemSlot.GetItem());
                 return returnSlot;
             }
             else
@@ -261,7 +279,8 @@ public class Inventory : MonoBehaviour
                         //swap items
                          returnSlot.SetItem(_inventorySlots[index].GetItem(), _inventorySlots[index].GetQuantity());
                         _inventorySlots[index] = itemSlot;
-                        Debug.Log("Item Stacked to max, swapping");
+                        OnAddItem?.Invoke(itemSlot.GetItem());
+                        //Debug.Log("Item Stacked to max, swapping");
                         return returnSlot;
                     }
                     //add to stack
@@ -270,6 +289,7 @@ public class Inventory : MonoBehaviour
                     quantity -= add;
                     //return remaining items
                     returnSlot.SetItem(itemSlot.GetItem(),quantity);
+                    OnAddItem?.Invoke(itemSlot.GetItem());
                     return returnSlot;
                 }
 
@@ -278,6 +298,8 @@ public class Inventory : MonoBehaviour
                 returnSlot.SetItem(_inventorySlots[index].GetItem(), _inventorySlots[index].GetQuantity());
                 _inventorySlots[index] = itemSlot;
                 Debug.Log("swapping");
+                OnAddItem?.Invoke(itemSlot.GetItem());
+                OnRemoveItem?.Invoke(returnSlot.GetItem());
                 return returnSlot;
             }
         }
@@ -409,6 +431,7 @@ public class Inventory : MonoBehaviour
         foreach (var slot in _inventorySlots)
         {
             slot.ClearSlot();
+            OnRemoveItem?.Invoke(slot.GetItem());
         }
     }
 
@@ -496,12 +519,14 @@ public class Inventory : MonoBehaviour
             //dropped all or attempted to drop more than available, can return
             if (quantity == -1 || quantity > _inventorySlots[index].GetQuantity())
             {
+                OnRemoveItem?.Invoke(slot.GetItem());
                 _inventorySlots[index].ClearSlot();
                 return;
             }
 
             //dropped specific quantity
-            droppedItem.GetComponent<ItemPickup>().itemSlot.SetQuantity(quantity); 
+            droppedItem.GetComponent<ItemPickup>().itemSlot.SetQuantity(quantity);
+            OnRemoveItem?.Invoke(slot.GetItem());
             _inventorySlots[index].SetQuantity(_inventorySlots[index].GetQuantity() - quantity);
         }
 
@@ -567,7 +592,10 @@ public class Inventory : MonoBehaviour
     public void UISlotWriteBack(ItemSlot itemSlot)
     {
         if(itemSlot == null){ return; }
+        OnRemoveItem?.Invoke(_inventorySlots[itemSlot.GetIndex()].GetItem());
         _inventorySlots[itemSlot.GetIndex()] = itemSlot;
         IndexItemSlots();
     }
+    
+
 }

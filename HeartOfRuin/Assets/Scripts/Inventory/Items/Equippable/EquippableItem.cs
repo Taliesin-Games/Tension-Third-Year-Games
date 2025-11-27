@@ -34,4 +34,12 @@ public abstract class EquippableItem : Item
         charcter.AddItemEffects(itemEffects);
 
     }
+
+    public int GetBonusStrength() {return BonusStrength;}
+    public int GetBonusAgility() {return BonusAgility;}
+    public int GetBonusIntelligence() { return BonusIntelligence;}
+    public float GetBonusCriticalChance() { return BonusCriticalChance; }
+
+    public float GetBonusCriticalDamage() { return BonusCriticalDamage;}
+
 }

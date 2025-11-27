@@ -94,13 +94,11 @@ public class ItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerDownHandl
                 //Attempt to add to slot
                 ItemSlot tempSlot = inventory.AddItemAtIndex(itemSlot.GetIndex(), mouse.GetItemSlot());
                 mouse.Set(mouse.GetInventory(), tempSlot);
-                    
                 inventory.IndexItemSlots();
             }
             else
             {
                 //if mouse empty, set to this item
-                Debug.Log($"setting mouse to {itemSlot.GetIndex()}");
                 mouse.Set(inventory, itemSlot);
                 Set(inventory, new ItemSlot(), true);
 
