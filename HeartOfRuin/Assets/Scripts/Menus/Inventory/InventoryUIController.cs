@@ -1,106 +1,73 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InventoryUIController : MonoBehaviour
 {
     [SerializeField] Inventory inventory;
     [SerializeField] GameObject gridUI;
-    [SerializeField] GameObject itemSlotUIDisplay;
+    [SerializeField] GameObject itemSlotUIPrefab;
     [SerializeField] Mouse mouse;
-    private List<ItemSlotUI> existingSlots = new List<ItemSlotUI>();
+    private List<ItemSlotUI> uiSlots = new List<ItemSlotUI>();
 
-    bool isVisible = false;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if(inventory == null)
-        {
-            Debug.Log("Inventory not found, null reference");
-        }
+        if (!inventory)
+            Debug.LogWarning("InventoryUIController: Inventory reference missing!");
 
-        hideInventory();
+        HideInventory();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ShowInventory()
     {
-
-    }
-
-    public void displayInventory()
-    { 
+        RefreshInventoryView();
         gameObject.SetActive(true);
-        isVisible = true;
     }
 
-    public void hideInventory() 
+    public void HideInventory()
     {
-        gameObject.SetActive(false); 
-        isVisible = false;
+        gameObject.SetActive(false);
     }
-
-    public bool RefreshInventoryView()
-    {
-        if (inventory == null)
-        {
-            return false;
-        }
-        else 
-        {
-            return RefresherInventoryView(inventory); 
-        }
-
-    }
-
-    public bool RefresherInventoryView(Inventory inv) {
-        if(inv == null || gridUI == null)
-        {
-            return false; 
-        }
-        
-        inventory.ValidateInventorySize();
-        existingSlots = gridUI.GetComponentsInChildren<ItemSlotUI>().ToList<ItemSlotUI>();
-
-        if (existingSlots.Count < inv.GetInventorySize())
-        {
-            int amountToCreate = inv.GetInventorySize() - existingSlots.Count;
-            for (int i = 0; i < amountToCreate; i++)
-            {
-                GameObject newSlotUI = Instantiate(itemSlotUIDisplay, gridUI.transform);
-                existingSlots.Add(newSlotUI.GetComponent<ItemSlotUI>());
-            }
-        }
-
-        if (existingSlots.Count > inv.GetInventorySize())
-        {
-            int ammountToRemove = existingSlots.Count - inv.GetInventorySize();
-            for (int i = 0;i < ammountToRemove; i++)
-            {
-                Destroy(existingSlots[existingSlots.Count - 1].gameObject);
-                existingSlots.RemoveAt(existingSlots.Count - 1);
-            }
-        }
-
-        int index = 0;
-        foreach (ItemSlot item in inv.GetInventorySlots())
-        {
-            existingSlots[index].Set(inv, item, false);
-            existingSlots[index].SetMouse(mouse);
-            index++;
-        }
-        return true;
-
-    }
-
 
     public void SetInventory(Inventory inv)
     {
         inventory = inv;
+        RefreshInventoryView();
     }
 
-    public Mouse GetMouse() {return mouse;}
+    public bool RefreshInventoryView()
+    {
+        if (inventory == null || gridUI == null)
+            return false;
+
+        inventory.ValidateInventorySize();
+
+        uiSlots = gridUI.GetComponentsInChildren<ItemSlotUI>().ToList();
+
+        // Create missing UI slots
+        while (uiSlots.Count < inventory.GetInventorySize())
+        {
+            var slotObj = Instantiate(itemSlotUIPrefab, gridUI.transform);
+            uiSlots.Add(slotObj.GetComponent<ItemSlotUI>());
+        }
+
+        // Remove extra UI slots
+        while (uiSlots.Count > inventory.GetInventorySize())
+        {
+            Destroy(uiSlots[uiSlots.Count - 1].gameObject);
+            uiSlots.RemoveAt(uiSlots.Count - 1);
+        }
+
+        // Bind UI slots
+        for (int i = 0; i < inventory.GetInventorySize(); i++)
+        {
+            uiSlots[i].Bind(inventory, i, mouse);
+            uiSlots[i].Refresh();
+        }
+
+        return true;
+    }
+
+    public Mouse GetMouse() => mouse;
 }
+

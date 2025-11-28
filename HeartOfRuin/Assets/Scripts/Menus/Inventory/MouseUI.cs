@@ -1,72 +1,101 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEditor;
-
+using NUnit.Framework.Interfaces;
 
 public class Mouse : MonoBehaviour
 {
     [SerializeField] GameObject mouseItemUI;
     [SerializeField] Image mouseCursor;
-    [SerializeField] ItemSlotUI itemSlotUI;
+    [SerializeField] Image itemIcon;
+    [SerializeField] TextMeshProUGUI qtyText;
+    [SerializeField] GameObject itemDropPrefab;
+
+    private Inventory sourceInventory;
+    private ItemSlot mouseSlot = new ItemSlot(); // temporary virtual slot
 
     void Update()
     {
         transform.position = Input.mousePosition;
+
         if (Cursor.lockState == CursorLockMode.Locked)
         {
             mouseCursor.enabled = false;
             mouseItemUI.SetActive(false);
+            return;
         }
-        else
-        {
-            mouseCursor.enabled = true;
 
-            if (!itemSlotUI.isEmpty())
-            {
-                mouseItemUI.SetActive(true);
-            }
-            else
-            {
-                mouseItemUI.SetActive(false);
-            }
-        }
-        
+        mouseCursor.enabled = true;
+        mouseItemUI.SetActive(!IsEmpty());
     }
 
-    public void Set(Inventory inv, ItemSlot itm)
+    //Sets the mouses held item
+    public void Set(Inventory inv, ItemSlot slot)
     {
-        itemSlotUI.Set(inv, itm, false);
+        sourceInventory = inv;
+
+        mouseSlot.Set(slot.GetItem(), slot.GetQuantity());
+        RefreshUI();
     }
 
     public void Clear()
     {
-        itemSlotUI.Set(GetInventory(), new ItemSlot(), false);
+        mouseSlot.Clear();
+        RefreshUI();
     }
 
-    public bool HasItem()
+    public bool IsEmpty() => mouseSlot.IsEmpty();
+
+    public ItemSlot GetItemSlot() => mouseSlot;
+    public Inventory GetInventory() => sourceInventory;
+
+    /// <summary>
+    /// Refreshes the mouse UI.
+    /// </summary>
+    public void RefreshUI()
     {
-        
-        if (!itemSlotUI.isEmpty())
+        if (IsEmpty())
         {
-            return true;
+            itemIcon.enabled = false;
+            qtyText.enabled = false;
+            return;
         }
-        
-        return false;
+
+        itemIcon.sprite = mouseSlot.GetItem().GetItemIcon();
+        itemIcon.enabled = true;
+
+        qtyText.text = mouseSlot.GetQuantity() > 1 ? mouseSlot.GetQuantity().ToString() : "";
+        qtyText.enabled = mouseSlot.GetQuantity() > 1;
     }
 
+    /// <summary>
+    /// Drop the item currently held by the mouse object
+    /// </summary>
     public void DropHeldItemToWorld()
     {
-        if (HasItem())
+        if (!IsEmpty() && sourceInventory != null)
         {
-            //return item to inventory
-            itemSlotUI.GetInventory().AddItemAtIndex(itemSlotUI.GetItemSlot().GetIndex(), itemSlotUI.GetItemSlot());
-            itemSlotUI.GetInventory().DropItem(itemSlotUI.GetItemSlot().GetIndex());
-            Clear();
+            if(itemDropPrefab == null && sourceInventory != null) { itemDropPrefab = sourceInventory.getItemDropPrefab(); }
+            if (itemDropPrefab != null)
+            {
+                GameObject droppedItem = Instantiate(itemDropPrefab);
+                droppedItem.transform.position = sourceInventory.gameObject.transform.position;
+
+                var pickup = droppedItem.GetComponent<ItemPickup>();
+                if (pickup != null)
+                {
+                    int dropAmount = mouseSlot.GetQuantity();
+                    pickup.itemSlot.Set(mouseSlot.GetItem(), dropAmount);
+                }
+                else
+                {
+                    // if prefab is invalid, destroy it
+                    Destroy(droppedItem);
+                }
+
+                Clear();
+            }
         }
     }
-
-    public ItemSlot GetItemSlot() { return itemSlotUI.GetItemSlot(); }
-    public Inventory GetInventory() { return itemSlotUI.GetInventory(); }
-
 }
+

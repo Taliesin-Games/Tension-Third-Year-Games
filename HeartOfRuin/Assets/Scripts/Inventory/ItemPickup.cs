@@ -32,8 +32,7 @@ public class ItemPickup : MonoBehaviour
 
         var inventory = other.GetComponent<Inventory>();
         itemSlot = inventory.AddItem(itemSlot);
-        Debug.Log($"ItemPickup Quantity after pickup {itemSlot.GetQuantity()}");
-        if (itemSlot.IsEmpty())
+        if (itemSlot == null)
         {
             Destroy(gameObject);
         }

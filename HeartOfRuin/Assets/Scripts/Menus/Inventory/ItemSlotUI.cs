@@ -1,121 +1,128 @@
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
-public class ItemSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler, IDropHandler
+public class ItemSlotUI : MonoBehaviour,
+    IPointerDownHandler, IPointerUpHandler, IDragHandler, IDropHandler
 {
     private Inventory inventory;
-    private ItemSlot itemSlot;
-    private int IndexInInventory;
-    [SerializeField] private Image itemImage;
-    [SerializeField] TextMeshProUGUI quantityText;
-    [SerializeField] private Mouse mouse;
+    private Mouse mouse;
+    private int slotIndex;
 
     private bool click;
 
-    public void Set(Inventory inv , ItemSlot itm, bool writeBackToInventory)
+    [SerializeField] private Image itemImage;
+    [SerializeField] private TextMeshProUGUI quantityText;
+
+    // --- Binding ---
+    public void Bind(Inventory inv, int index, Mouse mouseRef)
     {
-        if(inv == null || itm == null)
+        inventory = inv;
+        slotIndex = index;
+        mouse = mouseRef;
+
+        Refresh();
+    }
+
+    /// <summary>
+    /// Refreshes the item slot UI element 
+    /// </summary>
+    public void Refresh()
+    {
+        if (inventory == null) return;
+
+        var slot = inventory.GetSlotAtIndex(slotIndex);
+        if (slot == null || slot.IsEmpty())
         {
-            Debug.Log($"inv: {inv == null}, itemSlot: {itm == null}");
+            itemImage.gameObject.SetActive(false);
+            quantityText.gameObject.SetActive(false);
             return;
         }
 
-        itemImage.gameObject.SetActive(false);
-        quantityText.gameObject.SetActive(false);
+        itemImage.sprite = slot.GetItem().GetItemIcon();
+        itemImage.gameObject.SetActive(true);
 
-        if (writeBackToInventory && inventory != null && itemSlot != null) 
+        if (slot.GetQuantity() > 1)
         {
-            ItemSlot writeBackSlot = new ItemSlot();
-            writeBackSlot.SetIndex(itemSlot.GetIndex());
-            writeBackSlot.SetSlotType(itemSlot.GetSlotType());
-            inventory.UISlotWriteBack(writeBackSlot); 
-        }
-
-
-        inventory = inv;
-        itemSlot = itm;
-
-        if(itm.GetItem() != null)
-        {
-            itemImage.sprite = itemSlot.GetItem().GetItemIcon();
-            itemImage.gameObject.SetActive(true);
-        }
-        
-        if (itemSlot.GetQuantity() > 1)
-        {
-            quantityText.text = itemSlot.GetQuantity().ToString();
+            quantityText.text = slot.GetQuantity().ToString();
             quantityText.gameObject.SetActive(true);
         }
-
-        
+        else
+        {
+            quantityText.gameObject.SetActive(false);
+        }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        eventData.pointerPress = this.gameObject;
-    }
+    // --- Events ---
     public void OnPointerDown(PointerEventData eventData)
     {
         click = true;
     }
+
     public void OnPointerUp(PointerEventData eventData)
     {
         if (click)
         {
-            OnClick();
+            HandleClick();
             click = false;
         }
     }
+
     public void OnDrop(PointerEventData eventData)
     {
-        OnClick();
+        HandleClick();
         click = false;
     }
+
     public void OnDrag(PointerEventData eventData)
     {
         if (click)
         {
-            OnClick();
+            HandleClick();
             click = false;
         }
     }
 
-
-    public void OnClick()
+    private void HandleClick()
     {
-        if (mouse != null) // validate the mouse ref exists
-        {
-            if (mouse.HasItem()) // check if mouse has item
-            {
+        if (inventory == null || mouse == null)
+            return;
 
-                //Attempt to add to slot
-                ItemSlot tempSlot = inventory.AddItemAtIndex(itemSlot.GetIndex(), mouse.GetItemSlot());
-                mouse.Set(mouse.GetInventory(), tempSlot);
-                inventory.IndexItemSlots();
+        var slot = inventory.GetSlotAtIndex(slotIndex);
+
+        if (mouse.IsEmpty())
+        {
+            // Pick up items
+            if (!slot.IsEmpty())
+            {
+                mouse.Set(inventory, slot);
+                slot.Clear();
+                inventory.OnRemoveItem?.Invoke(mouse.GetItemSlot().GetItem());
+            }
+        }
+        else
+        {
+            // Attempt to place mouse-held item
+            ItemSlot leftover = inventory.AddItemAtIndex(slotIndex, mouse.GetItemSlot());
+
+            if (leftover != null && leftover.GetQuantity() > 0)
+            {
+                mouse.Set(mouse.GetInventory(), leftover);
             }
             else
             {
-                //if mouse empty, set to this item
-                mouse.Set(inventory, itemSlot);
-                Set(inventory, new ItemSlot(), true);
-
+                mouse.Clear();
             }
         }
+
+        Refresh();
+        mouse.RefreshUI();
     }
 
-    public bool isEmpty()
+    public bool IsEmpty()
     {
-        return (inventory == null || itemSlot == null || itemSlot.IsEmpty());
+        var slot = inventory?.GetSlotAtIndex(slotIndex);
+        return slot == null || slot.IsEmpty();
     }
-
-    public void SetMouse(Mouse inMouse)
-    {
-        mouse = inMouse;
-    }
-
-    public ItemSlot GetItemSlot() { return itemSlot; }
-    public Inventory GetInventory() { return inventory; }
 }

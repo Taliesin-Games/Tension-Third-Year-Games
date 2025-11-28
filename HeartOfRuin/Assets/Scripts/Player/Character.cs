@@ -11,7 +11,7 @@ public abstract class Character : MonoBehaviour
     
 
 
-    List<ItemEffect> activeEffects;
+    [SerializeField] List<ItemEffect> activeEffects;
     //protected Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
     [SerializeField] protected Inventory equipmentSlots;
     [SerializeField] protected Inventory inventory;
@@ -58,6 +58,7 @@ public abstract class Character : MonoBehaviour
 
     public void AddItemEffects(ItemEffect[] effects)
     {
+        if(effects == null) { return; }
         foreach (ItemEffect effect in effects)
         {
             activeEffects.Add(effect);

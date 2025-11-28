@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -26,53 +27,43 @@ public class Player : Character
         {
             inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
             inventoryUiController.SetInventory(inventory);
+            Debug.Log($"Setting main inventory to {inventoryUiController.name}");
         }
         if (equipmentUI != null)
         {
             equipmentUiController = equipmentUI.GetComponent<InventoryUIController>();
             equipmentUiController.SetInventory(equipmentSlots);
-        
-        }
+            Debug.Log($"Setting main inventory to {equipmentUiController.name}");
 
-        RefreshUIView();
+        }
     }
 
     private void Update()
     {
-        if (inventoryUI != null && equipmentUI != null  && Input.GetKeyDown(KeyCode.Tab)){
-            invToggle = !invToggle;
-            if (invToggle) 
-            {
-                inventoryUiController.displayInventory();
-                equipmentUiController.displayInventory();
-            }
-            else 
-            { 
-                inventoryUiController.hideInventory();
-                equipmentUiController.hideInventory();
-            }
-        }
-
-        if (invToggle && Input.GetKeyDown(KeyCode.V))
+        if (inventoryUI != null && equipmentUI != null && Input.GetKeyDown(KeyCode.Tab))
         {
-            inventoryUiController.GetMouse().DropHeldItemToWorld();
+            invToggle = !invToggle; //flip the toggle
+            Debug.Log($"toggling inventory to: {invToggle}");
+
         }
 
-        RefreshUIView();
+        if (invToggle)
+        {        
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                inventoryUiController.GetMouse().DropHeldItemToWorld();
+                Debug.Log("drop key pressed");
+            }
+            inventoryUiController.ShowInventory();
+            equipmentUiController.ShowInventory();
+        }
+        else
+        {
+
+            inventoryUiController.HideInventory();
+            equipmentUiController.HideInventory();
+        }
             
     }
 
-    private void RefreshUIView()
-    {
-        RefreshInvenotryView();
-    }
-
-    private void RefreshInvenotryView()
-    {
-        if (!invToggle || inventoryUI == null || inventoryUiController == null) { return; }
-        if (equipmentUI == null || equipmentUiController == null) { return ; }
-        
-        inventoryUiController.RefreshInventoryView();
-        equipmentUiController.RefreshInventoryView();
-    }
 }
