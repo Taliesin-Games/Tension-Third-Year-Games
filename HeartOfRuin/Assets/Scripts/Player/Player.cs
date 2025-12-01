@@ -1,11 +1,5 @@
-using System;
-using System.Buffers;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
-using static UnityEditor.Experimental.GraphView.Port;
-using static UnityEditor.Profiling.HierarchyFrameDataView;
+
 
 
 [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
@@ -17,25 +11,12 @@ public class Player : Character
     [SerializeField] GameObject equipmentUI;
     InventoryUIController inventoryUiController;
     InventoryUIController equipmentUiController;
-
     bool invToggle;
+
 
     private void Start()
     {
-        
-        if (inventoryUI != null) 
-        {
-            inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
-            inventoryUiController.SetInventory(inventory);
-            Debug.Log($"Setting main inventory to {inventoryUiController.name}");
-        }
-        if (equipmentUI != null)
-        {
-            equipmentUiController = equipmentUI.GetComponent<InventoryUIController>();
-            equipmentUiController.SetInventory(equipmentSlots);
-            Debug.Log($"Setting main inventory to {equipmentUiController.name}");
-
-        }
+        initialiseUIControllerVariables();
     }
 
     private void Update()
@@ -64,6 +45,23 @@ public class Player : Character
             equipmentUiController.HideInventory();
         }
             
+    }
+
+    void initialiseUIControllerVariables()
+    {
+        if (inventoryUI != null)
+        {
+            inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
+            inventoryUiController.SetInventory(inventory);
+            Debug.Log($"Setting main inventory to {inventoryUiController.name}");
+        }
+        if (equipmentUI != null)
+        {
+            equipmentUiController = equipmentUI.GetComponent<InventoryUIController>();
+            equipmentUiController.SetInventory(equipmentSlots);
+            Debug.Log($"Setting main inventory to {equipmentUiController.name}");
+
+        }
     }
 
 }

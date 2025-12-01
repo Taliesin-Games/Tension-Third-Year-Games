@@ -6,14 +6,15 @@ using TMPro;
 public class ItemSlotUI : MonoBehaviour,
     IPointerDownHandler, IPointerUpHandler, IDragHandler, IDropHandler
 {
+    [SerializeField] private Image itemImage;
+    [SerializeField] private TextMeshProUGUI quantityText;
     private Inventory inventory;
     private Mouse mouse;
     private int slotIndex;
 
     private bool click;
 
-    [SerializeField] private Image itemImage;
-    [SerializeField] private TextMeshProUGUI quantityText;
+
 
     // --- Binding ---
     public void Bind(Inventory inv, int index, Mouse mouseRef)
@@ -30,9 +31,12 @@ public class ItemSlotUI : MonoBehaviour,
     /// </summary>
     public void Refresh()
     {
-        if (inventory == null) return;
+        if (inventory == null)
+        {
+            return;
+        }
 
-        var slot = inventory.GetSlotAtIndex(slotIndex);
+        ItemSlot slot = inventory.GetSlotAtIndex(slotIndex);
         if (slot == null || slot.IsEmpty())
         {
             itemImage.gameObject.SetActive(false);
@@ -87,9 +91,11 @@ public class ItemSlotUI : MonoBehaviour,
     private void HandleClick()
     {
         if (inventory == null || mouse == null)
-            return;
+        {
+            return; 
+        }
 
-        var slot = inventory.GetSlotAtIndex(slotIndex);
+        ItemSlot slot = inventory.GetSlotAtIndex(slotIndex);
 
         if (mouse.IsEmpty())
         {
@@ -122,7 +128,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public bool IsEmpty()
     {
-        var slot = inventory?.GetSlotAtIndex(slotIndex);
+        ItemSlot slot = inventory?.GetSlotAtIndex(slotIndex);
         return slot == null || slot.IsEmpty();
     }
 }

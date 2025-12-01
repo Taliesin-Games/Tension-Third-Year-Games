@@ -21,6 +21,11 @@ public abstract class Character : MonoBehaviour
 
     protected virtual void Awake()
     {
+        initialiseCharacter();
+    }
+
+    void initialiseCharacter()
+    {
         baseStats = playerStats;
         inventory = GetComponent<Inventory>();
         Debug.Log("Character Name: " + characterName);

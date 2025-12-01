@@ -47,7 +47,7 @@ public class InventoryUIController : MonoBehaviour
         // Create missing UI slots
         while (uiSlots.Count < inventory.GetInventorySize())
         {
-            var slotObj = Instantiate(itemSlotUIPrefab, gridUI.transform);
+            GameObject slotObj = Instantiate(itemSlotUIPrefab, gridUI.transform);
             uiSlots.Add(slotObj.GetComponent<ItemSlotUI>());
         }
 

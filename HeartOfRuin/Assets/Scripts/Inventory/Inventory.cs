@@ -1,28 +1,41 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
     [SerializeField] string inventoryName = "";
     [SerializeField] int inventorySize = 20;
-    int validatedInventorySize = 0;
-
     // For initial configuration, you can assign starting slot contents in the inspector.
     // These will be copied into the permanent slot objects on Initialise.
     [SerializeField] ItemSlot[] startingItems = new ItemSlot[0];
+    [SerializeField] GameObject itemDropPrefab; // optional
+    int validatedInventorySize = 0;
 
     // Internal permanent slots — never replace these objects (UI holds references safely)
     List<ItemSlot> _inventorySlots;
-
-    [SerializeField] GameObject itemDropPrefab; // optional
-
     bool initialised = false;
 
     // Events - keep same semantics as before (invoke when items added/removed)
     public Action<Item> OnAddItem;
     public Action<Item> OnRemoveItem;
+
+    public List<ItemSlot> GetInventorySlots() => _inventorySlots;
+
+    public int GetInventorySize() => _inventorySlots.Count;
+
+    public ItemSlot GetSlotAtIndex(int index)
+    {
+        if (index < 0 || index >= _inventorySlots.Count)
+        {
+            return null;
+        }
+
+        return _inventorySlots[index];
+    }
+
+    internal GameObject GetItemDropPrefab() => itemDropPrefab;
+
 
     private void Start()
     {
@@ -70,9 +83,13 @@ public class Inventory : MonoBehaviour
     /// <summary>Re-invoke OnAddItem for UI rebuilds / refreshes</summary>
     public void ForceReAddItemInvoke()
     {
-        foreach (var slot in _inventorySlots)
-            if (!slot.IsEmpty())
-                OnAddItem?.Invoke(slot.GetItem());
+        foreach (ItemSlot slot in _inventorySlots)
+        {
+            if (!slot.IsEmpty()) 
+            {
+                OnAddItem?.Invoke(slot.GetItem()); 
+            }
+        }
     }
 
     /// <summary>
@@ -86,9 +103,12 @@ public class Inventory : MonoBehaviour
         // collect existing item data
         for (int i = 0; i < _inventorySlots.Count; i++)
         {
-            var s = _inventorySlots[i];
+            ItemSlot s = _inventorySlots[i];
             if (!s.IsEmpty())
+            {
                 nonEmpty.Add((s.GetItem(), s.GetQuantity()));
+            }
+                
         }
 
         // place collected items in front slots, clear rest
@@ -111,17 +131,19 @@ public class Inventory : MonoBehaviour
     {
         // ensure existing slots are valid (should be by Initialise but keep safe)
         for (int i = 0; i < _inventorySlots.Count; i++)
+        {
             if (_inventorySlots[i] == null)
             {
-                var s = new ItemSlot();
+                ItemSlot s = new ItemSlot();
                 s.Initialize(EquipSlotType.None, i);
                 _inventorySlots[i] = s;
             }
+        }
 
         // add missing slots (create new permanent slot objects)
         while (_inventorySlots.Count < inventorySize)
         {
-            var s = new ItemSlot();
+            ItemSlot s = new ItemSlot();
             s.Initialize(EquipSlotType.None, _inventorySlots.Count);
             _inventorySlots.Add(s);
         }
@@ -137,7 +159,10 @@ public class Inventory : MonoBehaviour
         for (int i = _inventorySlots.Count - 1; i >= 0 && _inventorySlots.Count > inventorySize; i--)
         {
             if (_inventorySlots[i] == null || _inventorySlots[i].IsEmpty())
+            {
                 _inventorySlots.RemoveAt(i);
+            }
+                
         }
 
         // If still too large, drop items from the back
@@ -154,8 +179,14 @@ public class Inventory : MonoBehaviour
     /// </summary>
     public void ValidateInventorySize()
     {
-        if (inventorySize == validatedInventorySize) return;
-        if (inventorySize < 0) return;
+        if (inventorySize == validatedInventorySize)
+        {
+            return;
+        }
+        if (inventorySize < 0)
+        {
+            return;
+        }
 
         if (inventorySize > validatedInventorySize)
         {
@@ -177,7 +208,9 @@ public class Inventory : MonoBehaviour
     void IndexItemSlots()
     {
         for (int i = 0; i < _inventorySlots.Count; i++)
+        {
             _inventorySlots[i].SetIndex(i);
+        }
     }
 
     // --- AddItem behaviour (stack-first, then empty slots) ---
@@ -187,7 +220,10 @@ public class Inventory : MonoBehaviour
     /// </summary>
     public ItemSlot AddItem(Item item, int quantity, EquipSlotType returnSlotType = EquipSlotType.None)
     {
-        if (item == null || quantity <= 0) return null;
+        if (item == null || quantity <= 0)
+        {
+            return null;
+        }
 
         // Ensure inventory layout
         ValidateInventorySize();
@@ -195,8 +231,12 @@ public class Inventory : MonoBehaviour
         // 1) Fill existing stacks
         for (int i = 0; i < _inventorySlots.Count && quantity > 0; i++)
         {
-            var slot = _inventorySlots[i];
-            if (slot.IsEmpty()) continue;
+            ItemSlot slot = _inventorySlots[i];
+            if (slot.IsEmpty())
+            {
+                continue;
+            }
+            
             if (slot.GetItem() == item)
             {
                 int added = slot.TryAddQuantity(quantity);
@@ -211,8 +251,11 @@ public class Inventory : MonoBehaviour
         // 2) Place into empty slots
         for (int i = 0; i < _inventorySlots.Count && quantity > 0; i++)
         {
-            var slot = _inventorySlots[i];
-            if (!slot.IsEmpty()) continue;
+            ItemSlot slot = _inventorySlots[i];
+            if (!slot.IsEmpty())
+            {
+                continue;
+            }
             int placed = slot.TryPlaceIntoEmptySlot(item, quantity);
             if (placed > 0)
             {
@@ -236,7 +279,10 @@ public class Inventory : MonoBehaviour
 
     public ItemSlot AddItem(ItemSlot itemSlot)
     {
-        if (itemSlot == null || itemSlot.GetItem() == null || itemSlot.GetQuantity() <= 0) return null;
+        if (itemSlot == null || itemSlot.GetItem() == null || itemSlot.GetQuantity() <= 0)
+        {
+            return null;
+        }
         return AddItem(itemSlot.GetItem(), itemSlot.GetQuantity(), itemSlot.GetSlotType());
     }
 
@@ -247,15 +293,25 @@ public class Inventory : MonoBehaviour
     /// </summary>
     public ItemSlot AddItemAtIndex(int index, ItemSlot incoming)
     {
-        if (incoming == null || incoming.GetItem() == null || incoming.GetQuantity() <= 0) return null;
-        if (index < 0 || index >= _inventorySlots.Count) return incoming; // invalid index
+        if (incoming == null || incoming.GetItem() == null || incoming.GetQuantity() <= 0)
+        {
+            return null;
+        }
+
+        if (index < 0 || index >= _inventorySlots.Count)
+        {
+            return incoming; // invalid index
+        }
 
         ValidateInventorySize();
-        var target = _inventorySlots[index];
+        ItemSlot target = _inventorySlots[index];
 
         // Ensure the item can go in this slot
         if (target.GetSlotType() != EquipSlotType.None && target.GetSlotType() != incoming.GetItem().GetEquipSlotType())
+        {
             return incoming; // cannot place here
+        }
+            
 
         // If target empty > place whole incoming (or as much as fits to max stack)
         if (target.IsEmpty())
@@ -331,13 +387,19 @@ public class Inventory : MonoBehaviour
     /// </summary>
     ItemSlot FillStacks(Item item, int quantity)
     {
-        if (item == null || quantity <= 0) return null;
+        if (item == null || quantity <= 0)
+        {
+            return null;
+        }
         ValidateInventorySize();
 
         for (int i = 0; i < _inventorySlots.Count && quantity > 0; i++)
         {
-            var slot = _inventorySlots[i];
-            if (slot.IsEmpty()) continue;
+            ItemSlot slot = _inventorySlots[i];
+            if (slot.IsEmpty())
+            {
+                continue;
+            }
             if (slot.GetItem() == item)
             {
                 int added = slot.TryAddQuantity(quantity);
@@ -351,7 +413,7 @@ public class Inventory : MonoBehaviour
 
         if (quantity > 0)
         {
-            var remainder = new ItemSlot();
+            ItemSlot remainder = new ItemSlot();
             remainder.Initialize(EquipSlotType.None, -1);
             remainder.Set(item, quantity);
             return remainder;
@@ -364,13 +426,19 @@ public class Inventory : MonoBehaviour
     /// </summary>
     ItemSlot PlaceInEmptySlots(Item item, int quantity)
     {
-        if (item == null || quantity <= 0) return null;
+        if (item == null || quantity <= 0)
+        {
+            return null;
+        }
         ValidateInventorySize();
 
         for (int i = 0; i < _inventorySlots.Count && quantity > 0; i++)
         {
-            var slot = _inventorySlots[i];
-            if (!slot.IsEmpty()) continue;
+            ItemSlot slot = _inventorySlots[i];
+            if (!slot.IsEmpty()) 
+            {
+                continue;
+            }
             int placed = slot.TryPlaceIntoEmptySlot(item, quantity);
             if (placed > 0)
             {
@@ -381,7 +449,7 @@ public class Inventory : MonoBehaviour
 
         if (quantity > 0)
         {
-            var remainder = new ItemSlot();
+            ItemSlot remainder = new ItemSlot();
             remainder.Initialize(EquipSlotType.None, -1);
             remainder.Set(item, quantity);
             return remainder;
@@ -396,10 +464,22 @@ public class Inventory : MonoBehaviour
     /// </summary>
     public void TransferItemToAnotherInventory(Inventory outputInv, int indexOfItemToTransfer)
     {
-        if (outputInv == null) return;
-        if (indexOfItemToTransfer < 0 || indexOfItemToTransfer >= _inventorySlots.Count) return;
-        var sourceSlot = _inventorySlots[indexOfItemToTransfer];
-        if (sourceSlot.IsEmpty()) return;
+        if (outputInv == null)
+        {
+            return;
+        }
+
+        if (indexOfItemToTransfer < 0 || indexOfItemToTransfer >= _inventorySlots.Count) 
+        {
+            return;
+        }
+
+        ItemSlot sourceSlot = _inventorySlots[indexOfItemToTransfer];
+        
+        if (sourceSlot.IsEmpty()) 
+        {
+            return;
+        }
 
         // Try to add to output inventory
         ItemSlot remainder = outputInv.AddItem(sourceSlot.GetItem(), sourceSlot.GetQuantity(), sourceSlot.GetSlotType());
@@ -422,11 +502,17 @@ public class Inventory : MonoBehaviour
     /// </summary>
     public void TransferEntireInventory(Inventory outputInv)
     {
-        if (outputInv == null) return;
+        if (outputInv == null)
+        {
+            return;
+        }
         for (int i = 0; i < _inventorySlots.Count; i++)
         {
-            var slot = _inventorySlots[i];
-            if (slot.IsEmpty()) continue;
+            ItemSlot slot = _inventorySlots[i];
+            if (slot.IsEmpty()) 
+            {
+                continue;
+            }
             ItemSlot remainder = outputInv.AddItem(slot.GetItem(), slot.GetQuantity(), slot.GetSlotType());
             if (remainder == null || remainder.GetQuantity() <= 0)
             {
@@ -444,10 +530,13 @@ public class Inventory : MonoBehaviour
 
     public void ClearInventory()
     {
-        foreach (var slot in _inventorySlots)
+        foreach (ItemSlot slot in _inventorySlots)
         {
             if (!slot.IsEmpty())
+            {
                 OnRemoveItem?.Invoke(slot.GetItem());
+            }
+                
             slot.Clear();
         }
     }
@@ -460,21 +549,43 @@ public class Inventory : MonoBehaviour
     /// </returns>
     public bool RemoveItem(int index, int quantity)
     {
-        if (index < 0 || index >= _inventorySlots.Count) return false;
-        var slot = _inventorySlots[index];
-        if (slot.IsEmpty()) return false;
-        if (quantity <= 0 || quantity > slot.GetQuantity()) return false;
+        if (index < 0 || index >= _inventorySlots.Count) 
+        {
+            return false; 
+        }
+
+        ItemSlot slot = _inventorySlots[index];
+
+        if (slot.IsEmpty()) 
+        {
+            return false; 
+        }
+
+        if (quantity <= 0 || quantity > slot.GetQuantity()) 
+        {
+            return false;
+        }
+
         slot.RemoveQuantity(quantity);
-        if (slot.IsEmpty())
+
+        if (slot.IsEmpty()) 
+        {
             OnRemoveItem?.Invoke(slot.GetItem());
+        }
+           
         return true;
     }
 
     public bool IsEmpty()
     {
-        foreach (var s in _inventorySlots)
+        foreach (ItemSlot s in _inventorySlots)
+        {
             if (!s.IsEmpty())
-                return false;
+            {
+                return false; 
+            }
+        }
+
         return true;
     }
 
@@ -483,11 +594,17 @@ public class Inventory : MonoBehaviour
         Debug.Log("Inventory Contents:");
         for (int i = 0; i < _inventorySlots.Count; i++)
         {
-            var slot = _inventorySlots[i];
+            ItemSlot slot = _inventorySlots[i];
             if (!slot.IsEmpty())
+            {
                 Debug.Log($"Slot {i}: {slot.GetItem().GetItemName()} x{slot.GetQuantity()}");
+            }
+
             else
+            {
                 Debug.Log($"Slot {i}: Empty");
+            }
+                
         }
     }
 
@@ -496,23 +613,36 @@ public class Inventory : MonoBehaviour
     /// </summary>
     public void DropItem(int index, int quantity = -1)
     {
-        if (index < 0 || index >= _inventorySlots.Count) return;
-        if (quantity == 0 || quantity < -1) return;
-        if (itemDropPrefab == null) return;
+        if (index < 0 || index >= _inventorySlots.Count)
+        {
+            return;
+        }
 
-        var slot = _inventorySlots[index];
-        if (slot.IsEmpty()) return;
-        Debug.Log("drop slot has item");
+        if (quantity == 0 || quantity < -1)
+        {
+            return;
+        }
+
+        if (itemDropPrefab == null)
+        {
+            return;
+        }
+
+        ItemSlot slot = _inventorySlots[index];
+        if (slot.IsEmpty())
+        {
+            return;
+        }
 
         GameObject droppedItem = Instantiate(itemDropPrefab);
         droppedItem.transform.position = gameObject.transform.position;
 
-        var pickup = droppedItem.GetComponent<ItemPickup>();
+        ItemPickup pickup = droppedItem.GetComponent<ItemPickup>();
         if (pickup != null)
         {
             Debug.Log("item dropped successfully");
             int dropAmount = (quantity == -1) ? slot.GetQuantity() : Mathf.Min(quantity, slot.GetQuantity());
-            pickup.itemSlot.Set(slot.GetItem(), dropAmount);
+            pickup.ItemSlot.Set(slot.GetItem(), dropAmount);
 
             // remove from slot
             if (quantity == -1 || quantity >= slot.GetQuantity())
@@ -530,23 +660,7 @@ public class Inventory : MonoBehaviour
         {
             // if prefab is invalid, destroy it
             Destroy(droppedItem);
-            Debug.Log("meow");
         }
-    }
-
-    public List<ItemSlot> GetInventorySlots() => _inventorySlots;
-
-    public int GetInventorySize() => _inventorySlots.Count;
-
-    public ItemSlot GetSlotAtIndex(int index)
-    {
-        if (index < 0 || index >= _inventorySlots.Count) return null;
-        return _inventorySlots[index];
-    }
-
-    internal GameObject getItemDropPrefab()
-    {
-        return itemDropPrefab;
     }
 }
 

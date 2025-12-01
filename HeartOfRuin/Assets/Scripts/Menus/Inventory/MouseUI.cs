@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using NUnit.Framework.Interfaces;
 
 public class Mouse : MonoBehaviour
 {
@@ -15,6 +14,11 @@ public class Mouse : MonoBehaviour
     private ItemSlot mouseSlot = new ItemSlot(); // temporary virtual slot
 
     void Update()
+    {
+        handleMouseLogic();
+    }
+
+    void handleMouseLogic()
     {
         transform.position = Input.mousePosition;
 
@@ -75,17 +79,20 @@ public class Mouse : MonoBehaviour
     {
         if (!IsEmpty() && sourceInventory != null)
         {
-            if(itemDropPrefab == null && sourceInventory != null) { itemDropPrefab = sourceInventory.getItemDropPrefab(); }
+            if(itemDropPrefab == null && sourceInventory != null) 
+            {
+                itemDropPrefab = sourceInventory.GetItemDropPrefab(); 
+            }
             if (itemDropPrefab != null)
             {
                 GameObject droppedItem = Instantiate(itemDropPrefab);
                 droppedItem.transform.position = sourceInventory.gameObject.transform.position;
 
-                var pickup = droppedItem.GetComponent<ItemPickup>();
+                ItemPickup pickup = droppedItem.GetComponent<ItemPickup>();
                 if (pickup != null)
                 {
                     int dropAmount = mouseSlot.GetQuantity();
-                    pickup.itemSlot.Set(mouseSlot.GetItem(), dropAmount);
+                    pickup.ItemSlot.Set(mouseSlot.GetItem(), dropAmount);
                 }
                 else
                 {

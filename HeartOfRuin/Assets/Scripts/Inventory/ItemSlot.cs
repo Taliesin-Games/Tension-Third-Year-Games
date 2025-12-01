@@ -66,14 +66,20 @@ public class ItemSlot
 
     public bool IsFull()
     {
-        if (item == null) return false;
+        if (item == null) 
+        {
+            return false; 
+        }
         return quantity >= item.GetMaxStackSize();
     }
 
     /// <summary>Attempt to add up to 'amount' to the slot. Returns how many were actually added.</summary>
     public int TryAddQuantity(int amount)
     {
-        if (item == null || amount <= 0) return 0;
+        if (item == null || amount <= 0) 
+        {
+            return 0; 
+        }
         int free = item.GetMaxStackSize() - quantity;
         int add = Mathf.Min(free, amount);
         quantity += add;
@@ -84,9 +90,21 @@ public class ItemSlot
     /// Returns how many were placed into the slot (0 if incompatible or not empty).</summary>
     public int TryPlaceIntoEmptySlot(Item candidateItem, int amount)
     {
-        if (candidateItem == null || amount <= 0) return 0;
-        if (!IsEmpty()) return 0;
-        if (slotType != EquipSlotType.None && slotType != candidateItem.GetEquipSlotType()) return 0;
+        if (candidateItem == null || amount <= 0) 
+        {
+            return 0; 
+        }
+
+        if (!IsEmpty()) 
+        {
+            return 0; 
+        }
+
+        if (slotType != EquipSlotType.None && slotType != candidateItem.GetEquipSlotType())
+        {
+            return 0; 
+        }
+
 
         int add = Mathf.Min(amount, candidateItem.GetMaxStackSize());
         item = candidateItem;
@@ -97,11 +115,19 @@ public class ItemSlot
     /// <summary>Remove a quantity from the slot. Returns the actual removed amount.</summary>
     public int RemoveQuantity(int amount)
     {
-        if (IsEmpty() || amount <= 0) return 0;
+        if (IsEmpty() || amount <= 0)
+        {
+            return 0;
+        }
+
         int removed = Mathf.Min(quantity, amount);
         quantity -= removed;
+
         if (quantity <= 0)
+        {
             Clear();
+        }
+
         return removed;
     }
 }
