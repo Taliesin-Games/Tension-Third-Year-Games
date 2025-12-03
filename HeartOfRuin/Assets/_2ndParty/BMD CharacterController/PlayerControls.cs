@@ -116,7 +116,7 @@ namespace BMD
                     ""name"": ""Fire"",
                     ""type"": ""Button"",
                     ""id"": ""e40322bf-8193-4fac-8e58-0ace2298eca1"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -125,7 +125,7 @@ namespace BMD
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""f7fd300f-8178-4021-9b1c-5eb1209948cd"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -134,7 +134,7 @@ namespace BMD
                     ""name"": ""Roll"",
                     ""type"": ""Button"",
                     ""id"": ""70baa2ee-7823-4649-9da0-628649dd908a"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -143,7 +143,7 @@ namespace BMD
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""c2180305-ad9e-474e-8c17-c3c50eac0874"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -152,6 +152,15 @@ namespace BMD
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""b16f39f4-0b21-432c-94a2-752854c0488a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""57bd68f7-8d7e-4a3b-9d17-8bd794640136"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -585,6 +594,28 @@ namespace BMD
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19ba9c91-d9d4-413b-b741-c9d0c68db852"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2da83aac-e4fc-49de-ab36-52a5a1aeba92"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1179,6 +1210,7 @@ namespace BMD
             m_Player_Roll = m_Player.FindAction("Roll", throwIfNotFound: true);
             m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+            m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1279,6 +1311,7 @@ namespace BMD
         private readonly InputAction m_Player_Roll;
         private readonly InputAction m_Player_Crouch;
         private readonly InputAction m_Player_Sprint;
+        private readonly InputAction m_Player_Interact;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1318,6 +1351,10 @@ namespace BMD
             /// Provides access to the underlying input action "Player/Sprint".
             /// </summary>
             public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/Interact".
+            /// </summary>
+            public InputAction @Interact => m_Wrapper.m_Player_Interact;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1365,6 +1402,9 @@ namespace BMD
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
 
             /// <summary>
@@ -1397,6 +1437,9 @@ namespace BMD
                 @Sprint.started -= instance.OnSprint;
                 @Sprint.performed -= instance.OnSprint;
                 @Sprint.canceled -= instance.OnSprint;
+                @Interact.started -= instance.OnInteract;
+                @Interact.performed -= instance.OnInteract;
+                @Interact.canceled -= instance.OnInteract;
             }
 
             /// <summary>
@@ -1746,6 +1789,13 @@ namespace BMD
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSprint(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnInteract(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
