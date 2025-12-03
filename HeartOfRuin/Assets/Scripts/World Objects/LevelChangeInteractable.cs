@@ -1,10 +1,12 @@
+using UnityEditor;
 using UnityEngine;
 
 public class LevelChangeInteractable : InteractableBase
 {
+    [SerializeField] SceneAsset nextLevel;
     public override void Interact()
     {
-        Debug.Log("Portal activated");
+        LevelManager.LoadNextLevel();
         //transition level to next...
         
     }

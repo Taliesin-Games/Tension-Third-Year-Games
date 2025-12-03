@@ -1,5 +1,7 @@
+using BMD;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
 
 
 //TODO: Setup as actual character module rather than just using Input.GetKeyDown()
@@ -7,7 +9,8 @@ public class PlayerInteractor : MonoBehaviour, ICharacterModule
 {
     [SerializeField] float interactDistance = 3f;
     [SerializeField] LayerMask interactMask;
-
+    PlayerControls playerControls;
+    InputAction interact;
     IInteractableObject currentTarget;
 
 
@@ -16,16 +19,39 @@ public class PlayerInteractor : MonoBehaviour, ICharacterModule
     public void FixedTick(float fixedDeltaTime) { }
     public void Dispose() { }
 
-
-    void Update()
+    private void Awake()
     {
-        HandleRaycast();
+        SetupControls();
+    }
 
-        if (currentTarget != null && Input.GetKeyDown(KeyCode.E))
+    private void SetupControls()
+    {
+        playerControls = new PlayerControls();
+        interact = playerControls.Player.Interact;
+    }
+
+    private void OnEnable()
+    {
+        playerControls.Player.Enable();
+        interact.performed += ctx => Interact();
+    }
+    private void OnDisable()
+    {
+        playerControls.Player.Disable();
+    }
+
+    void Interact()
+    {
+        if (currentTarget != null)
         {
             if (currentTarget.CanInteract)
                 currentTarget.Interact();
         }
+    }
+
+    void Update()
+    {
+        HandleRaycast();
     }
 
     private void HandleRaycast()
