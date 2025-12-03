@@ -30,6 +30,20 @@ public class LevelManager : MonoBehaviour
     }
     public static void LoadFirstLevel()
     {
+        ClearSeparateMusicManager();
+
+        SceneManager.LoadScene("Level 1");
+    }
+
+    public static void LoadSafeHub()
+    {
+        ClearSeparateMusicManager();
+
+        SceneManager.LoadScene("SafeHub");
+    }
+
+    private static void ClearSeparateMusicManager()
+    {
         MusicManager musicManager = FindFirstObjectByType<MusicManager>();
         //Check if the music manager is valid and that it doesnty have a game manager component attached
         if (musicManager != null && musicManager.GetComponent<GameManager>() == null)
@@ -37,11 +51,8 @@ public class LevelManager : MonoBehaviour
             Destroy(musicManager.gameObject);
             MusicManager.Instance = null; // Reset the singleton instance
         }
-
-
-        SceneManager.LoadScene("Level 1");
     }
-    
+
     public static void LoadGameOver()
     {
         SceneManager.LoadScene("GameOver");
