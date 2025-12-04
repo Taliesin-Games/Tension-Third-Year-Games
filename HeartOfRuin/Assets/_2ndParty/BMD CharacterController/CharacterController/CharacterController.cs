@@ -32,6 +32,14 @@ namespace BMD
         public event Action OnDodgePerformed;    // Event fired when dodge is performed
         public event Action OnDodgeEnded;        // Event fired when dodge ends
 
+        public event Action OnDieRequested;     
+        public event Action OnDiePerformed;     
+        public event Action OnDieEnded;
+
+        public event Action OnAttackRequested;
+        public event Action OnAttackPerformed;
+        public event Action OnAttackEnded;
+
         #endregion
 
         #region Constants
@@ -138,6 +146,14 @@ namespace BMD
         public void RequestDodge() => OnDodgeRequested?.Invoke();
         public void NotifyDodgePerformed() => OnDodgePerformed?.Invoke();
         public void NotifyDodgeEnded() => OnDodgeEnded?.Invoke();
+
+        public void RequestDie() => OnDieRequested?.Invoke();
+        public void NotifyDiePerformed() => OnDiePerformed?.Invoke();
+        public void NotifyDieEnded() => OnDieEnded?.Invoke();
+
+        public void RequestAttack() => OnAttackRequested?.Invoke();
+        public void NotifyAttackPerformed() => OnAttackPerformed?.Invoke();
+        public void NotifyAttackEnded() => OnAttackEnded?.Invoke();
 
 
         protected void NotifySprintTriggered(bool triggered) 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
 [RequireComponent(typeof(BMD.PlayerController))] // Ensure that a CharacterController component is attached
-
+[RequireComponent(typeof(Health))]
 public class Player : Character
 {
     [SerializeField] GameObject inventoryUI;

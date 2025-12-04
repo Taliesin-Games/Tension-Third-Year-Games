@@ -1,21 +1,24 @@
-using UnityEditor;
+
 using UnityEngine;
 
 
 [RequireComponent(typeof(EnemyNavigation))]
-//[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Health))]
 [RequireComponent(typeof(EnemyAI))]
 public class Enemy : MonoBehaviour
 {
-    void TakeDamage()
-    {
+    private static int count;
+    public static int EnemyCount => count;
 
-    }
+    public static void Increment() => count++;
+    public static void Decrement() => Mathf.Min(0, count--);
 
-    void Attack()
-    {
+    bool isDead;
 
-    }
+    public bool IsDead { get { return isDead; } set { isDead = value; } }
+
+
+
     private void OnDestroy()
     {
         EnemySpawner.Instance.RemoveEnemy(gameObject);

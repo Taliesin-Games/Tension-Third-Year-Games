@@ -3,7 +3,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(BMD.CharacterController))] // Ensure that a CharacterController component is attached
 [RequireComponent(typeof(Inventory))]
-[RequireComponent(typeof(Health))]
 [RequireComponent(typeof(PlayerStats))]
 public abstract class Character : MonoBehaviour
 {

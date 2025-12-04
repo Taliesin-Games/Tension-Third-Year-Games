@@ -8,17 +8,20 @@ using UnityEngine.AI;
 public class EnemyNavigation : MonoBehaviour
 {
     NavMeshAgent agent;
+    Enemy enemy;
     Transform target;
     bool HasPath => agent.hasPath;
 
     [SerializeField] bool debugPath = true;
 
-    bool isDead = false;
+    bool IsDead => enemy.IsDead;
 
     void Awake()
     {
         //cache the navmesh agent
         agent = GetComponent<NavMeshAgent>();
+
+        enemy = GetComponent<Enemy>();
     }
 
 
@@ -33,7 +36,7 @@ public class EnemyNavigation : MonoBehaviour
     public PathQueryResult QueryPathTo(Vector3 targetPos, float endTolerance = 0.25f)
     {
         // If dead, no path
-        if (isDead)
+        if (IsDead)
         {
             return new PathQueryResult
             {
@@ -82,7 +85,7 @@ public class EnemyNavigation : MonoBehaviour
     // Pick a random point projected onto the NavMesh near 'origin' within 'radius'.
     public bool TryGetPatrolPoint(Vector3 origin, float radius, float sampleMaxDistance, int maxTries, out Vector3 point)
     {
-        if (isDead)
+        if (IsDead)
         {
             point = origin;
             return false;
@@ -112,7 +115,7 @@ public class EnemyNavigation : MonoBehaviour
     void Update()
     {
 
-        if (isDead)
+        if (IsDead)
         {
             agent.isStopped = true;
             return;
@@ -134,7 +137,7 @@ public class EnemyNavigation : MonoBehaviour
     public bool HasReachedDestination()
     {
         // If dead, consider reached.
-        if (isDead)
+        if (IsDead)
         {
             return true;
         }
@@ -155,10 +158,6 @@ public class EnemyNavigation : MonoBehaviour
         return false;
     }
 
-    public void Die()
-    {
-        isDead = true;
-    }
 }
 
 // Result of a path query

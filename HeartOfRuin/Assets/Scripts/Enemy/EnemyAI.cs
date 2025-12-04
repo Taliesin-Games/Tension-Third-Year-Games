@@ -8,20 +8,16 @@ using Random = UnityEngine.Random;
 
 public class EnemyAI : MonoBehaviour
 {
-
-    static int count = 0;
-    public static int EnemyCount => count;
-
     #region Confguration
     [SerializeField] float attackRange = 1.75f;            // how close we need to be to start attacking
     [SerializeField] float chaseRepathInterval = 0.2f;      // how often to re-issue paths while chasing
     [SerializeField] bool drawDebug = false;
 
-    // Combat
+    [Header("Combat")]
     [SerializeField] int attackDamage = 10;                 // damage per hit
     [SerializeField] float attackCooldown = 2.5f;          // attack cadence
 
-    // Patrol config (AI decides when to patrol; navigation provides points)
+    [Header("Patrol Config")] // Patrol config (AI decides when to patrol; navigation provides points)
     [SerializeField] float patrolRadius = 6f;
     [SerializeField] Vector2 patrolPauseRange = new Vector2(0.5f, 1.5f);
     [SerializeField] float patrolSampleMaxDistance = 2f;
@@ -53,7 +49,7 @@ public class EnemyAI : MonoBehaviour
     float chaseRepathTimer = 0f;
     float nextAttackTime = 0f;
 
-    Boolean isDead = false;
+    bool IsDead = false;
 
     // Patrol state
     Vector3 patrolOrigin;
@@ -89,8 +85,8 @@ public class EnemyAI : MonoBehaviour
     }
     void Update()
     {
-        // Dead enemies do nothing
-        if (isDead) return;
+        
+        if (IsDead) return; // Dead enemies do nothing
 
         // Temporary: die on P key for testing
         if (Input.GetKeyDown(KeyCode.P))
@@ -495,11 +491,11 @@ public class EnemyAI : MonoBehaviour
 
     public void Die()
     {
-        if (isDead) return;
-        isDead = true;
+        if (IsDead) return;
+        IsDead = true;
         enemyNavigation.Die();
         Debug.Log($"{gameObject.name} (Enemy) is handling death logic.");
-        count--;
+        Enemy.Decrement();
         if (animator != null)
         {
             animator.SetFloat("DeathType", Random.Range(0, 1));
