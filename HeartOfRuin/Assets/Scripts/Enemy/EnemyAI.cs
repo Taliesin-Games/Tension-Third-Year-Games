@@ -9,26 +9,8 @@ using Random = UnityEngine.Random;
 public class EnemyAI : MonoBehaviour
 {
 
-
     static int count = 0;
     public static int EnemyCount => count;
-
-    //State Tracking Enums
-    enum EnemyState
-    {
-        Idle,      // not moving or attacking
-        Walking,   // moving to a static target (tower) or patrol point
-        Chasing,   // chasing a moving target (player)
-        Attacking  // attacking current target (tower/player)
-    }
-
-    // Target Type Enum
-    enum TargetKind
-    {
-        None,
-        Player,
-        Tower
-    }
 
     #region Confguration
     [SerializeField] float attackRange = 1.75f;            // how close we need to be to start attacking
