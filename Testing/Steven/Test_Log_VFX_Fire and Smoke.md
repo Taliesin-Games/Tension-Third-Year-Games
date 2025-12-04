@@ -10,7 +10,8 @@
 | Is the Effect overwriting anything? | Effect does not replace existing assets unless intended | ✅ |
 | Is the Effect true to reference? | Effect matches provided reference images and proportions | ✅ |
 | Does the Effect fit the style guide? | Model aligns with the project's art style | ✅ |
-| Are the pivot points in the correct places | Bottom of Effect to place on floor in the scene | ✅ |
+| Are the pivot points in the correct places | Bottom of Effect to place on floor in the scene | ❌ |
+
 | Test Case | Expected Result | Status |
 |-----------|----------------|--------|
 | Are the Particles an appropriate size? | Particles maintain quality while being optimized for performance | ✅ |
