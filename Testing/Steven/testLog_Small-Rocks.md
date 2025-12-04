@@ -16,14 +16,14 @@ This document outlines the testing plan for 3D models, UVs, textures, and design
 | Does the model have a reasonable poly count? | Model maintains an optimized poly count for performance | ✅ |
 | Is the model going to be animated? | If animated, topology supports clean deformation | ✖ |
 | Are there any back-facing polygons, N-gons, or bad geometry? | Model is clean and optimized with no geometry issues | ✅ |
-| Are the pivot points in the correct places | Bottom of mesh to place on floor in the scene | ✅ |
+| Are the pivot points in the correct places | Bottom of mesh to place on floor in the scene | ❌ |
 ---
 
 ## UV Testing
 | Test Case | Expected Result | Status |
 |-----------|----------------|--------|
 | Are UVs well optimized in the space? | UVs efficiently use texture space without excessive empty areas | ✅ |
-| Are the UVs stretched? | No visible stretching or distortion in UV mapping | ✅ |
+| Are the UVs stretched? | No visible stretching or distortion in UV mapping | ❌ |
 | Do they need to be separate? | Islands are separated logically where needed | ✅ |
 
 ---
