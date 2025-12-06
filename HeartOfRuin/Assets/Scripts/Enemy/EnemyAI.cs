@@ -493,7 +493,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (IsDead) return;
         IsDead = true;
-        enemyNavigation.Die();
+        // enemyNavigation.Die(); removed due to switching to properties
         Debug.Log($"{gameObject.name} (Enemy) is handling death logic.");
         Enemy.Decrement();
         if (animator != null)

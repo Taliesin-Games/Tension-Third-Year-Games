@@ -1,12 +1,17 @@
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyNavigation : MonoBehaviour
 {
+    static bool AGENT_HANDLES_MOVEMENTY = false;
+
     NavMeshAgent agent;
     Enemy enemy;
     Transform target;
@@ -22,14 +27,37 @@ public class EnemyNavigation : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         enemy = GetComponent<Enemy>();
+
+        // TODO, this needs integrating properly. It disables nav agent movement and just uses it for dection making.
+        agent.updatePosition = AGENT_HANDLES_MOVEMENTY;
+        agent.updateRotation = AGENT_HANDLES_MOVEMENTY;
+        agent.updateUpAxis = AGENT_HANDLES_MOVEMENTY; // optional, usually true for humanoids
     }
 
+    public Vector2 MoveDirection()
+    {
+        Vector3 desired = agent.desiredVelocity;
+
+        if (agent.desiredVelocity.sqrMagnitude < 0.01f) desired = new();    //If barely moving stop
+
+        return new Vector2(desired.x, desired.z);
+    }
 
     public bool MoveTo(Vector3 targetPos)
     {
+        // TODO we are triggering a repath potentialls several tiems a frame, need to check that.
+
+        Vector2 _ = new(); // Throw away variable // TODO this is not clean but it exists for easy conversion. Should be cleaned later.
+        return MoveTo(targetPos, ref _);
+    }
+    public bool MoveTo(Vector3 targetPos, ref Vector2 moveDirection)
+    {
         // Set the agent's destination
-        // just a wrapper around SetDestination for nowq
-        return agent.SetDestination(targetPos);
+        bool success = agent.SetDestination(targetPos);
+
+        moveDirection = MoveDirection();
+
+        return success;
     }
 
     // Synchronously query a path from current position to a target and report if it truly reaches it.

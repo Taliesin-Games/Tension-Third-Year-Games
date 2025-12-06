@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Utils;
@@ -6,6 +7,13 @@ namespace BMD
     [RequireComponent(typeof(UnityEngine.CharacterController))]
     public class CharacterMovementModule : MonoBehaviour, ICharacterModule
     {
+        [Serializable] private enum RotationType
+        {
+            TowardsMovement = 0,
+            TowardsInput = 1,
+            DynamicType = 2,
+        }
+
         const float MIN_WALK_SPEED = 0.1f;
         const float SPEED_OFFSET = 0.1f;
         const float DIRECTION_INPUT_GRACE_PERIOD = 0.05f;
@@ -28,6 +36,8 @@ namespace BMD
         [SerializeField] bool rotationEnabled = true; 
         [Tooltip("Rotation speed in degrees per second")]
         [SerializeField] float rotationSpeed = 10f;
+        [Tooltip("Define if rotation should be based on movement, or input, or dynamic.")]
+        [SerializeField] RotationType rotationType = RotationType.TowardsMovement;
 
         [SerializeField, Tooltip("When moving slower than this speed, rotation snaps instantly")]
         float instantTurnThreshold = 0.05f;
@@ -159,7 +169,22 @@ namespace BMD
             ApplyVerticalMovement(fixedDeltaTime);                      // 1) update verticalVelocity, landing, coyote
             DetermineMovement(out var dir, out var s, fixedDeltaTime);  // 2) decide horizontal direction & speed (idle/walk/run/sprint/dodge/roll)
             ApplyMovement(dir, s, fixedDeltaTime);                      // 3) combine horiz + vertical, move CC, cache horiz vel
-            RotateCharacterTowardsMovement(fixedDeltaTime);             // 4) rotate (instant during dodge/roll)
+            
+            switch (rotationType)                                       // 4) rotate (instant during dodge/roll)
+            {
+                default:
+                case RotationType.TowardsMovement:
+                    RotateCharacterTowardsMovement(fixedDeltaTime);
+                    break;
+                case RotationType.TowardsInput:
+                    RotateCharacterTowardsInput(fixedDeltaTime);
+                    break;
+                case RotationType.DynamicType:
+                    Debug.LogError("Dynamic type not yet implemented, please use Towards Movement or Towards Input");
+                    RotateCharacterTowardsMovement(fixedDeltaTime);
+                    break;
+            }
+            
             UpdateState();                                              // 5) emit state changes
         }
         #region Input Event Handlers
@@ -278,7 +303,6 @@ namespace BMD
             if (verticalVelocity < -terminalVelocity)
                 verticalVelocity = -terminalVelocity;
         }
-
         private void DetermineMovement(out Vector3 moveDir, out float resolvedSpeed, float dt)
         {
             // Default: use controller.MoveDirection (already camera/world relative)
@@ -347,7 +371,6 @@ namespace BMD
             // Vector 3 comparison uses approximation to account for floating point errors
             if (currentHorizontalVelocity == Vector3.zero) return; // Nothing to rotate towards
 
-
             Vector3 targetDir = currentHorizontalVelocity.normalized;
             Vector3 currentDir = unityController.transform.forward;
 
@@ -369,6 +392,42 @@ namespace BMD
                 targetRotation,
                 rotationSpeed * dt
             );
+        }
+        private void RotateCharacterTowardsInput(float dt)
+        {
+            if (!rotationEnabled) return;
+            Vector3 inputDir = controller.MoveDirection;
+            inputDir.y = 0f;
+
+            // No input ? no rotation
+            if (inputDir.sqrMagnitude < 0.0001f) return;
+
+            Debug.Log("There is input");
+            // If we're moving fast enough, defer to movement-based rotation
+            if (currentHorizontalVelocity.magnitude > instantTurnThreshold) return;
+
+            // Compute target direction from input
+            Vector3 targetDir = inputDir.normalized;
+            Vector3 currentDir = unityController.transform.forward;
+
+            // Compute TurnAngle for animation system
+            TurnAngle = Vector3.SignedAngle(currentDir, targetDir, Vector3.up);
+
+            Quaternion targetRotation = Quaternion.LookRotation(targetDir);
+
+            // Snap if small movement (same rule as movement rotation)
+            if (currentHorizontalVelocity.magnitude < instantTurnThreshold)
+            {
+                unityController.transform.rotation = targetRotation;
+            }
+            else
+            {
+                unityController.transform.rotation = Quaternion.Slerp(
+                    unityController.transform.rotation,
+                    targetRotation,
+                    rotationSpeed * dt
+                );
+            }
         }
         private void UpdateState()
         {

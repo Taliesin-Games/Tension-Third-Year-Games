@@ -20,7 +20,7 @@ public class DamageComponent : MonoBehaviour
     [SerializeField] DamageStruct damageScaling;
     public DamageStruct GetDamageScaling() { return damageScaling; }
 
-    public DamageStruct CalculatePlayerDamage(PlayerStats playerStats, DamageStruct damageScaling)
+    public DamageStruct CalculatePlayerDamage(CharacterStats playerStats, DamageStruct damageScaling)
     {
         float critMultiplier = criticalHitMultiplier(playerStats.getCriticalChance(), playerStats.getCriticalDamage());
 
@@ -45,7 +45,7 @@ public class DamageComponent : MonoBehaviour
         return damageDealt;
     }
 
-    public DamageStruct CalculatePlayerDamage(PlayerStats playerStats)
+    public DamageStruct CalculatePlayerDamage(CharacterStats playerStats)
     {
         DamageStruct damageDealt = new DamageStruct();
         damageDealt = CalculatePlayerDamage(playerStats, damageScaling);

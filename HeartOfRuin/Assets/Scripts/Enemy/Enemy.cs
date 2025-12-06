@@ -1,10 +1,7 @@
-
 using UnityEngine;
 
-
-[RequireComponent(typeof(EnemyNavigation))]
 [RequireComponent(typeof(Health))]
-[RequireComponent(typeof(EnemyAI))]
+[RequireComponent(typeof(EnemyController))]
 public class Enemy : MonoBehaviour
 {
     private static int count;
@@ -16,8 +13,6 @@ public class Enemy : MonoBehaviour
     bool isDead;
 
     public bool IsDead { get { return isDead; } set { isDead = value; } }
-
-
 
     private void OnDestroy()
     {
