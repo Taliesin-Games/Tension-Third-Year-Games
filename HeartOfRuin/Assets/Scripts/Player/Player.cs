@@ -9,6 +9,7 @@ public class Player : Character
 {
     [SerializeField] GameObject inventoryUI;
     [SerializeField] GameObject equipmentUI;
+    [SerializeField] SpellCaster castComponent;
     InventoryUIController inventoryUiController;
     InventoryUIController equipmentUiController;
     bool invToggle;
@@ -44,7 +45,13 @@ public class Player : Character
             inventoryUiController.HideInventory();
             equipmentUiController.HideInventory();
         }
-            
+
+        
+        if( castComponent != null && Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            castComponent.TryCastSpell(0);
+            Debug.Log("Cast Spell 1");
+        }   
     }
 
     void initialiseUIControllerVariables()

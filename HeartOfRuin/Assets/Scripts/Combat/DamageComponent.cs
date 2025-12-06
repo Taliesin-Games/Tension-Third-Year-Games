@@ -19,7 +19,7 @@ public class DamageComponent : MonoBehaviour
         +"Resistances can be found in health component, check the health component of attack target.")]
     [SerializeField] DamageStruct damageScaling;
     public DamageStruct GetDamageScaling() { return damageScaling; }
-
+    public void SetDamageScaling(DamageStruct inputScaling) { damageScaling = inputScaling; }
     public DamageStruct CalculatePlayerDamage(PlayerStats playerStats, DamageStruct damageScaling)
     {
         float critMultiplier = criticalHitMultiplier(playerStats.getCriticalChance(), playerStats.getCriticalDamage());
