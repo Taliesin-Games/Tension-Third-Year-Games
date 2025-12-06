@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using UnityEngine;
 
 public class Mana : Resource
@@ -14,9 +15,14 @@ public class Mana : Resource
         restoreMana(regenRate * Time.deltaTime);
     }
 
-    public void UseMana(float amount)
+    public bool UseMana(float amount)
     {
-        decreaseResource(amount);
+        if (GetCurrentResource() >= amount)
+        {
+            decreaseResource(amount);
+            return true;
+        }
+        return false;
         //Debugger.Log($"{transform.root.name} has used {amount} mana");
     }
 
