@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(EnemyController))]
-public class Enemy : MonoBehaviour
+public class Enemy : Character
 {
     private static int count;
     public static int EnemyCount => count;
