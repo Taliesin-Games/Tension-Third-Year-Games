@@ -40,6 +40,14 @@ namespace BMD
         public event Action OnAttackPerformed;
         public event Action OnAttackEnded;
 
+        public event Action OnSpecialAttackRequested;
+        public event Action OnSpecialAttackPerformed;
+        public event Action OnSpecialAttackEnded;
+
+        public event Action OnFireWeaponRequested;
+        public event Action OnFireWeaponPerformed;
+        public event Action OnFireWeaponEnded;
+
         #endregion
 
         #region Constants
@@ -155,7 +163,13 @@ namespace BMD
 
         public void RequestAttack() => OnAttackRequested?.Invoke();
         public void NotifyAttackPerformed() => _NotifyAttackPerformed();
-        public void NotifyAttackEnded() => NotifyAttackEnded();
+        public void NotifyAttackEnded() => _NotifyAttackEnded();
+        public void RequestSpecialAttack() => OnSpecialAttackRequested?.Invoke();
+        public void NotifySpecialAttackPerformed() => _NotifySpecialAttackPerformed();
+        public void NotifySpecialAttackEnded() => _NotifySpecialAttackEnded();
+        public void RequestFireWeapon() => OnFireWeaponRequested?.Invoke();
+        public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
+        public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
 
         protected void NotifySprintTriggered(bool triggered) 
         {
@@ -191,6 +205,31 @@ namespace BMD
             OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
+
+        private void _NotifySpecialAttackPerformed()
+        {
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnSpecialAttackPerformed?.Invoke();
+        }
+
+        private void _NotifySpecialAttackEnded()
+        {
+            OnSpecialAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            isAttacking = false;
+        }
+
+        private void _NotifyFireWeaponPerformed()
+        {
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnFireWeaponPerformed?.Invoke();
+        }
+
+        private void _NotifyFireWeaponEnded()
+        {
+            OnFireWeaponEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            isAttacking = false;
+        }
+
         #endregion
 
         protected virtual void Awake()
