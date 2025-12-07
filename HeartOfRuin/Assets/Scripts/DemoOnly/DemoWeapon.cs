@@ -24,7 +24,7 @@ public class DemoWeapon : MonoBehaviour
     {
         Debug.Log("Hit object: " + collision.gameObject.name);
 
-        PlayerStats playerStats = GetComponentInParent<DemoPlayer>()?.playerStats;
+        CharacterStats playerStats = GetComponentInParent<DemoPlayer>()?.playerStats;
 
         DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats);
 

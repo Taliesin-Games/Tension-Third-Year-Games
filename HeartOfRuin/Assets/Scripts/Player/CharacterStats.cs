@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStats : MonoBehaviour
+public class CharacterStats : MonoBehaviour
 {
     [Header("Stats")]
     [Tooltip("Strength stat: Physical, Fire and Earth damage (scalings found on DamageComponent of weapon)")]

@@ -1,39 +1,65 @@
 using System.Collections;
 using System.IO;
+using System.Runtime.InteropServices;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyNavigation : MonoBehaviour
 {
+    static bool AGENT_HANDLES_MOVEMENTY = false;
+
     NavMeshAgent agent;
+    Enemy enemy;
     Transform target;
     bool HasPath => agent.hasPath;
 
     [SerializeField] bool debugPath = true;
 
-    bool isDead = false;
+    bool IsDead => enemy.IsDead;
 
     void Awake()
     {
         //cache the navmesh agent
         agent = GetComponent<NavMeshAgent>();
+
+        enemy = GetComponent<Enemy>();
+
+        // TODO, this needs integrating properly. It disables nav agent movement and just uses it for dection making.
+        agent.updatePosition = AGENT_HANDLES_MOVEMENTY;
+        agent.updateRotation = AGENT_HANDLES_MOVEMENTY;
+        agent.updateUpAxis = true;
     }
 
+    public Vector2 MoveDirection()
+    {
+        if (!agent.hasPath) return Vector2.zero;
+
+        Vector3 toCorner = agent.steeringTarget - transform.position;
+        toCorner.y = 0;
+
+        if (toCorner.sqrMagnitude < 0.01f) return Vector2.zero;
+
+        toCorner.Normalize();
+        return new Vector2(toCorner.x, toCorner.z);
+    }
 
     public bool MoveTo(Vector3 targetPos)
     {
         // Set the agent's destination
-        // just a wrapper around SetDestination for nowq
-        return agent.SetDestination(targetPos);
+        bool success = agent.SetDestination(targetPos);
+
+        return success;
     }
 
     // Synchronously query a path from current position to a target and report if it truly reaches it.
     public PathQueryResult QueryPathTo(Vector3 targetPos, float endTolerance = 0.25f)
     {
         // If dead, no path
-        if (isDead)
+        if (IsDead)
         {
             return new PathQueryResult
             {
@@ -82,7 +108,7 @@ public class EnemyNavigation : MonoBehaviour
     // Pick a random point projected onto the NavMesh near 'origin' within 'radius'.
     public bool TryGetPatrolPoint(Vector3 origin, float radius, float sampleMaxDistance, int maxTries, out Vector3 point)
     {
-        if (isDead)
+        if (IsDead)
         {
             point = origin;
             return false;
@@ -111,12 +137,15 @@ public class EnemyNavigation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
 
-        if (isDead)
+        if (IsDead)
         {
             agent.isStopped = true;
             return;
         }
+
+        agent.nextPosition = transform.position;
 
         if (!agent.hasPath && !debugPath)
         {
@@ -133,32 +162,13 @@ public class EnemyNavigation : MonoBehaviour
 
     public bool HasReachedDestination()
     {
-        // If dead, consider reached.
-        if (isDead)
-        {
-            return true;
-        }
+        if (IsDead) return true;
 
-        // Check if the agent has reached its destination
-        if (agent.pathPending)
-        {
-            return false;
-        }
+        if (agent.pathPending) return false;
 
-        if (agent.remainingDistance <= agent.stoppingDistance)
-        {
-            if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-            {
-                return true;
-            }
-        }
-        return false;
+        return agent.remainingDistance <= agent.stoppingDistance;
     }
 
-    public void Die()
-    {
-        isDead = true;
-    }
 }
 
 // Result of a path query

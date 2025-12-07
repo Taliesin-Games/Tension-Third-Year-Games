@@ -3,21 +3,17 @@ using UnityEngine;
 
 [RequireComponent(typeof(BMD.CharacterController))] // Ensure that a CharacterController component is attached
 [RequireComponent(typeof(Inventory))]
-[RequireComponent(typeof(Health))]
-[RequireComponent(typeof(PlayerStats))]
+[RequireComponent(typeof(CharacterStats))]
 public abstract class Character : MonoBehaviour
 {
     [SerializeField] string characterName = "Glorp Gleep";
     
-
-
     [SerializeField] List<ItemEffect> activeEffects;
     //protected Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
     [SerializeField] protected Inventory equipmentSlots;
     [SerializeField] protected Inventory inventory;
-    [SerializeField] protected PlayerStats playerStats;
-    PlayerStats baseStats;
-
+    [SerializeField] protected CharacterStats characterStats;
+    CharacterStats baseStats;
 
     protected virtual void Awake()
     {
@@ -26,7 +22,7 @@ public abstract class Character : MonoBehaviour
 
     void initialiseCharacter()
     {
-        baseStats = playerStats;
+        baseStats = characterStats;
         inventory = GetComponent<Inventory>();
         Debug.Log("Character Name: " + characterName);
         if (equipmentSlots != null)
@@ -81,20 +77,20 @@ public abstract class Character : MonoBehaviour
     public void OnItemEquipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
-        playerStats.setAgility(playerStats.getAgility() + equippedItem.GetBonusAgility());
-        playerStats.setIntelligence(playerStats.getIntelligence() + equippedItem.GetBonusIntelligence());
-        playerStats.setStrength(playerStats.getStrength() + equippedItem.GetBonusStrength());
-        playerStats.setCriticalChance(playerStats.getCriticalChance() + equippedItem.GetBonusCriticalChance());
-        playerStats.setCriticalDamage(playerStats.getCriticalDamage() + equippedItem.GetBonusCriticalDamage());
+        characterStats.setAgility(characterStats.getAgility() + equippedItem.GetBonusAgility());
+        characterStats.setIntelligence(characterStats.getIntelligence() + equippedItem.GetBonusIntelligence());
+        characterStats.setStrength(characterStats.getStrength() + equippedItem.GetBonusStrength());
+        characterStats.setCriticalChance(characterStats.getCriticalChance() + equippedItem.GetBonusCriticalChance());
+        characterStats.setCriticalDamage(characterStats.getCriticalDamage() + equippedItem.GetBonusCriticalDamage());
     }
 
     public void OnItemUnequipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
-        playerStats.setAgility(playerStats.getAgility() - equippedItem.GetBonusAgility());
-        playerStats.setIntelligence(playerStats.getIntelligence() - equippedItem.GetBonusIntelligence());
-        playerStats.setStrength(playerStats.getStrength() - equippedItem.GetBonusStrength());
-        playerStats.setCriticalChance(playerStats.getCriticalChance() - equippedItem.GetBonusCriticalChance());
-        playerStats.setCriticalDamage(playerStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
+        characterStats.setAgility(characterStats.getAgility() - equippedItem.GetBonusAgility());
+        characterStats.setIntelligence(characterStats.getIntelligence() - equippedItem.GetBonusIntelligence());
+        characterStats.setStrength(characterStats.getStrength() - equippedItem.GetBonusStrength());
+        characterStats.setCriticalChance(characterStats.getCriticalChance() - equippedItem.GetBonusCriticalChance());
+        characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
     }
 }

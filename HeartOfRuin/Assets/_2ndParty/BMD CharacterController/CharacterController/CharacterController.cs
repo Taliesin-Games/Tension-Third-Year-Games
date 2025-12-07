@@ -32,6 +32,14 @@ namespace BMD
         public event Action OnDodgePerformed;    // Event fired when dodge is performed
         public event Action OnDodgeEnded;        // Event fired when dodge ends
 
+        public event Action OnDieRequested;     
+        public event Action OnDiePerformed;     
+        public event Action OnDieEnded;
+
+        public event Action OnAttackRequested;
+        public event Action OnAttackPerformed;
+        public event Action OnAttackEnded;
+
         #endregion
 
         #region Constants
@@ -40,7 +48,7 @@ namespace BMD
         #endregion
 
         #region Serialized fields
-        [Tooltip("Speed settings for various character rotation")]
+        [Header("Depricated: Speed settings for various character rotation")]
         [SerializeField] protected float crouchSpeed = 2.5f;    // Speed of the character when crouching
         [SerializeField] protected float crawlSpeed = 1f;       // Speed of the character when crawling
         [SerializeField] protected float pushSpeed = 3f;        // Speed of the character when pushing objects
@@ -50,8 +58,6 @@ namespace BMD
         [SerializeField] protected float swingSpeed = 8f;       // Speed of the character when swinging
         [SerializeField] protected float flySpeed = 12f;        // Speed of the character when flying
         #endregion
-    
-
 
         #region Cached references
         protected Vector3 gravity = UnityEngine.Physics.gravity; // Gravity vector for the character
@@ -69,6 +75,9 @@ namespace BMD
 
         private float currentIdleBlend = 0f;
         private float targetIdleBlend = 0f;
+
+        private bool isDead = false;
+        private bool isAttacking = false;
 
         #endregion
 
@@ -118,6 +127,7 @@ namespace BMD
                 return 0f;
             }
         }
+        private bool IsDead => IsDead;      // TODO optional call to character
         #endregion
 
         #region Signal Helpers
@@ -139,6 +149,13 @@ namespace BMD
         public void NotifyDodgePerformed() => OnDodgePerformed?.Invoke();
         public void NotifyDodgeEnded() => OnDodgeEnded?.Invoke();
 
+        public void RequestDie() => _RequestDie();
+        public void NotifyDiePerformed() => OnDiePerformed?.Invoke();
+        public void NotifyDieEnded() => OnDieEnded?.Invoke();
+
+        public void RequestAttack() => OnAttackRequested?.Invoke();
+        public void NotifyAttackPerformed() => _NotifyAttackPerformed();
+        public void NotifyAttackEnded() => NotifyAttackEnded();
 
         protected void NotifySprintTriggered(bool triggered) 
         {
@@ -150,6 +167,29 @@ namespace BMD
             {
                 OnSprintUp?.Invoke();
             }
+        }
+        #endregion
+
+        #region Signal Methods
+        private void _RequestDie()
+        {
+            if (isDead) return;
+
+            isDead = true;              // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnDieRequested?.Invoke();
+            Destroy(gameObject, 2.0f);  // TODO evil magic number, but probably want die config and tracking elsewhere
+        }
+
+        private void _NotifyAttackPerformed()
+        {
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnAttackPerformed?.Invoke();
+        }
+
+        private void _NotifyAttackEnded()
+        {
+            OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            isAttacking = false;
         }
         #endregion
 
@@ -224,8 +264,6 @@ namespace BMD
                     idleLoopCoroutine = StartCoroutine(IdleLoop());
                 }
 
-
-
             }
         }
         protected virtual IEnumerator IdleLoop()
@@ -241,7 +279,6 @@ namespace BMD
         {
             Debug.Log("ToggleCrouch called, but not implemented in base class.");
         }
-
         private void OnDestroy()
         {
             foreach (var (_,module) in modules)
@@ -252,7 +289,6 @@ namespace BMD
             modules.Clear();
         }
         public void RegisterModule<T>(T module) where T : ICharacterModule => RegisterModule((ICharacterModule)module);
-
         public void RegisterModule(ICharacterModule module)
         {
             var type = module.GetType(); // concrete type, e.g., CharacterMovementModule
@@ -267,7 +303,6 @@ namespace BMD
 
             modules[type] = module;
         }
-
         public bool TryGetModule<T>(out T module) where T : class, ICharacterModule
         {
             if (modules.TryGetValue(typeof(T), out var m))
@@ -278,5 +313,7 @@ namespace BMD
             module = null;
             return false;
         }
+
+
     }
 }

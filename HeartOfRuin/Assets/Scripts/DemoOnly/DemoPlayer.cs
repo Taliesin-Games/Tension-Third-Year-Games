@@ -1,14 +1,14 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerStats))]
+[RequireComponent(typeof(CharacterStats))]
 public class DemoPlayer : MonoBehaviour
 {
     GameObject weaponObject;
-    public PlayerStats playerStats;
+    public CharacterStats playerStats;
     private void Start()
     {
         weaponObject = GameObject.Find("DemoSword");
-        playerStats = GetComponent<PlayerStats>();
+        playerStats = GetComponent<CharacterStats>();
     }
 
     private void Update()
