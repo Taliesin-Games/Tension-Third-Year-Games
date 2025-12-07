@@ -26,7 +26,7 @@ public class Fireball : SpellBase
         {
             if(target != lastCastContext.Caster)
             {
-                PlayerStats playerStats = lastCastContext.Caster.GetComponent<PlayerStats>();
+                CharacterStats playerStats = lastCastContext.Caster.GetComponent<CharacterStats>();
 
                 DamageStruct damage = lastCastContext.damageComponent.CalculatePlayerDamage(playerStats, damageScalings);
 
