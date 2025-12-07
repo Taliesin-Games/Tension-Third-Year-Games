@@ -135,7 +135,7 @@ namespace BMD
                 return 0f;
             }
         }
-        private bool IsDead => IsDead;      // TODO optional call to character
+        private bool IsDead => isDead;      // TODO optional call to character
         public bool IsAttacking => isAttacking;
         private bool CantAttack => IsDead || IsAttacking;
         #endregion
@@ -169,7 +169,7 @@ namespace BMD
         public void RequestSpecialAttack() => _RequestSpecialAttack();
         public void NotifySpecialAttackPerformed() => _NotifySpecialAttackPerformed();
         public void NotifySpecialAttackEnded() => _NotifySpecialAttackEnded();
-        public void RequestFireWeapon() => RequestFireWeapon();
+        public void RequestFireWeapon() => _RequestFireWeapon();
         public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
         public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
 
