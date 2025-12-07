@@ -12,9 +12,9 @@ public abstract class SpellBase : ScriptableObject, ISpell
 
     protected SpellContext lastCastContext;
 
-    public virtual void Cast(SpellContext context) { }
+    public abstract void Cast(SpellContext context);
 
-    public virtual void DealDamage(GameObject target) { }
+    public abstract void DealDamage(GameObject target);
     
 
 }
