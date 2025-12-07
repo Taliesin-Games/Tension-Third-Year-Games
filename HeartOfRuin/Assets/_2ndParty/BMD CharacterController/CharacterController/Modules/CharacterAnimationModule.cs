@@ -16,8 +16,13 @@ namespace BMD
             "Smaller is faster.")]
         [Range(0.0f, 1.0f)]
         [SerializeField] float blendTreeTransitionRate = 0.05f;     // The reat at which float parameters are smoothed
+        [SerializeField] float attackLayerTransitionInTime = 0.05f;
+        [SerializeField] float attackLayerTransitionOutTime = 0.2f;
 
         #region Animation Hashes
+        // Animation Layers
+        private static int attackLayerIndex = -1;
+
         // State tracking
         private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
         private static readonly int IsCrouchingHash = Animator.StringToHash("IsCrouching");
@@ -65,16 +70,21 @@ namespace BMD
 #endif
         (float walk, float run, float sprint) locomotionScales;
         bool initialized = false;
+        float attackLayerTargetWeight = 0f;
         #endregion
 
         #region Properties
         CharacterState CurrentState => controller.CurrentState;
         bool IsGrounded => unityController.isGrounded;
+        bool IsAttacking => controller.IsAttacking;
+        float AttackLayerTransitionTime => IsAttacking ? attackLayerTransitionInTime : attackLayerTransitionOutTime;
         #endregion
         public void Initialize(CharacterController controller)
         {
             if (initialized) return;    // Prevent double initialization
             initialized = true;
+
+            if (attackLayerIndex == -1) attackLayerIndex = animator.GetLayerIndex("AttackLayer");
 
             InitializeReferences(controller);
             InitializeSignals(controller);
@@ -127,6 +137,7 @@ namespace BMD
             if (animator == null || controller == null|| unityController == null) return;
 
             LocomotionTick(deltaTime);
+            LayerBlendTick(deltaTime);
 
             animator.SetInteger(CharacterStateHash, (int)CurrentState);
         }
@@ -155,6 +166,16 @@ namespace BMD
             
             animator.SetFloat(TurnAngleHash, controller.TurnAngle, blendTreeTransitionRate, deltaTime);
         }
+        private void LayerBlendTick(float deltaTime)
+        {
+            float currentWeight = animator.GetLayerWeight(attackLayerIndex);
+            float newWeight = Mathf.MoveTowards(
+                currentWeight, 
+                attackLayerTargetWeight, 
+                deltaTime / AttackLayerTransitionTime
+                );
+            animator.SetLayerWeight(attackLayerIndex, newWeight);
+        }
         public void FixedTick(float fixedDeltaTime)
         {
             // Animator does not need fixed-timestep updates
@@ -171,7 +192,6 @@ namespace BMD
         {
             animator.SetTrigger(JumpTriggerHash);
         }
-
         private void HandleLanded()
         {
             animator.SetTrigger(LandTriggerHash);
@@ -199,30 +219,42 @@ namespace BMD
         private void HandleAttackPerformed()
         {
             animator.SetTrigger(AttackTriggerHash);
+            SetAttackFade(true);
+            
         }
         private void HandleAttackEnded()
         {
             // Additional logic for when attack ends can be added here
+            SetAttackFade(false);
         }
 
         private void HandleSpecialAttackPerformed()
         {
             animator.SetTrigger(Attack2TriggerHash);
+            SetAttackFade(true);
         }
         private void HandleSpecialAttackEnded()
         {
             // Additional logic for when attack ends can be added here
+            SetAttackFade(false);
         }
         private void HandleFireWeaponPerformed()
         {
             animator.SetTrigger(FireWeaponTriggerHash);
+            SetAttackFade(true);
         }
         private void HandleFireWeaponEnded()
         {
             // Additional logic for when fire weapon ends can be added here
+            SetAttackFade(false);
         }
 
         #endregion
+        
+        private void SetAttackFade(bool enable = true)
+        {
+            attackLayerTargetWeight = enable ? 1 : 0;
+        }
         public void Dispose()
         {
             if (controller == null) return;
@@ -237,6 +269,14 @@ namespace BMD
             controller.OnDodgePerformed -= HandleDodgePerformed;
             controller.OnDodgeEnded -= HandleDodgeEnded;
 
+            controller.OnAttackPerformed -= HandleAttackPerformed;
+            controller.OnAttackEnded -= HandleAttackEnded;
+
+            controller.OnSpecialAttackPerformed -= HandleSpecialAttackPerformed;
+            controller.OnSpecialAttackEnded -= HandleSpecialAttackEnded;
+
+            controller.OnFireWeaponPerformed -= HandleFireWeaponPerformed;
+            controller.OnFireWeaponEnded -= HandleFireWeaponEnded;
         }
         #region Parameter Validation
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

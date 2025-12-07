@@ -136,6 +136,8 @@ namespace BMD
             }
         }
         private bool IsDead => IsDead;      // TODO optional call to character
+        public bool IsAttacking => isAttacking;
+        private bool CantAttack => IsDead || IsAttacking;
         #endregion
 
         #region Signal Helpers
@@ -196,7 +198,7 @@ namespace BMD
 
         private void _RequestAttack()
         {
-            if (isDead || isAttacking) return;
+            if (CantAttack) return;
 
             OnAttackRequested?.Invoke();
             NotifyAttackPerformed();
@@ -216,7 +218,7 @@ namespace BMD
 
         private void _RequestSpecialAttack()
         {
-            if (isDead || isAttacking) return;
+            if (CantAttack) return;
 
             OnSpecialAttackRequested?.Invoke();
             NotifySpecialAttackPerformed();
@@ -235,7 +237,7 @@ namespace BMD
 
         private void _RequestFireWeapon()
         {
-            if (isDead || isAttacking) return;
+            if (CantAttack) return;
 
             OnFireWeaponRequested?.Invoke();
             NotifyFireWeaponPerformed();
