@@ -84,9 +84,10 @@ namespace BMD
             if (initialized) return;    // Prevent double initialization
             initialized = true;
 
+            InitializeReferences(controller);
+
             if (attackLayerIndex == -1) attackLayerIndex = animator.GetLayerIndex("AttackLayer");
 
-            InitializeReferences(controller);
             InitializeSignals(controller);
 
             locomotionScales = controller.LocomotionScales;
