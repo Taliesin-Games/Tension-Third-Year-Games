@@ -126,7 +126,7 @@ namespace BMD
             float horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
 
             // Output locomotionScale values to check scaling
-            Debug.Log($"Locomotion scales - walk: {locomotionScales.walk} run: {locomotionScales.run} sprint: {locomotionScales.sprint}");
+            //Debug.Log($"Locomotion scales - walk: {locomotionScales.walk} run: {locomotionScales.run} sprint: {locomotionScales.sprint}");
 
             float normalizedSpeed = horizontalSpeed switch
             {

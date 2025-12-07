@@ -86,16 +86,20 @@ public class EnemyController : BMD.CharacterController
     {
         if (IsDead) return;  // Dead enemies do nothing
 
+
+        SetMoveDirection();
+
         SwitchEnemyState();
 
         DrawDebug();
+
 
         base.Update();
     }
 
     protected override void FixedUpdate()
     {
-        SetMoveDirection();
+        //SetMoveDirection();
         base.FixedUpdate();
     }
 
@@ -367,13 +371,15 @@ public class EnemyController : BMD.CharacterController
         if (h == null) return;
         var tr = h.transform;
 
+        if (tr == transform) return;        // Exclude pathing to self
+
         // Prefer root or rigidbody transform
         var rb = tr.GetComponent<Rigidbody>();
         if (rb != null) tr = rb.transform;
 
         // Identify candidate by tag and components
         TargetKind k = TargetKind.None;
-        if (tr.CompareTag("Player") || tr.GetComponentInParent<UnityEngine.CharacterController>() != null) // TODO, getcomponent is heavy, look into throttling
+        if (tr.CompareTag("Player") || tr.GetComponentInParent<BMD.PlayerController>() != null) // TODO, getcomponent is heavy, look into throttling
             k = TargetKind.Player;
         else if (tr.CompareTag("Attackable"))
             k = TargetKind.Tower;
