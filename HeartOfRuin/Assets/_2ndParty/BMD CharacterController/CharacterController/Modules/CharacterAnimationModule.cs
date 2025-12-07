@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Xml.Serialization;
+using Newtonsoft.Json.Bson;
+
 
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -219,7 +221,6 @@ namespace BMD
 
         private void HandleAttackPerformed()
         {
-            Debug.Log("Attack performed");
             
             animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(AttackTriggerHash);
@@ -231,7 +232,6 @@ namespace BMD
             // Additional logic for when attack ends can be added here
             animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
-            Debug.Log("attack ended");
         }
 
         private void HandleSpecialAttackPerformed()
@@ -264,8 +264,10 @@ namespace BMD
 
         #region Animation Triggers
         public void AT_AttackEnded() { controller.NotifyAttackEnded(); }
-        public void AT_ApecialAttackEnded() { controller.NotifySpecialAttackEnded(); }
+        public void AT_SpecialAttackEnded() { controller.NotifySpecialAttackEnded(); }
         public void AT_FireWeaponEnded() { controller.NotifyFireWeaponEnded(); }
+        public void AT_DealDamage() { controller.NotifyDealDamageFromWeapon(); }
+        public void AT_CastSpell() { controller.NotifyCastSpell(); }
         #endregion
 
         private void SetAttackFade(bool enable = true)

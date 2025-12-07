@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterStats))]
 public abstract class Character : MonoBehaviour
 {
+    #region Configuration
     [SerializeField] string characterName = "Glorp Gleep";
     
     [SerializeField] List<ItemEffect> activeEffects;
@@ -13,17 +14,30 @@ public abstract class Character : MonoBehaviour
     [SerializeField] protected Inventory equipmentSlots;
     [SerializeField] protected Inventory inventory;
     [SerializeField] protected CharacterStats characterStats;
+    [SerializeField] SpellCaster castComponent;
+    #endregion
+
+    #region Cached References
+    BMD.CharacterController controller;
+    #endregion
+
+    #region Runtime Variables
     CharacterStats baseStats;
+
+    #endregion
 
     protected virtual void Awake()
     {
-        initialiseCharacter();
+        InitialiseCharacter();
     }
 
-    void initialiseCharacter()
+    void InitialiseCharacter()
     {
         baseStats = characterStats;
         inventory = GetComponent<Inventory>();
+
+        controller = GetComponent<BMD.CharacterController>();
+
         if (equipmentSlots != null)
         {
             equipmentSlots.OnAddItem += OnItemEquipped;
@@ -42,7 +56,30 @@ public abstract class Character : MonoBehaviour
             equipmentSlots.ForceReAddItemInvoke();
         }
     }
-   
+
+    private void OnEnable()
+    {
+        controller.OnDealDamageFromWeapon += HandleDealDamage;
+        controller.OnCastSpell += HandleCastSpell;
+    }
+
+    private void OnDisable()
+    {
+        controller.OnDealDamageFromWeapon -= HandleDealDamage;
+        controller.OnCastSpell -= HandleCastSpell;
+    }
+
+    private void HandleCastSpell()
+    {
+        if (!castComponent) return;
+        castComponent.TryCastSpell();
+    }
+
+    private void HandleDealDamage()
+    {
+
+    }
+
     public void AddItemEffect(ItemEffect effect)
     {
         activeEffects.Add(effect);

@@ -13,7 +13,12 @@ GameObject:
   - component: {fileID: 7315361385243743059}
   - component: {fileID: 4685836977695088538}
   - component: {fileID: 6647138879408602056}
-  m_Layer: 0
+  - component: {fileID: 595110360835335391}
+  - component: {fileID: 4044194293016124351}
+  - component: {fileID: 2681017342258986704}
+  - component: {fileID: 431767211954369870}
+  - component: {fileID: 5426159311261938105}
+  m_Layer: 7
   m_Name: DemoEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,6 +124,138 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71eadf97b377ed4469ba2982907aed6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterName: Glorp Gleep
+  equipmentSlots: {fileID: 0}
+  inventory: {fileID: 0}
+  characterStats: {fileID: 0}
+  castComponent: {fileID: 0}
+--- !u!114 &595110360835335391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4648152488154595831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10dc0306df5227a4aac8a6917b30b2bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  maxValue: 100
+  resistances:
+    None: 0
+    Physical: 0
+    Magical: 0
+    True: 0
+    Fire: 0
+    Lightning: 0
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
+  damageNumberPrefab: {fileID: 0}
+--- !u!143 &4044194293016124351
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4648152488154595831}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2681017342258986704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4648152488154595831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfe460f10855ee04f91225d9a83b3d8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  crouchSpeed: 2.5
+  crawlSpeed: 1
+  pushSpeed: 3
+  pullSpeed: 3
+  climbSpeed: 3
+  swimSpeed: 4
+  swingSpeed: 8
+  flySpeed: 12
+  attackRange: 1.75
+  chaseRepathInterval: 0.2
+  drawDebug: 0
+  attackDamage: 10
+  attackCooldown: 2.5
+  patrolRadius: 6
+  patrolPauseRange: {x: 0.5, y: 1.5}
+  patrolSampleMaxDistance: 2
+  patrolSampleMaxTries: 6
+  detectionRadius: 10
+  detectionFOVDegrees: 160
+  eyeHeight: 1.6
+  detectionLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  losObstructionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  loseTargetAfter: 2
+  patrolWaitTimeMax: 0.25
+  enemyState: 0
+  currentTargetKind: 0
+  isPatrolling: 0
+  patrolWaitTimer: 0
+--- !u!114 &431767211954369870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4648152488154595831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e962f96b85a53ed438c7213fd8e00d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  inventoryName: 
+  inventorySize: 20
+  startingItems: []
+  itemDropPrefab: {fileID: 0}
+--- !u!114 &5426159311261938105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4648152488154595831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: becf0c497326e9840b3c072622d14cf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
+  strength: 0
+  agility: 0
+  intelligence: 0
+  criticalChance: 0
+  criticalDamage: 0.5
 --- !u!1 &4995692116209524669
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +268,7 @@ GameObject:
   - component: {fileID: 2692168986014067916}
   - component: {fileID: 2698596284935779803}
   - component: {fileID: 4206243469625592045}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,6 +318,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -202,6 +341,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0

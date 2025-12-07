@@ -48,6 +48,9 @@ namespace BMD
         public event Action OnFireWeaponPerformed;
         public event Action OnFireWeaponEnded;
 
+        public event Action OnDealDamageFromWeapon;
+        public event Action OnCastSpell;
+
         #endregion
 
         #region Constants
@@ -172,6 +175,8 @@ namespace BMD
         public void RequestFireWeapon() => _RequestFireWeapon();
         public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
         public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
+        public void NotifyDealDamageFromWeapon() => OnDealDamageFromWeapon?.Invoke();
+        public void NotifyCastSpell() => OnCastSpell?.Invoke();
 
         protected void NotifySprintTriggered(bool triggered) 
         {
@@ -198,7 +203,6 @@ namespace BMD
 
         private void _RequestAttack()
         {
-            Debug.Log(CantAttack);
             if (CantAttack) return;
 
             OnAttackRequested?.Invoke();
@@ -213,7 +217,6 @@ namespace BMD
 
         private void _NotifyAttackEnded()
         {
-            Debug.Log("Attack notify ended");
             OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
