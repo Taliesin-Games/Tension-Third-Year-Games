@@ -9,6 +9,8 @@ public class ConeOfCold : SpellBase
     [SerializeField] private float castRange = 12f;
     [SerializeField] float castConeAngle = 35f;
 
+    [SerializeField] bool drawDebug = false;
+
     public void DrawConeDebug(Vector3 origin, Vector3 forward, float maxRange, float angle)
     {
         // Left boundary
@@ -29,16 +31,23 @@ public class ConeOfCold : SpellBase
     {
         lastCastContext = context;
 
+
+        //cast out a cone
         Collider[] hits = Physics.OverlapSphere(context.Caster.transform.position + context.Direction * (castRange * 0.5f),
                                         castRange*0.5f);
 
-        DrawConeDebug(context.Caster.transform.position, context.Direction, castRange, castConeAngle);
+        if (drawDebug)
+        {
+            DrawConeDebug(context.Caster.transform.position, context.Direction, castRange, castConeAngle);
+        }
+
 
         if (hits.Length == 0)
         {
             return;
         }
 
+        //hit targets in cone
         foreach (GameObject target in FindTargets(hits))
         {
             DealDamage(target);
@@ -58,6 +67,7 @@ public class ConeOfCold : SpellBase
 
             Vector3 dir = (hit.transform.position - lastCastContext.Caster.transform.position).normalized;
             float angle = Vector3.Angle(lastCastContext.Direction, dir);
+
             if (angle < castConeAngle)
             {
                 best.Add(hit.gameObject);

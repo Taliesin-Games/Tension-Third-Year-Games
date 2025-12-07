@@ -14,6 +14,8 @@ public class ChainLightningSpell : SpellBase
     [SerializeField] private GameObject lightningVfxPrefab;
     [SerializeField] private float lightningLifetime = 0.15f;
 
+    [SerializeField] bool drawDebug = false;
+
     public void DrawConeDebug(Vector3 origin, Vector3 forward, float maxRange, float angle)
     {
         // Left boundary
@@ -28,8 +30,7 @@ public class ChainLightningSpell : SpellBase
         Debug.DrawRay(origin, leftDir * maxRange, Color.cyan, 0.1f);
         Debug.DrawRay(origin, rightDir * maxRange, Color.cyan, 0.1f);
     }
-
-
+    
     public override void Cast(SpellContext context)
     {
         lastCastContext = context;
@@ -37,7 +38,10 @@ public class ChainLightningSpell : SpellBase
         Collider[] hits = Physics.OverlapSphere(context.Caster.transform.position + context.Direction * (bounceRange * 0.5f),
                                         bounceRange * 0.5f);
 
-        DrawConeDebug(context.Caster.transform.position, context.Direction, bounceRange, castConeAngle);
+        if (drawDebug)
+        {
+            DrawConeDebug(context.Caster.transform.position, context.Direction, bounceRange, castConeAngle);
+        }
 
         if (hits.Length == 0)
         {
@@ -64,7 +68,6 @@ public class ChainLightningSpell : SpellBase
 
         for (int i = 0; i < maxBounces; i++)
         {
-            Debug.Log(i);
             // Damage target
             DealDamage(currentTarget);
             hitTargets.Add(currentTarget);
@@ -77,7 +80,6 @@ public class ChainLightningSpell : SpellBase
                 break;
             }
 
-            Debug.Log(currentTarget.name + ": " + nextPoint);
             // Visual lightning effect
             SpawnLightningEffect(currentPoint, currentTarget.transform.position);
 
@@ -85,8 +87,7 @@ public class ChainLightningSpell : SpellBase
             currentPoint = nextPoint;
         }
     }
-
-
+    
     GameObject FindInitialTarget(Collider[] inHits)
     {
         GameObject best = null;
@@ -115,7 +116,6 @@ public class ChainLightningSpell : SpellBase
 
         return best;
     }
-
 
     GameObject FindNextTarget(
         GameObject fromTarget,
@@ -164,7 +164,11 @@ public class ChainLightningSpell : SpellBase
         {
             //ooooooh lightning
         }
-        Debug.DrawLine(from, to, Color.blueViolet, lightningLifetime);
+        if (drawDebug)
+        {
+            Debug.DrawLine(from, to, Color.blueViolet, lightningLifetime);
+        }
+
     }
 
     public override void DealDamage(GameObject target)
@@ -179,7 +183,6 @@ public class ChainLightningSpell : SpellBase
 
                 target.GetComponent<Health>()?.TakeDamage(damage);
             }
-
         }
     }
 }
