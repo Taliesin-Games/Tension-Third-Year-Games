@@ -80,8 +80,7 @@ public class EnemyNavigation : MonoBehaviour
     /// </summary>
     public bool MoveTo(Vector3 targetPos)
     {
-        if (IsDead)
-            return false;
+        if (IsDead) return false;
 
         if (!agent.isOnNavMesh)
         {
@@ -91,8 +90,7 @@ public class EnemyNavigation : MonoBehaviour
 
         bool success = agent.SetDestination(targetPos);
 
-        if (success)
-            agent.isStopped = false;
+        if (success) agent.isStopped = false;
 
         return success;
     }
@@ -181,8 +179,6 @@ public class EnemyNavigation : MonoBehaviour
 
     void Update()
     {
-        
-        Debug.Log("Agent NavMesh position: " + agent.Warp(agent.transform.position));
         if (IsDead)
         {
             agent.isStopped = true;
