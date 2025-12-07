@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
     {
         OnGameWin?.Invoke();
         gameWon = true;
-        playCanvas.SetActive(false);
+        playCanvas?.SetActive(false);
 
         LevelManager.LoadWinScreen();
     }

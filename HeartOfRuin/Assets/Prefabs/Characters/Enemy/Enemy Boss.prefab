@@ -8,9 +8,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2412272339440775529, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
     - target: {fileID: 2607250186916821478, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
       propertyPath: m_Name
-      value: Enemy
+      value: Enemy Boss
       objectReference: {fileID: 0}
     - target: {fileID: 3295746306882381226, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
       propertyPath: m_LocalPosition.x
@@ -53,7 +57,78 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 1636178413342441309, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3295746306882381226, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8764318194803188028}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+--- !u!4 &2470504273015238601 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3295746306882381226, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+  m_PrefabInstance: {fileID: 1149589168241756771}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &9091542289280517847
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2470504273015238601}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+      propertyPath: m_Name
+      value: Kev Breathing Idle
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+--- !u!4 &8764318194803188028 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a14256761df5ded4d8db42cf750e19d3, type: 3}
+  m_PrefabInstance: {fileID: 9091542289280517847}
+  m_PrefabAsset: {fileID: 0}

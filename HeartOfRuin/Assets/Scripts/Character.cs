@@ -24,7 +24,6 @@ public abstract class Character : MonoBehaviour
     {
         baseStats = characterStats;
         inventory = GetComponent<Inventory>();
-        Debug.Log("Character Name: " + characterName);
         if (equipmentSlots != null)
         {
             equipmentSlots.OnAddItem += OnItemEquipped;
