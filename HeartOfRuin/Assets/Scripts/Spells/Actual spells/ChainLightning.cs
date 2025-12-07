@@ -162,7 +162,9 @@ public class ChainLightningSpell : SpellBase
     {
         if (lightningVfxPrefab != null)
         {
-            //ooooooh lightning
+            GameObject vfx = Instantiate(lightningVfxPrefab);
+            vfx.GetComponent<LineRendererController>()?.SetPos(from, to);
+            vfx.GetComponent<LineRendererController>()?.SetLifetime(lightningLifetime);
         }
         if (drawDebug)
         {
