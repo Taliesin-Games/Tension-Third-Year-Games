@@ -136,6 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7422563872439741715}
+  - component: {fileID: 1529344194202924366}
   m_Layer: 0
   m_Name: Global Lighting
   m_TagString: Untagged
@@ -163,6 +164,30 @@ Transform:
   - {fileID: 1766121786417685901}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1529344194202924366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183528066446436916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a784d0becb1b894d884d2b6e40caf9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkyboxColourManager
+  setAColor1: {r: 0.3529412, g: 0.054901965, b: 0.41960788, a: 1}
+  setAColor2: {r: 0.68235296, g: 0.48235297, b: 0.8588236, a: 1}
+  setAColor3: {r: 0.19843099, g: 0.031149883, b: 0.23584908, a: 1}
+  setBColor1: {r: 1, g: 0, b: 0, a: 1}
+  setBColor2: {r: 0, g: 1, b: 0, a: 1}
+  setBColor3: {r: 0, g: 0, b: 1, a: 1}
+  tileCountX: 8
+  tileCountY: 6
+  tileIndex: 25
+  framesPerSecond: 24
+  blend: 0
+  alpha: 1
 --- !u!1 &6754146873004646786
 GameObject:
   m_ObjectHideFlags: 0
