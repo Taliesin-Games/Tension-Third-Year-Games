@@ -140,6 +140,21 @@ MonoBehaviour:
   interactMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &181934541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181934539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f661655b20aa5fe4a9253c14ccf6763c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCaster
+  spells:
+  - {fileID: 11400000, guid: d83b39e00261e1a45b74d2471734eb8d, type: 2}
+  selectedSpell: 0
 --- !u!1001 &185284483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -851,6 +866,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7581011537548439640, guid: 3d2a5f49b6c02b7478c5c0fc01b49917, type: 3}
       insertIndex: -1
       addedObject: {fileID: 181934540}
+    - targetCorrespondingSourceObject: {fileID: 7581011537548439640, guid: 3d2a5f49b6c02b7478c5c0fc01b49917, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 181934541}
   m_SourcePrefab: {fileID: 100100000, guid: 3d2a5f49b6c02b7478c5c0fc01b49917, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

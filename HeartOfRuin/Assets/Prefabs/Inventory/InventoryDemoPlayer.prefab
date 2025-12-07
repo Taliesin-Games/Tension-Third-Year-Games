@@ -1237,6 +1237,8 @@ GameObject:
   - component: {fileID: 5341111979437897382}
   - component: {fileID: 1455380744001479624}
   - component: {fileID: 5908812385604698862}
+  - component: {fileID: 5583223256170172041}
+  - component: {fileID: -1190974623528715032}
   m_Layer: 0
   m_Name: InventoryDemoPlayer
   m_TagString: Player
@@ -1504,6 +1506,7 @@ MonoBehaviour:
   playerStats: {fileID: 350700010215411650}
   inventoryUI: {fileID: 8658305198490398721}
   equipmentUI: {fileID: 5645967438186080142}
+  castComponent: {fileID: -1190974623528715032}
 --- !u!114 &5908812385604698862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1517,6 +1520,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BMD.CharacterAnimatorModule
   blendTreeTransitionRate: 0.05
+--- !u!114 &5583223256170172041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7581011537548439640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77478176ba885154cbe469677530fc5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Mana
+  maxValue: 100
+  regenRate: 5
+--- !u!114 &-1190974623528715032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7581011537548439640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f661655b20aa5fe4a9253c14ccf6763c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCaster
+  spells: []
+  selectedSpell: 0
+  castPosOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &8358580010736580973
 GameObject:
   m_ObjectHideFlags: 0
