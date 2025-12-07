@@ -40,6 +40,14 @@ namespace BMD
         public event Action OnAttackPerformed;
         public event Action OnAttackEnded;
 
+        public event Action OnSpecialAttackRequested;
+        public event Action OnSpecialAttackPerformed;
+        public event Action OnSpecialAttackEnded;
+
+        public event Action OnFireWeaponRequested;
+        public event Action OnFireWeaponPerformed;
+        public event Action OnFireWeaponEnded;
+
         #endregion
 
         #region Constants
@@ -128,6 +136,8 @@ namespace BMD
             }
         }
         private bool IsDead => IsDead;      // TODO optional call to character
+        public bool IsAttacking => isAttacking;
+        private bool CantAttack => IsDead || IsAttacking;
         #endregion
 
         #region Signal Helpers
@@ -153,9 +163,15 @@ namespace BMD
         public void NotifyDiePerformed() => OnDiePerformed?.Invoke();
         public void NotifyDieEnded() => OnDieEnded?.Invoke();
 
-        public void RequestAttack() => OnAttackRequested?.Invoke();
+        public void RequestAttack() => _RequestAttack();
         public void NotifyAttackPerformed() => _NotifyAttackPerformed();
-        public void NotifyAttackEnded() => NotifyAttackEnded();
+        public void NotifyAttackEnded() => _NotifyAttackEnded();
+        public void RequestSpecialAttack() => _RequestSpecialAttack();
+        public void NotifySpecialAttackPerformed() => _NotifySpecialAttackPerformed();
+        public void NotifySpecialAttackEnded() => _NotifySpecialAttackEnded();
+        public void RequestFireWeapon() => RequestFireWeapon();
+        public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
+        public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
 
         protected void NotifySprintTriggered(bool triggered) 
         {
@@ -180,6 +196,14 @@ namespace BMD
             Destroy(gameObject, 2.0f);  // TODO evil magic number, but probably want die config and tracking elsewhere
         }
 
+        private void _RequestAttack()
+        {
+            if (CantAttack) return;
+
+            OnAttackRequested?.Invoke();
+            NotifyAttackPerformed();
+        }
+
         private void _NotifyAttackPerformed()
         {
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
@@ -191,6 +215,46 @@ namespace BMD
             OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
+
+        private void _RequestSpecialAttack()
+        {
+            if (CantAttack) return;
+
+            OnSpecialAttackRequested?.Invoke();
+            NotifySpecialAttackPerformed();
+        }
+        private void _NotifySpecialAttackPerformed()
+        {
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnSpecialAttackPerformed?.Invoke();
+        }
+
+        private void _NotifySpecialAttackEnded()
+        {
+            OnSpecialAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            isAttacking = false;
+        }
+
+        private void _RequestFireWeapon()
+        {
+            if (CantAttack) return;
+
+            OnFireWeaponRequested?.Invoke();
+            NotifyFireWeaponPerformed();
+        }
+
+        private void _NotifyFireWeaponPerformed()
+        {
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnFireWeaponPerformed?.Invoke();
+        }
+
+        private void _NotifyFireWeaponEnded()
+        {
+            OnFireWeaponEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            isAttacking = false;
+        }
+
         #endregion
 
         protected virtual void Awake()
