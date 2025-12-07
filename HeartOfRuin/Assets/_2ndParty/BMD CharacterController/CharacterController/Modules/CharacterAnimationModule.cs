@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Xml.Serialization;
+
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System.Collections.Generic;
@@ -23,6 +25,7 @@ namespace BMD
         private static readonly int IsSwimmingHash = Animator.StringToHash("IsSwimming");
         private static readonly int IsDodgingHash = Animator.StringToHash("IsDodging");
         private static readonly int IsRollingHash = Animator.StringToHash("IsRolling");
+        private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
         private static readonly int CharacterStateHash = Animator.StringToHash("CharacterState");
         
         // Movement blend parameters
@@ -43,8 +46,9 @@ namespace BMD
         private static readonly int DodgeTriggerHash = Animator.StringToHash("DodgeTrigger");
         private static readonly int JumpTriggerHash = Animator.StringToHash("JumpTrigger");
         private static readonly int LandTriggerHash = Animator.StringToHash("LandTrigger");
-        private static readonly int AttackTriggerHash = Animator.StringToHash("AttackTrigger");
         private static readonly int BlockTriggerHash = Animator.StringToHash("BlockTrigger");
+        private static readonly int FireWeaponTriggerHash = Animator.StringToHash("FireWeaponTrigger");
+        private static readonly int AttackTriggerHash = Animator.StringToHash("AttackTrigger");
         private static readonly int Attack2TriggerHash = Animator.StringToHash("Attack2Trigger");
         #endregion
 
@@ -106,6 +110,16 @@ namespace BMD
             controller.OnDodgePerformed += HandleDodgePerformed;
             controller.OnDodgeEnded += HandleDodgeEnded;
 
+            // Attack events
+            controller.OnFireWeaponPerformed += HandleFireWeaponPerformed;
+            controller.OnFireWeaponEnded     += HandleFireWeaponEnded;
+
+            controller.OnAttackPerformed     += HandleAttackPerformed;
+            controller.OnAttackEnded         += HandleAttackEnded;
+
+            controller.OnSpecialAttackPerformed += HandleSpecialAttackPerformed;
+            controller.OnSpecialAttackEnded  += HandleSpecialAttackEnded;
+
         }
         public void Tick(float deltaTime)
         {
@@ -116,7 +130,6 @@ namespace BMD
 
             animator.SetInteger(CharacterStateHash, (int)CurrentState);
         }
-
         private void LocomotionTick(float deltaTime)
         {
             // Update movement blend parameters per frame
@@ -142,7 +155,6 @@ namespace BMD
             
             animator.SetFloat(TurnAngleHash, controller.TurnAngle, blendTreeTransitionRate, deltaTime);
         }
-
         public void FixedTick(float fixedDeltaTime)
         {
             // Animator does not need fixed-timestep updates
@@ -182,6 +194,32 @@ namespace BMD
         private void HandleDodgeEnded()
         {
             // Additional logic for when dodge ends can be added here
+        }
+
+        private void HandleAttackPerformed()
+        {
+            animator.SetTrigger(AttackTriggerHash);
+        }
+        private void HandleAttackEnded()
+        {
+            // Additional logic for when attack ends can be added here
+        }
+
+        private void HandleSpecialAttackPerformed()
+        {
+            animator.SetTrigger(Attack2TriggerHash);
+        }
+        private void HandleSpecialAttackEnded()
+        {
+            // Additional logic for when attack ends can be added here
+        }
+        private void HandleFireWeaponPerformed()
+        {
+            animator.SetTrigger(FireWeaponTriggerHash);
+        }
+        private void HandleFireWeaponEnded()
+        {
+            // Additional logic for when fire weapon ends can be added here
         }
 
         #endregion
@@ -283,6 +321,7 @@ namespace BMD
             IsParamValid(IsSwimmingHash);
             IsParamValid(IsDodgingHash);
             IsParamValid(IsRollingHash);
+            IsParamValid(IsAttackingHash);
             IsParamValid(CharacterStateHash);
 
             IsParamValid(VerticalVelocityHash);
@@ -300,8 +339,9 @@ namespace BMD
             IsParamValid(DodgeTriggerHash);
             IsParamValid(JumpTriggerHash);
             IsParamValid(LandTriggerHash);
-            IsParamValid(AttackTriggerHash);
             IsParamValid(BlockTriggerHash);
+            IsParamValid(FireWeaponTriggerHash);
+            IsParamValid(AttackTriggerHash);
             IsParamValid(Attack2TriggerHash);
 
             foreach (var warnedHash in warnedParams)
@@ -319,8 +359,9 @@ namespace BMD
             animator.ResetTrigger(DodgeTriggerHash);
             animator.ResetTrigger(JumpTriggerHash);
             animator.ResetTrigger(LandTriggerHash);
-            animator.ResetTrigger(AttackTriggerHash);
             animator.ResetTrigger(BlockTriggerHash);
+            animator.ResetTrigger(FireWeaponTriggerHash);
+            animator.ResetTrigger(AttackTriggerHash);
             animator.ResetTrigger(Attack2TriggerHash);
 
 
@@ -331,6 +372,7 @@ namespace BMD
             animator.SetBool(IsSwimmingHash, true);
             animator.SetBool(IsDodgingHash, true);
             animator.SetBool(IsRollingHash, true);
+            animator.SetBool(IsAttackingHash, true);
 
             animator.SetInteger(CharacterStateHash, 1);
 
@@ -352,8 +394,9 @@ namespace BMD
             animator.SetTrigger(DodgeTriggerHash);
             animator.SetTrigger(JumpTriggerHash);
             animator.SetTrigger(LandTriggerHash);
-            animator.SetTrigger(AttackTriggerHash);
             animator.SetTrigger(BlockTriggerHash);
+            animator.SetTrigger(FireWeaponTriggerHash);
+            animator.SetTrigger(AttackTriggerHash);
             animator.SetTrigger(Attack2TriggerHash);
           
             Debug.Log("[Animator Test] All parameters set successfully, check logs for any issues!");

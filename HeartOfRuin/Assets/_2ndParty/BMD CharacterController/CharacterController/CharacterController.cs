@@ -161,13 +161,13 @@ namespace BMD
         public void NotifyDiePerformed() => OnDiePerformed?.Invoke();
         public void NotifyDieEnded() => OnDieEnded?.Invoke();
 
-        public void RequestAttack() => OnAttackRequested?.Invoke();
+        public void RequestAttack() => _RequestAttack();
         public void NotifyAttackPerformed() => _NotifyAttackPerformed();
         public void NotifyAttackEnded() => _NotifyAttackEnded();
-        public void RequestSpecialAttack() => OnSpecialAttackRequested?.Invoke();
+        public void RequestSpecialAttack() => _RequestSpecialAttack();
         public void NotifySpecialAttackPerformed() => _NotifySpecialAttackPerformed();
         public void NotifySpecialAttackEnded() => _NotifySpecialAttackEnded();
-        public void RequestFireWeapon() => OnFireWeaponRequested?.Invoke();
+        public void RequestFireWeapon() => RequestFireWeapon();
         public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
         public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
 
@@ -194,6 +194,14 @@ namespace BMD
             Destroy(gameObject, 2.0f);  // TODO evil magic number, but probably want die config and tracking elsewhere
         }
 
+        private void _RequestAttack()
+        {
+            if (isDead || isAttacking) return;
+
+            OnAttackRequested?.Invoke();
+            NotifyAttackPerformed();
+        }
+
         private void _NotifyAttackPerformed()
         {
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
@@ -206,6 +214,13 @@ namespace BMD
             isAttacking = false;
         }
 
+        private void _RequestSpecialAttack()
+        {
+            if (isDead || isAttacking) return;
+
+            OnSpecialAttackRequested?.Invoke();
+            NotifySpecialAttackPerformed();
+        }
         private void _NotifySpecialAttackPerformed()
         {
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
@@ -216,6 +231,14 @@ namespace BMD
         {
             OnSpecialAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
+        }
+
+        private void _RequestFireWeapon()
+        {
+            if (isDead || isAttacking) return;
+
+            OnFireWeaponRequested?.Invoke();
+            NotifyFireWeaponPerformed();
         }
 
         private void _NotifyFireWeaponPerformed()
