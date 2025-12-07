@@ -15,4 +15,6 @@ public abstract class SpellBase : ScriptableObject, ISpell
     public virtual void Cast(SpellContext context) { }
 
     public virtual void DealDamage(GameObject target) { }
+    
+
 }

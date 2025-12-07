@@ -24,11 +24,15 @@ public class Fireball : SpellBase
     {
         if(lastCastContext.Caster != null && lastCastContext.damageComponent)
         {
-            PlayerStats playerStats = lastCastContext.Caster.GetComponent<PlayerStats>();
+            if(target != lastCastContext.Caster)
+            {
+                PlayerStats playerStats = lastCastContext.Caster.GetComponent<PlayerStats>();
 
-            DamageStruct damage = lastCastContext.damageComponent.CalculatePlayerDamage(playerStats, damageScalings);
+                DamageStruct damage = lastCastContext.damageComponent.CalculatePlayerDamage(playerStats, damageScalings);
 
-            target.GetComponent<Health>()?.TakeDamage(damage);
+                target.GetComponent<Health>()?.TakeDamage(damage);
+            }
+
         }
     }
 }

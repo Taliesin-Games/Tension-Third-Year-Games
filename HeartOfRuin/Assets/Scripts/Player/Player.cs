@@ -56,7 +56,13 @@ public class Player : Character
             }
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
+                castComponent.TryCastSpell(1);
                 Debug.Log("Cast Spell 2");
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                castComponent.TryCastSpell(2);
+                Debug.Log("Cast Spell 3");
             }
         }   
     }
