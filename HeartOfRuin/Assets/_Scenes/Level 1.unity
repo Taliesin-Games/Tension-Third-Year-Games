@@ -620,6 +620,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6925974849022785550, guid: bc3263fd88eef9d478b583646a6f74b3, type: 3}
   m_PrefabInstance: {fileID: 123585211}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &140960738 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 988168803997600744, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
+  m_PrefabInstance: {fileID: 7743462889559667670}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &141308554
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1330,6 +1341,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2942563014880224932, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2942563014880224932, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3663472677542968391, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
@@ -7263,9 +7278,13 @@ PrefabInstance:
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 2800153022664176114, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
+      propertyPath: m_AgentTypeID
+      value: -1372625422
+      objectReference: {fileID: 0}
+    - target: {fileID: 2800153022664176114, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
       propertyPath: m_NavMeshData
       value: 
-      objectReference: {fileID: 23800000, guid: 124b89f59e250ae428094c579587bc2b, type: 2}
+      objectReference: {fileID: 23800000, guid: 14d3c015b7fe74d4ea8a389dfcd540a3, type: 2}
     - target: {fileID: 2801563874598190802, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -8946,6 +8965,18 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 6247892023050342220, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
+      propertyPath: navMesh
+      value: 
+      objectReference: {fileID: 140960738}
+    - target: {fileID: 6247892023050342220, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
+      propertyPath: minSpawnSpacing
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6247892023050342220, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
+      propertyPath: enemiesToSpawn.Array.data[0].enemy
+      value: 
+      objectReference: {fileID: 2607250186916821478, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
     - target: {fileID: 6251943943104637939, guid: b23470531d3ba2540bb768b2328850a0, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
