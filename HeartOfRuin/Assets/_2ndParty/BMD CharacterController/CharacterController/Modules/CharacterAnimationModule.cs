@@ -231,7 +231,6 @@ namespace BMD
             // Additional logic for when attack ends can be added here
             animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
-            controller.NotifyAttackEnded();
             Debug.Log("attack ended");
         }
 
@@ -247,7 +246,6 @@ namespace BMD
             // Additional logic for when attack ends can be added here
             animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
-            controller.NotifySpecialAttackEnded();
         }
         private void HandleFireWeaponPerformed()
         {
@@ -260,7 +258,6 @@ namespace BMD
             // Additional logic for when fire weapon ends can be added here
             animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
-            controller.NotifyFireWeaponEnded();
         }
 
         #endregion

@@ -213,6 +213,7 @@ namespace BMD
 
         private void _NotifyAttackEnded()
         {
+            Debug.Log("Attack notify ended");
             OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
