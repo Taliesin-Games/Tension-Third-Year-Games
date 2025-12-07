@@ -116,6 +116,7 @@ namespace BMD
         public bool IsInvulnerable  { get { return isInvulnerable; } }
         public (float walk, float run, float sprint) LocomotionScales => (walkSpeed, runSpeed, sprintSpeed);
         public float TurnAngle { get; private set; }
+        private bool InstantTurn => isDodging || isRolling || currentHorizontalVelocity.magnitude < instantTurnThreshold;
 
         #endregion
         public void Initialize(CharacterController controller)
@@ -379,8 +380,8 @@ namespace BMD
             // Compute target rotation
             Quaternion targetRotation = Quaternion.LookRotation(targetDir);
 
-            // Snap instantly if barely moving (prevents jitter)
-            if (isDodging || isRolling || currentHorizontalVelocity.magnitude < instantTurnThreshold)
+            // Snap instantly if barely moving (prevents jitter), or dodging/rolling
+            if (InstantTurn)
             {
                 unityController.transform.rotation = targetRotation;
                 return;
@@ -402,7 +403,6 @@ namespace BMD
             // No input ? no rotation
             if (inputDir.sqrMagnitude < 0.0001f) return;
 
-            Debug.Log("There is input");
             // If we're moving fast enough, defer to movement-based rotation
             if (currentHorizontalVelocity.magnitude > instantTurnThreshold) return;
 
@@ -416,18 +416,18 @@ namespace BMD
             Quaternion targetRotation = Quaternion.LookRotation(targetDir);
 
             // Snap if small movement (same rule as movement rotation)
-            if (currentHorizontalVelocity.magnitude < instantTurnThreshold)
+            if (InstantTurn)
             {
                 unityController.transform.rotation = targetRotation;
+                return;
             }
-            else
-            {
-                unityController.transform.rotation = Quaternion.Slerp(
-                    unityController.transform.rotation,
-                    targetRotation,
-                    rotationSpeed * dt
-                );
-            }
+            
+            unityController.transform.rotation = Quaternion.Slerp(
+                unityController.transform.rotation,
+                targetRotation,
+                rotationSpeed * dt
+            );
+            Debug.Log("Finished turn");
         }
         private void UpdateState()
         {

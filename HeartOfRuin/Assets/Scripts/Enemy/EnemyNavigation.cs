@@ -31,31 +31,26 @@ public class EnemyNavigation : MonoBehaviour
         // TODO, this needs integrating properly. It disables nav agent movement and just uses it for dection making.
         agent.updatePosition = AGENT_HANDLES_MOVEMENTY;
         agent.updateRotation = AGENT_HANDLES_MOVEMENTY;
-        agent.updateUpAxis = AGENT_HANDLES_MOVEMENTY; // optional, usually true for humanoids
+        agent.updateUpAxis = true;
     }
 
     public Vector2 MoveDirection()
     {
-        Vector3 desired = agent.desiredVelocity;
+        if (!agent.hasPath) return Vector2.zero;
 
-        if (agent.desiredVelocity.sqrMagnitude < 0.01f) desired = new();    //If barely moving stop
+        Vector3 toCorner = agent.steeringTarget - transform.position;
+        toCorner.y = 0;
 
-        return new Vector2(desired.x, desired.z);
+        if (toCorner.sqrMagnitude < 0.01f) return Vector2.zero;
+
+        toCorner.Normalize();
+        return new Vector2(toCorner.x, toCorner.z);
     }
 
     public bool MoveTo(Vector3 targetPos)
     {
-        // TODO we are triggering a repath potentialls several tiems a frame, need to check that.
-
-        Vector2 _ = new(); // Throw away variable // TODO this is not clean but it exists for easy conversion. Should be cleaned later.
-        return MoveTo(targetPos, ref _);
-    }
-    public bool MoveTo(Vector3 targetPos, ref Vector2 moveDirection)
-    {
         // Set the agent's destination
         bool success = agent.SetDestination(targetPos);
-
-        moveDirection = MoveDirection();
 
         return success;
     }
@@ -142,12 +137,15 @@ public class EnemyNavigation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
 
         if (IsDead)
         {
             agent.isStopped = true;
             return;
         }
+
+        agent.nextPosition = transform.position;
 
         if (!agent.hasPath && !debugPath)
         {
@@ -164,26 +162,11 @@ public class EnemyNavigation : MonoBehaviour
 
     public bool HasReachedDestination()
     {
-        // If dead, consider reached.
-        if (IsDead)
-        {
-            return true;
-        }
+        if (IsDead) return true;
 
-        // Check if the agent has reached its destination
-        if (agent.pathPending)
-        {
-            return false;
-        }
+        if (agent.pathPending) return false;
 
-        if (agent.remainingDistance <= agent.stoppingDistance)
-        {
-            if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-            {
-                return true;
-            }
-        }
-        return false;
+        return agent.remainingDistance <= agent.stoppingDistance;
     }
 
 }

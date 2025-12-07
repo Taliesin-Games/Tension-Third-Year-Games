@@ -2,6 +2,8 @@ using UnityEngine;
 using BMD;
 using Utils;
 using Random = UnityEngine.Random;
+using Unity.Services.Matchmaker.Models;
+using NUnit.Framework.Constraints;
 
 [RequireComponent(typeof(EnemyNavigation))]
 public class EnemyController : BMD.CharacterController
@@ -88,10 +90,27 @@ public class EnemyController : BMD.CharacterController
 
         DrawDebug();
 
-        moveDirection = enemyNavigation.MoveDirection();
-
         base.Update();
     }
+
+    protected override void FixedUpdate()
+    {
+        SetMoveDirection();
+        base.FixedUpdate();
+    }
+
+    private void SetMoveDirection()
+    {
+        Vector2 inputDirectiuon = enemyNavigation.MoveDirection(); // a Vector3 direction
+        Vector3 worldDirection = new Vector3(inputDirectiuon.x,0, inputDirectiuon.y);
+
+        float inputMagnitude = Mathf.Clamp01(worldDirection.magnitude);
+        inputMagnitude = Mathf.Pow(inputMagnitude, 1.5f);
+
+        moveDirection = worldDirection.normalized * inputMagnitude;
+        moveDirection = worldDirection.normalized * inputMagnitude;
+    }
+
     private void SwitchEnemyState()
     {
         // State machine tick
