@@ -86,7 +86,7 @@ namespace BMD
 
             InitializeReferences(controller);
 
-            if (attackLayerIndex == -1) attackLayerIndex = animator.GetLayerIndex("AttackLayer");
+            if (attackLayerIndex == -1) attackLayerIndex = animator.GetLayerIndex("Attack Layer");  // TODO magic string remove!!!
 
             InitializeSignals(controller);
 
