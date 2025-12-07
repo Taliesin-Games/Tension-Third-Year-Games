@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 4689575302611167334}
   - component: {fileID: 5568387887786979083}
   - component: {fileID: 8666522541798774886}
-  - component: {fileID: 8418716091057550401}
   - component: {fileID: 4727636871516878498}
+  - component: {fileID: 8418716091057550401}
   - component: {fileID: 1494999133833634003}
   - component: {fileID: 660661359804496864}
   - component: {fileID: 6701897996978430247}
@@ -152,6 +152,22 @@ MonoBehaviour:
     Wind: 0
     Water: 0
   damageNumberPrefab: {fileID: 0}
+--- !u!114 &4727636871516878498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922875856160554918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e962f96b85a53ed438c7213fd8e00d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  inventoryName: 
+  inventorySize: 20
+  startingItems: []
+  itemDropPrefab: {fileID: 0}
 --- !u!114 &8418716091057550401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,22 +205,6 @@ MonoBehaviour:
     quantity: 1
     slotType: 6
   itemDropPrefab: {fileID: 3675725128406392298, guid: d75e7c45fd8002c4e8d78e4da88b1104, type: 3}
---- !u!114 &4727636871516878498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7922875856160554918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e962f96b85a53ed438c7213fd8e00d48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  inventoryName: 
-  inventorySize: 20
-  startingItems: []
-  itemDropPrefab: {fileID: 0}
 --- !u!114 &1494999133833634003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,6 +494,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1398892269292487968}
     m_Modifications:
+    - target: {fileID: 602564827274081, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 8418716091057550401}
     - target: {fileID: 796644131995798433, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -634,6 +638,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7179992688132672404, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 4727636871516878498}
     - target: {fileID: 7326525636619166641, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
