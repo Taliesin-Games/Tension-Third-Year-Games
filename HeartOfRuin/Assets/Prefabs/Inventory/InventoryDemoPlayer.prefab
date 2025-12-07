@@ -1237,6 +1237,7 @@ GameObject:
   - component: {fileID: 5341111979437897382}
   - component: {fileID: 1455380744001479624}
   - component: {fileID: 5908812385604698862}
+  - component: {fileID: 4281219259042041299}
   m_Layer: 0
   m_Name: InventoryDemoPlayer
   m_TagString: Player
@@ -1424,6 +1425,7 @@ MonoBehaviour:
   minMoveInputMagnitude: 0.05
   rotationEnabled: 1
   rotationSpeed: 10
+  rotationType: 0
   instantTurnThreshold: 0.05
   canJump: 1
   jumpForce: 5
@@ -1453,7 +1455,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7581011537548439640}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 727f27a27ed50354a8d2f8d2a069ab2b, type: 3}
+  m_Script: {fileID: 11500000, guid: becf0c497326e9840b3c072622d14cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   strength: 0
@@ -1501,7 +1503,7 @@ MonoBehaviour:
   characterName: Glorp Gleep
   equipmentSlots: {fileID: 2419531479544337494}
   inventory: {fileID: 3001075598756378503}
-  playerStats: {fileID: 350700010215411650}
+  characterStats: {fileID: 0}
   inventoryUI: {fileID: 8658305198490398721}
   equipmentUI: {fileID: 5645967438186080142}
 --- !u!114 &5908812385604698862
@@ -1517,6 +1519,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BMD.CharacterAnimatorModule
   blendTreeTransitionRate: 0.05
+--- !u!114 &4281219259042041299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7581011537548439640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: becf0c497326e9840b3c072622d14cf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
+  strength: 0
+  agility: 0
+  intelligence: 0
+  criticalChance: 0
+  criticalDamage: 0.5
 --- !u!1 &8358580010736580973
 GameObject:
   m_ObjectHideFlags: 0
