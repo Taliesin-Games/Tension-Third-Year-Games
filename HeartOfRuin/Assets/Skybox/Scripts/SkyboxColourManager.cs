@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using Unity.Properties;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -25,11 +27,16 @@ public class SkyboxColourManager : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float blend = 0f; // 0 = Set A, 1 = Set B
 
+    [Header("Rotation")]
+    [Range(0f, 360f)]
+    [SerializeField] private float alpha = 1f;
+
     private static readonly int GlobalColor1Id = Shader.PropertyToID("_GlobalColor1");
     private static readonly int GlobalColor2Id = Shader.PropertyToID("_GlobalColor2");
     private static readonly int GlobalColor3Id = Shader.PropertyToID("_GlobalColor3");
     private static readonly int TileOffsetId  = Shader.PropertyToID("_TileOffset");
     private static readonly int TileScaleId   = Shader.PropertyToID("_TileScale");
+    private static readonly int RotationId = Shader.PropertyToID("_SkyboxRotation");
 
     // Cache of last applied blended colors to avoid redundant global updates during play
     private Color _lastBlended1;
@@ -52,12 +59,14 @@ public class SkyboxColourManager : MonoBehaviour
         {
             UpdateShaderGlobals(true); // force in editor so inspector changes reflect immediately
             computeTile();
+            Shader.SetGlobalFloat(RotationId, alpha);
             return;
         }
 #endif
         // In play mode, only push color globals if values actually changed
         UpdateShaderGlobals(false);
         computeTile();
+        Shader.SetGlobalFloat(RotationId, alpha);
     }
 
 #if UNITY_EDITOR
