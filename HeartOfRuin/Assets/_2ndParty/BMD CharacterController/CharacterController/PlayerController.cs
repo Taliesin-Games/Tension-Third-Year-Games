@@ -34,6 +34,9 @@ namespace BMD
         private InputAction roll;
         private InputAction crouch;
         private InputAction sprint;
+        private InputAction fire;
+        private InputAction attack;
+        private InputAction specialAttack;
         #endregion
 
         #region Runtime variables
@@ -63,6 +66,9 @@ namespace BMD
                 return;
             }
 
+            // TODO block the camera for now so we use fixed  one
+            return;
+
             // 1. Create and position CameraPivot (yaw control)
             cameraPivot = new GameObject("CameraPivot").transform;
             cameraPivot.position = transform.position;
@@ -88,6 +94,9 @@ namespace BMD
             crouch = playerControls.Player.Crouch;
             roll = playerControls.Player.Roll;
             sprint = playerControls.Player.Sprint;
+            fire = playerControls.Player.Fire;
+            attack = playerControls.Player.Attack;
+            specialAttack = playerControls.Player.SpecialAttack;
         }
         private void OnEnable()
         {
