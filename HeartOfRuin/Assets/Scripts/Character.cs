@@ -8,15 +8,12 @@ public abstract class Character : MonoBehaviour
 {
     [SerializeField] string characterName = "Glorp Gleep";
     
-
-
     [SerializeField] List<ItemEffect> activeEffects;
     //protected Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
     [SerializeField] protected Inventory equipmentSlots;
     [SerializeField] protected Inventory inventory;
     [SerializeField] protected CharacterStats characterStats;
     CharacterStats baseStats;
-
 
     protected virtual void Awake()
     {
