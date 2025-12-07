@@ -34,7 +34,7 @@ public class EnemyNavigation : MonoBehaviour
             // Warp WITH the corrected baseOffset
             agent.Warp(transform.position + Vector3.up * agent.baseOffset);
 
-            Debug.Log($"Corrected baseOffset = {agent.baseOffset}");
+            //Debug.Log($"Corrected baseOffset = {agent.baseOffset}");
         }
         else
         {

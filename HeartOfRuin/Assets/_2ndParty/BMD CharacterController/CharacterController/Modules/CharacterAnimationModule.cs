@@ -240,7 +240,7 @@ namespace BMD
             }
 
 
-            Debug.Log($"{name}: Cached {validParams.Count} animator parameters for validation.\n{msg}");
+            //Debug.Log($"{name}: Cached {validParams.Count} animator parameters for validation.\n{msg}");
         }
 #endif
 

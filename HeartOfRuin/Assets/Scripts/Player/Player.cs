@@ -73,13 +73,13 @@ public class Player : Character
         {
             inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
             inventoryUiController.SetInventory(inventory);
-            Debug.Log($"Setting main inventory to {inventoryUiController.name}");
+            //Debug.Log($"Setting main inventory to {inventoryUiController.name}");
         }
         if (equipmentUI != null)
         {
             equipmentUiController = equipmentUI.GetComponent<InventoryUIController>();
             equipmentUiController.SetInventory(equipmentSlots);
-            Debug.Log($"Setting main inventory to {equipmentUiController.name}");
+            //Debug.Log($"Setting main inventory to {equipmentUiController.name}");
 
         }
     }
