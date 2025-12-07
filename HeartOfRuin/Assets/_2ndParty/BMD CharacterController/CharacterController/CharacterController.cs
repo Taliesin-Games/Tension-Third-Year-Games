@@ -198,6 +198,7 @@ namespace BMD
 
         private void _RequestAttack()
         {
+            Debug.Log(CantAttack);
             if (CantAttack) return;
 
             OnAttackRequested?.Invoke();

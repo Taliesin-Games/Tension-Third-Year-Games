@@ -219,6 +219,9 @@ namespace BMD
 
         private void HandleAttackPerformed()
         {
+            Debug.Log("Attack performed");
+            
+            animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(AttackTriggerHash);
             SetAttackFade(true);
             
@@ -226,32 +229,48 @@ namespace BMD
         private void HandleAttackEnded()
         {
             // Additional logic for when attack ends can be added here
+            animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
+            controller.NotifyAttackEnded();
+            Debug.Log("attack ended");
         }
 
         private void HandleSpecialAttackPerformed()
         {
+
+            animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(Attack2TriggerHash);
             SetAttackFade(true);
         }
         private void HandleSpecialAttackEnded()
         {
             // Additional logic for when attack ends can be added here
+            animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
+            controller.NotifySpecialAttackEnded();
         }
         private void HandleFireWeaponPerformed()
         {
+            animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(FireWeaponTriggerHash);
             SetAttackFade(true);
         }
         private void HandleFireWeaponEnded()
         {
             // Additional logic for when fire weapon ends can be added here
+            animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
+            controller.NotifyFireWeaponEnded();
         }
 
         #endregion
-        
+
+        #region Animation Triggers
+        public void AT_AttackEnded() { controller.NotifyAttackEnded(); }
+        public void AT_ApecialAttackEnded() { controller.NotifySpecialAttackEnded(); }
+        public void AT_FireWeaponEnded() { controller.NotifyFireWeaponEnded(); }
+        #endregion
+
         private void SetAttackFade(bool enable = true)
         {
             attackLayerTargetWeight = enable ? 1 : 0;
