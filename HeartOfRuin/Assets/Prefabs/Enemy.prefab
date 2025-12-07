@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 2412272339440775529}
   - component: {fileID: 4510217179583732269}
   - component: {fileID: 80798221949874621}
+  - component: {fileID: 5164306904053619644}
   - component: {fileID: 562441046664065344}
   - component: {fileID: 1191380788801645302}
   - component: {fileID: 1301100792316087286}
   - component: {fileID: 4302046021221254410}
-  - component: {fileID: 5164306904053619644}
   - component: {fileID: 6602795176196667281}
   m_Layer: 0
   m_Name: Enemy
@@ -110,6 +110,18 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &5164306904053619644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607250186916821478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71eadf97b377ed4469ba2982907aed6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
 --- !u!114 &562441046664065344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,18 +244,6 @@ MonoBehaviour:
   rollRange: 5
   rollTime: 1
   rollCooldown: 2
---- !u!114 &5164306904053619644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2607250186916821478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71eadf97b377ed4469ba2982907aed6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
 --- !u!114 &6602795176196667281
 MonoBehaviour:
   m_ObjectHideFlags: 0
