@@ -1,0 +1,85 @@
+# ----------------------------------------
+# 1. Global text normalization (baseline)
+# ----------------------------------------
+* text=auto
+
+# ----------------------------------------
+# 2. Unity meta files MUST always be LF
+# ----------------------------------------
+*.meta text eol=lf
+
+# ----------------------------------------
+# 3. Unity & engine text formats (force LF)
+# ----------------------------------------
+*.cs     text eol=lf diff=csharp
+*.shader text eol=lf
+*.compute text eol=lf
+*.json   text eol=lf
+*.txt    text eol=lf
+*.xml    text eol=lf
+*.md     text eol=lf
+*.asmdef text eol=lf
+*.cginc  text eol=lf
+
+# ----------------------------------------
+# 4. Unity YAML asset formats (force LF)
+# ----------------------------------------
+*.anim              text eol=lf unity-yaml-file
+*.asset             text eol=lf unity-yaml-file
+*.brush             text eol=lf unity-yaml-file
+*.controller        text eol=lf unity-yaml-file
+*.flare             text eol=lf unity-yaml-file
+*.giparams          text eol=lf unity-yaml-file
+*.guiskin           text eol=lf unity-yaml-file
+*.mask              text eol=lf unity-yaml-file
+*.mat               text eol=lf unity-yaml-file
+*.mixer             text eol=lf unity-yaml-file
+*.overrideController text eol=lf unity-yaml-file
+*.overridecontroller text eol=lf unity-yaml-file
+*.physicMaterial    text eol=lf unity-yaml-file
+*.physicsMaterial2D text eol=lf unity-yaml-file
+*.playable          text eol=lf unity-yaml-file
+*.prefab            text eol=lf unity-yaml-file
+*.preset            text eol=lf unity-yaml-file
+*.renderTexture     text eol=lf unity-yaml-file
+*.shadervariants    text eol=lf unity-yaml-file
+*.spriteatlas       text eol=lf unity-yaml-file
+*.terrainlayer      text eol=lf unity-yaml-file
+*.unity             text eol=lf unity-yaml-file
+
+# ----------------------------------------
+# 5. Binary formats (NEVER touch)
+# ----------------------------------------
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.tga        binary
+*.psd        binary
+*.webp       binary
+*.exr        binary
+*.hdr        binary
+*.wav        binary
+*.mp3        binary
+*.ogg        binary
+*.fbx        binary
+*.blend      binary
+*.ttf        binary
+*.otf        binary
+*.dll        binary
+*.so         binary
+*.dylib      binary
+*.zip        binary
+*.7z         binary
+*.unitypackage binary
+*.navmesh    binary
+*.lightingdata binary
+*.cubemap    binary
+*.mesh       binary
+*.bytes      binary
+*.bank       binary
+*.wem        binary
+
+# ----------------------------------------
+# 6. Prevent GitHub language noise
+# ----------------------------------------
+*.asmdef -linguist-generated
