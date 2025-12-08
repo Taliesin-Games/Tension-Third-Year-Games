@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -114,3 +115,4 @@ public class DamageCalculator : EditorWindow
     }
 
 }
+#endif

@@ -359,9 +359,9 @@ namespace BMD
         }
 #endif
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR
         [ContextMenu("Test All Animator Parameters")]
-#endif
+
         public void TestAllAnimatorParameters()
         {
             animator = GetComponent<Animator>();
@@ -460,8 +460,9 @@ namespace BMD
           
             Debug.Log("[Animator Test] All parameters set successfully, check logs for any issues!");
         }
-        #endregion
 
+#endif
+        #endregion
     }
 
 }

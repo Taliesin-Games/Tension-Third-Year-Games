@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class LevelChangeInteractable : InteractableBase
 {
-    [SerializeField] SceneAsset nextLevel;
+
+    //[SerializeField] SceneAsset nextLevel;  // TODO does not work in builds, need to rework
     public override void Interact()
     {
         LevelManager.LoadNextLevel();

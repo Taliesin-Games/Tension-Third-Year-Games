@@ -15,6 +15,7 @@ public class DamageNumbers : MonoBehaviour
     void Awake()
     {
         mainCamera = Camera.main;
+       
         timer = lifetime;
     }
 

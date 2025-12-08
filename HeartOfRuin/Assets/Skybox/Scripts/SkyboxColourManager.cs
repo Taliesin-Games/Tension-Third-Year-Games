@@ -117,8 +117,11 @@ public class SkyboxColourManager : MonoBehaviour
 
         // Animate using editor time in edit mode, runtime time in play
         float time;
-
-        time = Application.isPlaying ? Time.time : (float)EditorApplication.timeSinceStartup;
+#if UNITY_EDITOR
+        time = Application.isPlaying ? Time.time : (float)EditorApplication.timeSinceStartup;       // TODO, cannot use editor time in build
+#else
+       
+#endif
         time = Time.time;
 
         tileIndex = Mathf.FloorToInt(time * Mathf.Max(0f, framesPerSecond)) % totalTiles;

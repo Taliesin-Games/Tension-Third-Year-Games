@@ -1,10 +1,15 @@
-#if UNITY_EDITOR
+
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 [InitializeOnLoad]
+//#else
+//[RuntimeInitializeOnLoadMethod]       // TODO look at how this can be done for builds
+#endif
 public static class DebuggerSettingsInitializer
 {
     private const string MarkerPath = "Assets/Settings/.debugger_settings_initialized";
@@ -14,6 +19,7 @@ public static class DebuggerSettingsInitializer
     public static string SETTINGS_FILE_NAME = "EditorDebuggerSettings";
     public static string RESOURCES_FILE_NAME = "BuiltDebuggerSettings";
 
+#if UNITY_ENGINE
     static DebuggerSettingsInitializer()
     {
         // Already initialized? Do nothing
@@ -57,5 +63,6 @@ public static class DebuggerSettingsInitializer
             Debug.LogWarning($"Multiple DebuggerSettings assets match prefix '{fileName}'. Matches:\n - " + string.Join("\n - ", paths) + "\n\n Please rename the current files");
         }
     }
-}
 #endif
+}
+

@@ -1,9 +1,9 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Build;
 #endif
 using UnityEngine;
 using System.Linq;
-using UnityEditor.Build;
 
 [CreateAssetMenu(fileName = "HoRBuildSettings", menuName = "Settings/HoR Build Settings", order = 0)]
 public class HoRBuildSettings : ScriptableObject
