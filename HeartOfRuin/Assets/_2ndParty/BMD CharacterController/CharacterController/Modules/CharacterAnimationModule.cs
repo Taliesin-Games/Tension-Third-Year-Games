@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Xml.Serialization;
+using Newtonsoft.Json.Bson;
+
 
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -219,6 +221,8 @@ namespace BMD
 
         private void HandleAttackPerformed()
         {
+            
+            animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(AttackTriggerHash);
             SetAttackFade(true);
             
@@ -226,32 +230,46 @@ namespace BMD
         private void HandleAttackEnded()
         {
             // Additional logic for when attack ends can be added here
+            animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
         }
 
         private void HandleSpecialAttackPerformed()
         {
+
+            animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(Attack2TriggerHash);
             SetAttackFade(true);
         }
         private void HandleSpecialAttackEnded()
         {
             // Additional logic for when attack ends can be added here
+            animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
         }
         private void HandleFireWeaponPerformed()
         {
+            animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(FireWeaponTriggerHash);
             SetAttackFade(true);
         }
         private void HandleFireWeaponEnded()
         {
             // Additional logic for when fire weapon ends can be added here
+            animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
         }
 
         #endregion
-        
+
+        #region Animation Triggers
+        public void AT_AttackEnded() { controller.NotifyAttackEnded(); }
+        public void AT_SpecialAttackEnded() { controller.NotifySpecialAttackEnded(); }
+        public void AT_FireWeaponEnded() { controller.NotifyFireWeaponEnded(); }
+        public void AT_DealDamage() { controller.NotifyDealDamageFromWeapon(); }
+        public void AT_CastSpell() { controller.NotifyCastSpell(); }
+        #endregion
+
         private void SetAttackFade(bool enable = true)
         {
             attackLayerTargetWeight = enable ? 1 : 0;
