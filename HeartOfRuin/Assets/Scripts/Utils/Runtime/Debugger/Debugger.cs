@@ -37,10 +37,6 @@ namespace Utils
                     canvasScaler.matchWidthOrHeight = 0.5f;
 
                     Instance.debuggerCanvas.gameObject.AddComponent<GraphicRaycaster>();
-
-                    var cg = Instance.debuggerCanvas.gameObject.AddComponent<CanvasGroup>();
-                    cg.blocksRaycasts = false;   // allows clicks to pass through
-                    cg.interactable = false;
                 }
                 return Instance.debuggerCanvas;
             }

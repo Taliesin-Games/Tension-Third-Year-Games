@@ -8,20 +8,9 @@ namespace Utils
         static readonly Color DEFAULT_DRAW_COLOUR = Color.red;
         const int   DEFAULT_DEBUG_SEGMENTS = 24;
 
-
-        public static void DebugDrawCircle(Vector3 center)
-        {
-            DebugDrawCircle(center, DEFAULT_DEBUG_RADIUS, DEFAULT_DRAW_COLOUR, DEFAULT_DEBUG_SEGMENTS);
-        }
-        public static void DebugDrawCircle(Vector3 center, float radius)
-        {
-            DebugDrawCircle(center, radius, DEFAULT_DRAW_COLOUR, DEFAULT_DEBUG_SEGMENTS);
-
-        }
-        public static void DebugDrawCircle(Vector3 center, float radius, Color colour)
-        {
-            DebugDrawCircle(center, radius, colour, DEFAULT_DEBUG_SEGMENTS);
-        }
+        public static void DebugDrawCircle(Vector3 center) { DebugDrawCircle(center, DEFAULT_DEBUG_RADIUS, DEFAULT_DRAW_COLOUR, DEFAULT_DEBUG_SEGMENTS); }
+        public static void DebugDrawCircle(Vector3 center, float radius) { DebugDrawCircle(center, radius, DEFAULT_DRAW_COLOUR, DEFAULT_DEBUG_SEGMENTS); }
+        public static void DebugDrawCircle(Vector3 center, float radius, Color colour) { DebugDrawCircle(center, radius, colour, DEFAULT_DEBUG_SEGMENTS); }
         public static void DebugDrawCircle(Vector3 center, float radius, Color colour, int segments = 24)
         {
             
