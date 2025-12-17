@@ -22,7 +22,7 @@ namespace BMD
             {
                 // Find all game objects that used to have a BMDCharacterController
                 // but no longer do, yet still have orphaned modules
-                foreach (var obj in UnityEngine.Object.FindObjectsOfType<GameObject>())
+                foreach (var obj in UnityEngine.Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
                 {
                     // If there's no controller but there are modules...
                     if (obj.GetComponent<BMD.CharacterController>() == null)

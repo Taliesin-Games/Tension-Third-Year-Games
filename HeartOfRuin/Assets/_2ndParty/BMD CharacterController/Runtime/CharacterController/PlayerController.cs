@@ -1,8 +1,6 @@
 ﻿using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Utils;
 
 namespace BMD
 {
@@ -79,8 +77,8 @@ namespace BMD
 
             // 3. Reparent and reposition the actual camera
             camera.transform.SetParent(cameraRoot, false);
-            //camera.transform.localPosition = new Vector3(horizontalOffset, 0f, -followDistance);
-            //camera.transform.localRotation = Quaternion.identity;
+            camera.transform.localPosition = new Vector3(horizontalOffset, 0f, -followDistance);
+            camera.transform.localRotation = Quaternion.identity;
         }
         private void SetupControls()
         {
@@ -111,7 +109,7 @@ namespace BMD
         }
         protected override void Update()
         {
-            //HandleLook(); // TODO temporarily blocking camera look for demos
+            HandleLook();
 
             HandleJumpInput();
             HandleAttackInput();

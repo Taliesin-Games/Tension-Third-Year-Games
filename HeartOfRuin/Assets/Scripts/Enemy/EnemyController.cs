@@ -434,11 +434,9 @@ public class EnemyController : BMD.CharacterController
 
         IsDead = true;
 
-        Debug.Log($"{gameObject.name} (Enemy) is handling death logic.");
         Enemy.Decrement();
 
-        RequestDie();
-                
+        RequestDie();               
         
     }
     // Check current target visibility (for chase persistence)
