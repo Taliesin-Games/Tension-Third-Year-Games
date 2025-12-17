@@ -109,9 +109,10 @@ public class ColourCreator : MonoBehaviour
         string directory = System.IO.Path.GetDirectoryName(sourcePath);
         string extension = System.IO.Path.GetExtension(sourcePath);
 
-        string variantName = $"{sourceMat.name}_{cID}";
+        string variantName = $"{sourceMat.name} {cID}";
         string newPath = System.IO.Path.Combine(directory, variantName + extension);
-        newPath = AssetDatabase.GenerateUniqueAssetPath(newPath);
+
+        if (AssetDatabase.LoadAssetAtPath<Material>(newPath) != null) return;
 
         // THIS is the material variant
         Material variant = new Material(sourceMat);
@@ -130,6 +131,28 @@ public class ColourCreator : MonoBehaviour
         {
             colour.a = variant.GetColor("_Color").a;
             variant.SetColor("_Color", colour);
+        }
+
+        // ---- Emission handling ----
+        if (variant.HasProperty("_EmissionColor"))
+        {
+            bool emissionEnabled = variant.IsKeywordEnabled("_EMISSION");
+
+            if (emissionEnabled)
+            {
+                Color emission = variant.GetColor("_EmissionColor");
+
+                // Preserve original emission intensity
+                float intensity = emission.maxColorComponent;
+                if (intensity <= 0f) intensity = 1f;
+
+                Color emissiveColour = colour * intensity;
+
+                variant.SetColor("_EmissionColor", emissiveColour);
+
+                // Ensure keyword stays enabled
+                variant.EnableKeyword("_EMISSION");
+            }
         }
 
         // Save as asset
