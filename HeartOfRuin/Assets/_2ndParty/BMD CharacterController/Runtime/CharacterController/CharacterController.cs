@@ -78,7 +78,8 @@ namespace BMD
 
         #region Runtime variables
         protected Vector3 moveDirection = Vector3.zero; // Current movement direction of the character
-        public Vector3 MoveDirection => moveDirection;
+        protected Vector3 aimDirection = Vector3.zero;  // Current aim direction of the character 
+        
 
         protected CharacterState currentState = CharacterState.Idle;
         private Coroutine idleLoopCoroutine;    // Coroutine for handling idle loop animations
@@ -93,6 +94,8 @@ namespace BMD
         #endregion
 
         #region Properties
+        public Vector3 MoveDirection => moveDirection;
+        public Vector3 AimDirection => aimDirection;
         public CharacterState CurrentState 
         {
             get { return currentState; }
@@ -140,7 +143,7 @@ namespace BMD
         }
         private bool IsDead => isDead;      // TODO optional call to character
         public bool IsAttacking => isAttacking;
-        private bool CantAttack => IsDead || IsAttacking;
+        public bool CantAttack => IsDead || IsAttacking;
         #endregion
 
         #region Signal Helpers
@@ -211,8 +214,9 @@ namespace BMD
 
         private void _NotifyAttackPerformed()
         {
-            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            
             OnAttackPerformed?.Invoke();
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
         }
 
         private void _NotifyAttackEnded()
@@ -230,8 +234,8 @@ namespace BMD
         }
         private void _NotifySpecialAttackPerformed()
         {
-            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnSpecialAttackPerformed?.Invoke();
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
         }
 
         private void _NotifySpecialAttackEnded()
@@ -250,8 +254,8 @@ namespace BMD
 
         private void _NotifyFireWeaponPerformed()
         {
-            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnFireWeaponPerformed?.Invoke();
+            isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
         }
 
         private void _NotifyFireWeaponEnded()

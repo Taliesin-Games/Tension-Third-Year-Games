@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.Utilities;
 
 namespace BMD
 {
@@ -28,6 +30,8 @@ namespace BMD
         private PlayerControls playerControls;
         private InputAction move;
         private InputAction look;
+        private InputAction aimController;
+        private InputAction aimMouse;
         private InputAction jump;
         private InputAction roll;
         private InputAction crouch;
@@ -41,12 +45,19 @@ namespace BMD
         private Vector2 lookInput;
         private float cameraPitch = 0f;
 
+        InputDevice lastDevice;
+
         // Camera
         private new Camera camera;          // New keyword to hide inherited member, inherited member is depricated anyway.
         private Transform cameraPivot;
         private Transform cameraRoot;
         private Vector3 cameraVelocity;
 
+        // Declared Globally to avoid per-frame allocations
+        Vector2 aimDir = Vector2.zero;
+        Transform cam;
+        Vector3 camRight = Vector3.zero;
+        Vector3 camForward = Vector3.zero;
         #endregion
         protected override void Awake()
         {
@@ -66,19 +77,19 @@ namespace BMD
 
             // 1. Create and position CameraPivot (yaw control)
             cameraPivot = new GameObject("CameraPivot").transform;
-            cameraPivot.position = transform.position;
-            cameraPivot.rotation = Quaternion.identity;
+            //cameraPivot.position = transform.position;
+            //cameraPivot.rotation = Quaternion.identity;
 
             // 2. Create and position CameraRoot (pitch control)
             cameraRoot = new GameObject("CameraRoot").transform;
             cameraRoot.SetParent(cameraPivot, false);
-            cameraRoot.localPosition = new Vector3(0f, followHeight, 0f);
-            cameraRoot.localRotation = Quaternion.identity;
+            //cameraRoot.localPosition = new Vector3(0f, followHeight, 0f);
+            //cameraRoot.localRotation = Quaternion.identity;
 
             // 3. Reparent and reposition the actual camera
             camera.transform.SetParent(cameraRoot, false);
-            camera.transform.localPosition = new Vector3(horizontalOffset, 0f, -followDistance);
-            camera.transform.localRotation = Quaternion.identity;
+            //camera.transform.localPosition = new Vector3(horizontalOffset, 0f, -followDistance);
+            //camera.transform.localRotation = Quaternion.identity;
         }
         private void SetupControls()
         {
@@ -86,6 +97,8 @@ namespace BMD
             move = playerControls.Player.Move;
             jump = playerControls.Player.Jump;
             look = playerControls.Player.Look;
+            aimController = playerControls.Player.AimController;
+            aimMouse = playerControls.Player.AimMouse;
             crouch = playerControls.Player.Crouch;
             roll = playerControls.Player.Roll;
             sprint = playerControls.Player.Sprint;
@@ -102,19 +115,35 @@ namespace BMD
             roll.performed += ctx => PerformRoll();
             sprint.started += ctx => NotifySprintTriggered(true);
             sprint.canceled += ctx => NotifySprintTriggered(false);
+
+            //InputSystem.onAnyButtonPress.Call(OnAnyButton);
+            InputSystem.onActionChange += OnActionChange;
+            InputSystem.onEvent += OnInputEvent;
         }
         private void OnDisable()
         {
             playerControls.Player.Disable();
+
+            //InputSystem.onAnyButtonPress.Call(null);
+            InputSystem.onActionChange -= OnActionChange;
+            
+            InputSystem.onEvent -= OnInputEvent;
         }
         protected override void Update()
         {
-            HandleLook();
+           
+            
+
+            //HandleLook();
 
             HandleJumpInput();
             HandleAttackInput();
             base.Update();
         }
+
+        
+
+        
         private void UpdateCameraRigFollow()
         {
             if (cameraPivot == null) return;
@@ -154,6 +183,7 @@ namespace BMD
         }
         protected override void FixedUpdate()
         {
+            Aim();
             SetMoveDirection();
 
             UpdateCameraRigFollow();
@@ -172,6 +202,61 @@ namespace BMD
             moveDir.y = 0f;
             moveDirection = moveDir.normalized * inputMagnitude;
         }
+
+        private void Aim()
+        {
+            AimController();
+            AimMouse();
+
+            
+        }
+
+        private void AimController()
+        {
+            if (playerControls.bindingMask != InputBinding.MaskByGroup("Gamepad")) return;
+
+            aimDir = aimController.ReadValue<Vector2>();
+
+            cam = camera.transform;
+
+            camRight = cam.right;
+            camForward = cam.forward;
+
+            // Flatten to XZ plane
+            camRight.y = 0f;
+            camForward.y = 0f;
+
+            camRight.Normalize();
+            camForward.Normalize();
+
+            aimDirection = camRight * aimDir.x + camForward * aimDir.y;
+        }
+        private void AimMouse()
+        {
+            if (playerControls.bindingMask != InputBinding.MaskByGroup("Keyboard&Mouse")) return;
+
+            aimDir = aimMouse.ReadValue<Vector2>();
+
+            aimDir.x /= Screen.width;
+            aimDir.y /= Screen.height;
+
+            aimDir = aimDir * 2f - Vector2.one; // Convert from [0,1] to [-1,1]
+
+            cam = camera.transform;
+
+            camRight = cam.right;
+            camForward = cam.forward;
+
+            // Flatten to XZ plane
+            camRight.y = 0f;
+            camForward.y = 0f;
+
+            camRight.Normalize();
+            camForward.Normalize();
+
+            aimDirection = camRight * aimDir.x + camForward * aimDir.y;
+        }
+
         protected override void ToggleCrouch()
         {
             if (crouch.WasPressedThisFrame())
@@ -187,5 +272,62 @@ namespace BMD
             }
         }
 
+        #region Input Switching Helpers
+
+        void OnInputEvent(InputEventPtr eventPtr, InputDevice device)
+        {
+            if (!eventPtr.IsA<StateEvent>() && !eventPtr.IsA<DeltaStateEvent>()) return;
+
+            if (device is Gamepad)
+            {
+                var gamepad = (Gamepad)device;
+
+                if (gamepad.rightStick.ReadValue().sqrMagnitude > 0.01f || gamepad.leftStick.ReadValue().sqrMagnitude > 0.01f)
+                {
+                    OnDeviceChanged(device);
+                }
+            }
+        }
+
+        void OnActionChange(object obj, InputActionChange change)
+        {
+            if (change != InputActionChange.ActionPerformed) return;
+
+            var action = obj as InputAction;
+            if (action == null) return;
+
+            if (action.name != "Aim") return;
+
+            var device = action.activeControl?.device;
+            if (device == null) return;
+
+            OnDeviceChanged(device);
+        }
+
+        void OnAnyButton(InputControl control)
+        {
+            var device = control.device;
+
+            if (device == lastDevice) return;
+
+            lastDevice = device;
+            OnDeviceChanged(device);
+        }
+
+        void OnDeviceChanged(InputDevice device)
+        {
+            if      (device is Gamepad)                     UseGamepad();
+            else if (device is Mouse || device is Keyboard) UseKeyboardMouse();
+        }
+        void UseGamepad()
+        {
+            playerControls.bindingMask = InputBinding.MaskByGroup("Gamepad");
+        }
+
+        void UseKeyboardMouse()
+        {
+            playerControls.bindingMask = InputBinding.MaskByGroup("Keyboard&Mouse");
+        }
+        #endregion
     }
 }

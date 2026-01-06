@@ -9,8 +9,9 @@ namespace BMD
         [Serializable] private enum RotationType
         {
             TowardsMovement = 0,
-            TowardsInput = 1,
-            DynamicType = 2,
+            TowardsMoveInput = 1,
+            TowardsAimInput = 2,
+            DynamicType = 3,
         }
 
         const float MIN_WALK_SPEED = 0.1f;
@@ -37,6 +38,8 @@ namespace BMD
         [SerializeField] float rotationSpeed = 10f;
         [Tooltip("Define if rotation should be based on movement, or input, or dynamic.")]
         [SerializeField] RotationType rotationType = RotationType.TowardsMovement;
+        [Tooltip("Define rotation type when attacking.")]
+        [SerializeField] RotationType attackRotationType = RotationType.TowardsAimInput;
 
         [SerializeField, Tooltip("When moving slower than this speed, rotation snaps instantly")]
         float instantTurnThreshold = 0.05f;
@@ -116,7 +119,7 @@ namespace BMD
         public (float walk, float run, float sprint) LocomotionScales => (walkSpeed, runSpeed, sprintSpeed);
         public float TurnAngle { get; private set; }
         private bool InstantTurn => isDodging || isRolling || currentHorizontalVelocity.magnitude < instantTurnThreshold;
-
+        private bool CantAttack => controller.CantAttack || isDodging || isRolling || !IsConsideredGrounded;
         #endregion
         public void Initialize(CharacterController controller)
         {
@@ -147,6 +150,11 @@ namespace BMD
             controller.OnRollRequested += HandleRollRequested;
             controller.OnSprintDown += HandleSprintDown;
             controller.OnSprintUp += HandleSprintUp;
+            
+            controller.OnAttackPerformed += HandleAttackPerformed;
+            controller.OnSpecialAttackPerformed += HandleAttackPerformed;
+            controller.OnFireWeaponPerformed += HandleAttackPerformed;
+            controller.OnCastSpell += HandleAttackPerformed;
         }
         private void InitializeReferences(CharacterController controller)
         {
@@ -176,7 +184,7 @@ namespace BMD
                 case RotationType.TowardsMovement:
                     RotateCharacterTowardsMovement(fixedDeltaTime);
                     break;
-                case RotationType.TowardsInput:
+                case RotationType.TowardsMoveInput:
                     RotateCharacterTowardsInput(fixedDeltaTime);
                     break;
                 case RotationType.DynamicType:
@@ -252,6 +260,15 @@ namespace BMD
         {
             isSprintHeld = false;
         }
+        private void HandleAttackPerformed()
+        {
+            Debug.Log("Handle Attack performed, handling rotation towards attack");
+            if (CantAttack) return;
+
+            RotateCharacterTowardsAttack();
+
+        }
+
         #endregion
         IEnumerator SetDodgeRollDirection()
         {
@@ -367,6 +384,7 @@ namespace BMD
         private void RotateCharacterTowardsMovement(float dt)
         {
             if (!rotationEnabled) return;
+            if (controller.IsAttacking && attackRotationType == RotationType.TowardsAimInput) return;
 
             // Vector 3 comparison uses approximation to account for floating point errors
             if (currentHorizontalVelocity == Vector3.zero) return; // Nothing to rotate towards
@@ -396,6 +414,9 @@ namespace BMD
         private void RotateCharacterTowardsInput(float dt)
         {
             if (!rotationEnabled) return;
+            if (controller.IsAttacking && attackRotationType == RotationType.TowardsAimInput) return;
+
+
             Vector3 inputDir = controller.MoveDirection;
             inputDir.y = 0f;
 
@@ -426,7 +447,15 @@ namespace BMD
                 targetRotation,
                 rotationSpeed * dt
             );
-            Debug.Log("Finished turn");
+        }
+        private void RotateCharacterTowardsAttack()
+        {
+            Debug.Log("Rotating towards attack");
+            Vector3 targetDir = targetDir = controller.AimDirection == Vector3.zero ? transform.forward : controller.AimDirection;
+            Debug.Log($"Rotating towards attack {targetDir} ");
+            
+            Quaternion targetRotation = Quaternion.LookRotation(targetDir);
+            unityController.transform.rotation = targetRotation;
         }
         private void UpdateState()
         {
