@@ -54,18 +54,15 @@ public class DamageComponent : MonoBehaviour
         //if crit chance is greater than or equal to 100%, always crit
         if (critChance >= 1f) 
         {
-            Debug.Log("Critical Hit!");
             return critDamage;
         }
         //roll for crit
         if (Random.value < critChance)
         {
-            Debug.Log("Critical Hit!");
             return critDamage;
         }
         else
         {
-            Debug.Log("Normal Hit.");
             return 0f;
         }
     }

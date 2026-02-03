@@ -23,7 +23,6 @@ public class Projectile : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Hit object: " + collision.gameObject.name);
         Fireball fireball = (Fireball)spell;
         fireball.DealDamage(collision.gameObject);
         Destroy(gameObject);
