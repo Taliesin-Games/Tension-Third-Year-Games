@@ -12,7 +12,7 @@ public class Item : ScriptableObject
     [Tooltip("Description of the item")]
     [SerializeField] string itemDescription;
     [Tooltip("Unique identifier for the item")]
-    [SerializeField] int id; //TODO: Ensure unique IDs across all items
+    [SerializeField] private string id;
     [Tooltip("3D model of the item for world representation")]
     [SerializeField] GameObject itemMesh;
     [Tooltip("Max number of items that can be stacked into a single inventory slot")]
@@ -33,7 +33,7 @@ public class Item : ScriptableObject
         return itemDescription;
     }
 
-    public int GetID()
+    public string GetID()
     {
         return id;
     }
