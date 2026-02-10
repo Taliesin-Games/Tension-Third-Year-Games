@@ -38,6 +38,8 @@ public class ItemDatabaseWindow : EditorWindow
     private int bonusIntelligence = 0;
     private float bonusCriticalChance = 0f;
     private float bonusCriticalDamage = 0f;
+    // Item effects mirror for editing in the window
+    private List<ItemEffect> itemEffectsWindow = new List<ItemEffect>();
 
     // DamageStruct mirrors for editing inside the window
     private DamageStruct damageBonusPercentagesWindow;
@@ -62,16 +64,38 @@ public class ItemDatabaseWindow : EditorWindow
     private List<Item> lastScanSkipped = new List<Item>();
     private Vector2 scanScrollPos;
 
-    [MenuItem("Tools/Items/Item Creator")]
+    // Creation scroll position (make creation tab scrollable)
+    private Vector2 creationScrollPos;
+
+    // GUIContent with tooltips (pulled from the Tooltip attributes on the ScriptableObjects)
+    private static readonly GUIContent kItemName = new GUIContent("Item Name", "Name of the item");
+    private static readonly GUIContent kItemIcon = new GUIContent("Icon", "Icon representing the item in the inventory UI");
+    private static readonly GUIContent kItemDescription = new GUIContent("Description", "Description of the item");
+    private static readonly GUIContent kItemMesh = new GUIContent("World Mesh", "3D model of the item for world representation");
+    private static readonly GUIContent kMaxStackSize = new GUIContent("Max Stack Size", "Max number of items that can be stacked into a single inventory slot");
+
+    private static readonly GUIContent kEquipSlotType = new GUIContent("Equip Slot Type", "Type of item slot this can be equipped into, Any can go into None type, None type cant go into any");
+    private const string kDamageStructTooltip = "Percentage damage bonuses provided by the item";
+    private static readonly GUIContent kBonusStrength = new GUIContent("Bonus Strength", "Bonus strength provided by the item");
+    private static readonly GUIContent kBonusAgility = new GUIContent("Bonus Agility", "Bonus agility provided by the item");
+    private static readonly GUIContent kBonusIntelligence = new GUIContent("Bonus Intelligence", "Bonus intelligence provided by the item");
+    private static readonly GUIContent kBonusCriticalChance = new GUIContent("Bonus Critical Chance", "Bonus critical hit chance percentage (e.g., 0.2 for +20% critical chance)");
+    private static readonly GUIContent kBonusCriticalDamage = new GUIContent("Bonus Critical Damage", "Bonus critical damage percentage (e.g., 0.5 for +50% critical damage)");
+    private static readonly GUIContent kItemEffects = new GUIContent("Effect", "Effects applied by the item");
+
+    [MenuItem("Tools/Items/Item System Tools")]
     public static void Open()
     {
-        GetWindow<ItemDatabaseWindow>("Item Creator");
+        GetWindow<ItemDatabaseWindow>("Item System Tools");
     }
 
     private void OnGUI()
     {
+        EditorGUILayout.Space(); 
+        EditorGUILayout.BeginVertical("box");
         database = (ItemDatabase)EditorGUILayout.ObjectField(
-            "Item Database", database, typeof(ItemDatabase), false);
+            new GUIContent("Item Database"), database, typeof(ItemDatabase), false);
+        EditorGUILayout.EndVertical();
 
         EditorGUILayout.Space();
 
@@ -93,6 +117,8 @@ public class ItemDatabaseWindow : EditorWindow
 
     private void DrawCreationSection()
     {
+        // Wrap the creation UI in a scroll view so the tab can shrink to fit smaller windows.
+        creationScrollPos = EditorGUILayout.BeginScrollView(creationScrollPos);
         EditorGUILayout.BeginVertical("box");
         EditorGUILayout.LabelField("Item Creation", EditorStyles.boldLabel);
 
@@ -103,11 +129,11 @@ public class ItemDatabaseWindow : EditorWindow
         EditorGUILayout.Space();
 
         // Common fields displayed for all creation tabs
-        itemName = EditorGUILayout.TextField("Item Name", itemName);
-        itemIcon = (Sprite)EditorGUILayout.ObjectField("Icon", itemIcon, typeof(Sprite), false);
-        itemDescription = EditorGUILayout.TextField("Description", itemDescription);
-        itemMesh = (GameObject)EditorGUILayout.ObjectField("World Mesh", itemMesh, typeof(GameObject), false);
-        maxStackSize = EditorGUILayout.IntField("Max Stack Size", maxStackSize);
+        itemName = EditorGUILayout.TextField(kItemName, itemName);
+        itemIcon = (Sprite)EditorGUILayout.ObjectField(kItemIcon, itemIcon, typeof(Sprite), false);
+        itemDescription = EditorGUILayout.TextField(kItemDescription, itemDescription);
+        itemMesh = (GameObject)EditorGUILayout.ObjectField(kItemMesh, itemMesh, typeof(GameObject), false);
+        maxStackSize = EditorGUILayout.IntField(kMaxStackSize, maxStackSize);
 
         // If equippable tab or equippable-related tabs, show equippable options
         if (createTab != CreateTab.Item)
@@ -117,14 +143,38 @@ public class ItemDatabaseWindow : EditorWindow
 
             if (createTab != CreateTab.Artifact)
             {
-                equipSlotType = (EquipSlotType)EditorGUILayout.EnumPopup("Equip Slot Type", equipSlotType);
+                equipSlotType = (EquipSlotType)EditorGUILayout.EnumPopup(kEquipSlotType, equipSlotType);
             }
 
-            bonusStrength = EditorGUILayout.IntField("Bonus Strength", bonusStrength);
-            bonusAgility = EditorGUILayout.IntField("Bonus Agility", bonusAgility);
-            bonusIntelligence = EditorGUILayout.IntField("Bonus Intelligence", bonusIntelligence);
-            bonusCriticalChance = EditorGUILayout.FloatField("Bonus Critical Chance", bonusCriticalChance);
-            bonusCriticalDamage = EditorGUILayout.FloatField("Bonus Critical Damage", bonusCriticalDamage);
+            bonusStrength = EditorGUILayout.IntField(kBonusStrength, bonusStrength);
+            bonusAgility = EditorGUILayout.IntField(kBonusAgility, bonusAgility);
+            bonusIntelligence = EditorGUILayout.IntField(kBonusIntelligence, bonusIntelligence);
+            bonusCriticalChance = EditorGUILayout.FloatField(kBonusCriticalChance, bonusCriticalChance);
+            bonusCriticalDamage = EditorGUILayout.FloatField(kBonusCriticalDamage, bonusCriticalDamage);
+
+            // Item effects editor (mirror array)
+            EditorGUILayout.Space();
+            GUILayout.Label("Item Effects", EditorStyles.boldLabel);
+
+            int removeIdx = -1;
+            for (int i = 0; i < itemEffectsWindow.Count; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                var label = new GUIContent($"Effect {i + 1}", kItemEffects.tooltip);
+                itemEffectsWindow[i] = (ItemEffect)EditorGUILayout.ObjectField(label, itemEffectsWindow[i], typeof(ItemEffect), false);
+                if (GUILayout.Button("Remove", GUILayout.Width(70)))
+                {
+                    removeIdx = i;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            if (removeIdx >= 0)
+                itemEffectsWindow.RemoveAt(removeIdx);
+
+            if (GUILayout.Button("Add Effect"))
+            {
+                itemEffectsWindow.Add(null);
+            }
 
             EditorGUILayout.Space();
             GUILayout.Label("Damage Bonus Percentages", EditorStyles.miniBoldLabel);
@@ -134,13 +184,11 @@ public class ItemDatabaseWindow : EditorWindow
             {
                 EditorGUILayout.Space();
                 GUILayout.Label("Weapon Properties", EditorStyles.boldLabel);
-                weaponType = (WeaponType)EditorGUILayout.EnumPopup("Weapon Type", weaponType);
+                weaponType = (WeaponType)EditorGUILayout.EnumPopup(new GUIContent("Weapon Type"), weaponType);
 
                 EditorGUILayout.Space();
                 GUILayout.Label("Weapon Damage Scalings", EditorStyles.miniBoldLabel);
                 DrawDamageStructFields(ref weaponDamageScalingsWindow);
-
-                EditorGUILayout.HelpBox("Complex fields also editable after creation in the Inspector.", MessageType.Info);
             }
         }
 
@@ -155,7 +203,18 @@ public class ItemDatabaseWindow : EditorWindow
 
         GUI.enabled = true;
 
+        if (database == null)
+        {
+            EditorGUILayout.HelpBox("Select a database to add item into.", MessageType.Info);
+        }
+
+        if (string.IsNullOrWhiteSpace(itemName))
+        {
+            EditorGUILayout.HelpBox("Item Name cannot be empty.", MessageType.Warning);
+        }
+
         EditorGUILayout.EndVertical();
+        EditorGUILayout.EndScrollView();
     }
 
     // Database viewer: table-like list of items with basic actions and folder-scan functionality
@@ -364,16 +423,16 @@ public class ItemDatabaseWindow : EditorWindow
     // Small helper to render the DamageStruct editable fields inside the window
     private void DrawDamageStructFields(ref DamageStruct structField)
     {
-        structField.None = EditorGUILayout.FloatField("None", structField.None);
-        structField.Physical = EditorGUILayout.FloatField("Physical", structField.Physical);
-        structField.Magical = EditorGUILayout.FloatField("Magical", structField.Magical);
-        structField.True = EditorGUILayout.FloatField("True", structField.True);
-        structField.Fire = EditorGUILayout.FloatField("Fire", structField.Fire);
-        structField.Lightning = EditorGUILayout.FloatField("Lightning", structField.Lightning);
-        structField.Ice = EditorGUILayout.FloatField("Ice", structField.Ice);
-        structField.Earth = EditorGUILayout.FloatField("Earth", structField.Earth);
-        structField.Wind = EditorGUILayout.FloatField("Wind", structField.Wind);
-        structField.Water = EditorGUILayout.FloatField("Water", structField.Water);
+        structField.None = EditorGUILayout.FloatField(new GUIContent("None", kDamageStructTooltip), structField.None);
+        structField.Physical = EditorGUILayout.FloatField(new GUIContent("Physical", kDamageStructTooltip), structField.Physical);
+        structField.Magical = EditorGUILayout.FloatField(new GUIContent("Magical", kDamageStructTooltip), structField.Magical);
+        structField.True = EditorGUILayout.FloatField(new GUIContent("True", kDamageStructTooltip), structField.True);
+        structField.Fire = EditorGUILayout.FloatField(new GUIContent("Fire", kDamageStructTooltip), structField.Fire);
+        structField.Lightning = EditorGUILayout.FloatField(new GUIContent("Lightning", kDamageStructTooltip), structField.Lightning);
+        structField.Ice = EditorGUILayout.FloatField(new GUIContent("Ice", kDamageStructTooltip), structField.Ice);
+        structField.Earth = EditorGUILayout.FloatField(new GUIContent("Earth", kDamageStructTooltip), structField.Earth);
+        structField.Wind = EditorGUILayout.FloatField(new GUIContent("Wind", kDamageStructTooltip), structField.Wind);
+        structField.Water = EditorGUILayout.FloatField(new GUIContent("Water", kDamageStructTooltip), structField.Water);
     }
 
     private void CreateSelectedItem(CreateTab tab)
@@ -455,6 +514,17 @@ public class ItemDatabaseWindow : EditorWindow
 
         SetEquippableNumericProps(so);
 
+        // itemEffects (array) - copy from window mirror
+        SerializedProperty effectsProp = so.FindProperty("itemEffects");
+        if (effectsProp != null)
+        {
+            effectsProp.arraySize = itemEffectsWindow.Count;
+            for (int i = 0; i < itemEffectsWindow.Count; i++)
+            {
+                effectsProp.GetArrayElementAtIndex(i).objectReferenceValue = itemEffectsWindow[i];
+            }
+        }
+
         // damageBonusPercentages (struct)
         SetDamageStructToProperty(so, "damageBonusPercentages", damageBonusPercentagesWindow);
 
@@ -496,6 +566,17 @@ public class ItemDatabaseWindow : EditorWindow
         }
 
         SetEquippableNumericProps(so);
+
+        // itemEffects (array) - copy from window mirror
+        SerializedProperty effectsProp = so.FindProperty("itemEffects");
+        if (effectsProp != null)
+        {
+            effectsProp.arraySize = itemEffectsWindow.Count;
+            for (int i = 0; i < itemEffectsWindow.Count; i++)
+            {
+                effectsProp.GetArrayElementAtIndex(i).objectReferenceValue = itemEffectsWindow[i];
+            }
+        }
 
         // damageBonusPercentages (struct)
         SetDamageStructToProperty(so, "damageBonusPercentages", damageBonusPercentagesWindow);
@@ -540,6 +621,18 @@ public class ItemDatabaseWindow : EditorWindow
         so.FindProperty("maxStackSize").intValue = Mathf.Max(1, maxStackSize);
 
         SetEquippableNumericProps(so);
+
+        // itemEffects (array) - copy from window mirror
+        SerializedProperty effectsProp = so.FindProperty("itemEffects");
+        if (effectsProp != null)
+        {
+            effectsProp.arraySize = itemEffectsWindow.Count;
+            for (int i = 0; i < itemEffectsWindow.Count; i++)
+            {
+                effectsProp.GetArrayElementAtIndex(i).objectReferenceValue = itemEffectsWindow[i];
+            }
+        }
+
         SetDamageStructToProperty(so, "damageBonusPercentages", damageBonusPercentagesWindow);
 
         so.ApplyModifiedProperties();
