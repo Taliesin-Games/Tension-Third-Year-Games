@@ -6,10 +6,10 @@ using WebSocketSharp;
 
 static class ItemIDGenerator
 {
-    public static string GenerateID()
-    {
-        return Guid.NewGuid().ToString("N"); // stable, compact
-    }
+	public static string GenerateID()
+	{
+		return Guid.NewGuid().ToString("N"); // stable, compact
+	}
 }
 
 // Sanitize filename by removing invalid chars and trimming.
