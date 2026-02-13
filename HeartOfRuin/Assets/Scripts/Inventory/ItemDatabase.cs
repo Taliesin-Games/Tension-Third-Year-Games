@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -5,6 +6,9 @@ using System.Collections.Generic;
 public class ItemDatabase : ScriptableObject
 {
     public List<Item> items = new();
+
+    // Added: array of LootTable references so the database can also hold loot table assets.
+    public LootTable[] lootTables = Array.Empty<LootTable>();
 
     private Dictionary<string, Item> lookup;
 
@@ -23,10 +27,40 @@ public class ItemDatabase : ScriptableObject
 
     public Item GetByID(string id)
     {
-        if (lookup == null)
+        if (lookup == null) 
+        {
             BuildLookup();
+        }
+
 
         lookup.TryGetValue(id, out var item);
         return item;
+    }
+
+    public Item[] GetByTag(tg_ItemTag tag)
+    {
+        if (tag == null) 
+        { 
+            Debug.LogWarning("Tag is null. Returning empty array.");
+            return new Item[0]; 
+        }
+
+        if (lookup == null) 
+        { 
+            BuildLookup(); 
+        }
+
+        var result = new List<Item>(); 
+        foreach (var item in items) 
+        {
+            if (item != null && item.HasTag(tag))
+            {
+                result.Add(item);
+            }
+        
+        } 
+        
+        return result.ToArray();
+
     }
 }

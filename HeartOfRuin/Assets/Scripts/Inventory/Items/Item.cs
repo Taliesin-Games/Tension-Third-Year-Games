@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
+public enum ItemRarity { common, uncommon, rare, epic, lengendary, cosmic }
+
 [Serializable]
 public class Item : ScriptableObject
 {
@@ -17,6 +20,9 @@ public class Item : ScriptableObject
     [SerializeField] GameObject itemMesh;
     [Tooltip("Max number of items that can be stacked into a single inventory slot")]
     [SerializeField] int maxStackSize = 1;
+    [Tooltip("Rarity level of the item, used for visual effects and loot generation")] 
+    [SerializeField] 
+    ItemRarity rarity = ItemRarity.common;
 
     [Tooltip("Tags used to categorize this item for loot tables or filtering (reference Tag assets)")]
     [SerializeField] tg_ItemTag[] tags = new tg_ItemTag[0];
@@ -49,6 +55,12 @@ public class Item : ScriptableObject
     public int GetMaxStackSize()
     {
         return maxStackSize;
+    }
+
+    // NEW: expose rarity to runtime code
+    public ItemRarity GetRarity()
+    {
+        return rarity;
     }
 
     public virtual EquipSlotType GetEquipSlotType()

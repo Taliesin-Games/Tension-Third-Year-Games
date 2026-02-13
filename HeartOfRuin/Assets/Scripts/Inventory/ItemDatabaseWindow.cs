@@ -18,7 +18,7 @@ public class ItemDatabaseWindow : EditorWindow
 {
     private ItemDatabase database;
 
-    private enum MainTab { ItemCreation = 0, Database = 1, Tags = 2, EditItem = 3 }
+    private enum MainTab { ItemCreation = 0, Database = 1, Tags = 2, LootTables = 3, EditItem = 4 }
     private MainTab mainTab = MainTab.ItemCreation;
 
     private enum CreateTab { Item = 0, Armour = 1, Weapon = 2, Artifact = 3 }
@@ -30,12 +30,13 @@ public class ItemDatabaseWindow : EditorWindow
     private string itemDescription;
     private GameObject itemMesh;
     private int maxStackSize = 1;
+    private ItemRarity itemRarity = ItemRarity.common;
 
     // Tags mirror for item creation (now tg_ItemTag references)
     private List<tg_ItemTag> tagsWindow = new List<tg_ItemTag>();
     private tg_ItemTag newTagSelection = null;
 
-    // --- Tag management UI state ---
+    // Tag management UI state
     private List<tg_ItemTag> allTags = new List<tg_ItemTag>();
     private bool tagsLoaded = false;
     private Vector2 tagsScrollPos;
@@ -96,12 +97,28 @@ public class ItemDatabaseWindow : EditorWindow
     // Creation scroll position (make creation tab scrollable)
     private Vector2 creationScrollPos;
 
+    // Loot Tables UI state
+    private Vector2 lootScrollPos;
+    private LootTable selectedLootTable = null;
+    private SerializedObject selectedLootTableSO = null;
+    private string newLootTableName = "New Loot Table";
+    private LootTable addExistingLootSelection = null;
+
+    // Quick-entry fields to append an entry to the currently edited table (select item from DB)
+    private int quickEntryItemIndex = -1;
+    private float quickEntryWeight = 1f;
+    private float quickEntryChance = 1f;
+    private int quickEntryMin = 1;
+    private int quickEntryMax = 1;
+    private bool quickEntryUnique = true;
+
     // GUIContent with tooltips (pulled from the Tooltip attributes on the ScriptableObjects)
     private static readonly GUIContent kItemName = new GUIContent("Item Name", "Name of the item");
     private static readonly GUIContent kItemIcon = new GUIContent("Icon", "Icon representing the item in the inventory UI");
     private static readonly GUIContent kItemDescription = new GUIContent("Description", "Description of the item");
     private static readonly GUIContent kItemMesh = new GUIContent("World Mesh", "3D model of the item for world representation");
     private static readonly GUIContent kMaxStackSize = new GUIContent("Max Stack Size", "Max number of items that can be stacked into a single inventory slot");
+    private static readonly GUIContent kItemRarity = new GUIContent("Rarity", "Rarity level of the item (common > cosmic)");
 
     private static readonly GUIContent kEquipSlotType = new GUIContent("Equip Slot Type", "Type of item slot this can be equipped into, Any can go into None type, None type cant go into any");
     private const string kDamageStructTooltip = "Percentage damage bonuses provided by the item";
@@ -133,8 +150,8 @@ public class ItemDatabaseWindow : EditorWindow
 
         EditorGUILayout.Space();
 
-        // Top-level: Item Creation vs Database vs Tags vs Edit Item
-        string[] mainTabs = new[] { "Item Creation", "Database", "Tags", "Edit Item" };
+        // Top-level: Item Creation vs Database vs Tags vs Loot Tables vs Edit Item
+        string[] mainTabs = new[] { "Item Creation", "Database", "Tags", "Loot Tables", "Edit Item" };
         mainTab = (MainTab)GUILayout.Toolbar((int)mainTab, mainTabs);
 
         EditorGUILayout.Space();
@@ -150,6 +167,10 @@ public class ItemDatabaseWindow : EditorWindow
         else if (mainTab == MainTab.Tags)
         {
             DrawTagsSection();
+        }
+        else if (mainTab == MainTab.LootTables)
+        {
+            DrawLootTablesSection();
         }
         else
         {
@@ -177,7 +198,10 @@ public class ItemDatabaseWindow : EditorWindow
         itemMesh = (GameObject)EditorGUILayout.ObjectField(kItemMesh, itemMesh, typeof(GameObject), false);
         maxStackSize = EditorGUILayout.IntField(kMaxStackSize, maxStackSize);
 
-        // Tags editor (mirror) — now uses tg_ItemTag objects
+        // Rarity field for created items
+        itemRarity = (ItemRarity)EditorGUILayout.EnumPopup(kItemRarity, itemRarity);
+
+        // Tags editor (mirror)  now uses tg_ItemTag objects
         EditorGUILayout.Space();
         GUILayout.Label(kTagsLabel, EditorStyles.boldLabel);
         // show existing tags
@@ -441,6 +465,265 @@ public class ItemDatabaseWindow : EditorWindow
         }
 
         EditorGUILayout.EndVertical();
+    }
+
+    // Loot Tables tab: create / add / view / edit loot tables stored on the current database
+    private void DrawLootTablesSection()
+    {
+        EditorGUILayout.BeginVertical("box");
+        EditorGUILayout.LabelField("Loot Tables", EditorStyles.boldLabel);
+        EditorGUILayout.Space();
+
+        if (database == null)
+        {
+            EditorGUILayout.HelpBox("Assign an Item Database to manage its Loot Tables.", MessageType.Info);
+            EditorGUILayout.EndVertical();
+            return;
+        }
+
+        // Ensure array safety
+        if (database.lootTables == null) database.lootTables = Array.Empty<LootTable>();
+
+        // Top controls: create new, add existing
+        EditorGUILayout.BeginHorizontal();
+        newLootTableName = EditorGUILayout.TextField("New Table Name", newLootTableName);
+        if (GUILayout.Button("Create Table", GUILayout.Width(120)))
+        {
+            CreateNewLootTableAsset(newLootTableName);
+            newLootTableName = "New Loot Table";
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        addExistingLootSelection = (LootTable)EditorGUILayout.ObjectField("Add Existing", addExistingLootSelection, typeof(LootTable), false);
+        if (GUILayout.Button("Add to Database", GUILayout.Width(140)))
+        {
+            if (addExistingLootSelection != null)
+            {
+                var list = new List<LootTable>(database.lootTables);
+                if (!list.Contains(addExistingLootSelection))
+                {
+                    list.Add(addExistingLootSelection);
+                    database.lootTables = list.ToArray();
+                    EditorUtility.SetDirty(database);
+                    AssetDatabase.SaveAssets();
+                }
+                addExistingLootSelection = null;
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Space();
+
+        // List existing loot tables in the database
+        lootScrollPos = EditorGUILayout.BeginScrollView(lootScrollPos, GUILayout.Height(200));
+        for (int i = 0; i < database.lootTables.Length; i++)
+        {
+            var lt = database.lootTables[i];
+            if (lt == null) continue;
+
+            EditorGUILayout.BeginHorizontal("box");
+            GUILayout.Label(lt.name, GUILayout.Width(240));
+            if (GUILayout.Button("Edit", GUILayout.Width(80)))
+            {
+                selectedLootTable = lt;
+                selectedLootTableSO = null;
+                mainTab = MainTab.LootTables;
+            }
+            if (GUILayout.Button("Reveal", GUILayout.Width(80)))
+            {
+                var path = AssetDatabase.GetAssetPath(lt);
+                if (!string.IsNullOrEmpty(path)) EditorUtility.RevealInFinder(path);
+            }
+            if (GUILayout.Button("Remove from DB", GUILayout.Width(140)))
+            {
+                if (EditorUtility.DisplayDialog("Remove Loot Table", $"Remove '{lt.name}' from database (asset will remain)?", "Remove", "Cancel"))
+                {
+                    var list = new List<LootTable>(database.lootTables);
+                    list.Remove(lt);
+                    database.lootTables = list.ToArray();
+                    EditorUtility.SetDirty(database);
+                    AssetDatabase.SaveAssets();
+                }
+            }
+            if (GUILayout.Button("Delete Asset", GUILayout.Width(120)))
+            {
+                if (EditorUtility.DisplayDialog("Delete Loot Table", $"Permanently delete '{lt.name}' asset and remove from DB?", "Delete", "Cancel"))
+                {
+                    var path = AssetDatabase.GetAssetPath(lt);
+                    var list = new List<LootTable>(database.lootTables);
+                    list.Remove(lt);
+                    database.lootTables = list.ToArray();
+                    AssetDatabase.DeleteAsset(path);
+                    EditorUtility.SetDirty(database);
+                    AssetDatabase.SaveAssets();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        EditorGUILayout.EndScrollView();
+
+        EditorGUILayout.Space();
+
+        // If a table is selected for editing, show editor below
+        if (selectedLootTable != null)
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField($"Editing: {selectedLootTable.name}", EditorStyles.boldLabel);
+
+            if (selectedLootTableSO == null || selectedLootTableSO.targetObject != selectedLootTable)
+            {
+                selectedLootTableSO = new SerializedObject(selectedLootTable);
+                selectedLootTableSO.Update();
+            }
+
+            selectedLootTableSO.Update();
+            var pSampling = selectedLootTableSO.FindProperty("samplingMode");
+            if (pSampling != null) EditorGUILayout.PropertyField(pSampling);
+
+            var pPicks = selectedLootTableSO.FindProperty("picks");
+            if (pPicks != null)
+            {
+                // only show picks when WeightedPicks
+                try
+                {
+                    var mode = (LootSamplingMode)pSampling.enumValueIndex;
+                    if (mode == LootSamplingMode.WeightedPicks)
+                    {
+                        EditorGUILayout.PropertyField(pPicks);
+                    }
+                }
+                catch
+                {
+                    EditorGUILayout.PropertyField(pPicks);
+                }
+            }
+
+            EditorGUILayout.Space();
+            // entries array field (full inspector)
+            var entriesProp = selectedLootTableSO.FindProperty("entries");
+            if (entriesProp != null)
+            {
+                EditorGUILayout.PropertyField(entriesProp, new GUIContent("Entries"), true);
+            }
+
+            EditorGUILayout.Space();
+            // Quick-add entry UI (choose item from current database)
+            GUILayout.Label("Quick Add Entry (pick an Item from this database)", EditorStyles.miniBoldLabel);
+            var dbItems = database.items ?? new List<Item>();
+            string[] itemNames = dbItems.Select(it => it != null ? it.GetItemName() ?? it.name : "<Missing>").ToArray();
+            if (itemNames.Length == 0)
+            {
+                EditorGUILayout.HelpBox("No items in database to add. Create items first.", MessageType.Info);
+            }
+            else
+            {
+                quickEntryItemIndex = Mathf.Clamp(quickEntryItemIndex, -1, itemNames.Length - 1);
+                quickEntryItemIndex = EditorGUILayout.Popup("Item", quickEntryItemIndex, itemNames);
+                quickEntryWeight = EditorGUILayout.FloatField("Weight", quickEntryWeight);
+                quickEntryChance = EditorGUILayout.Slider("Chance (PerEntry)", quickEntryChance, 0f, 1f);
+                EditorGUILayout.BeginHorizontal();
+                quickEntryMin = EditorGUILayout.IntField("Min Count", quickEntryMin);
+                quickEntryMax = EditorGUILayout.IntField("Max Count", quickEntryMax);
+                EditorGUILayout.EndHorizontal();
+                quickEntryUnique = EditorGUILayout.Toggle("Unique (WeightedPicks)", quickEntryUnique);
+
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("Add Entry", GUILayout.Width(120)))
+                {
+                    if (quickEntryItemIndex >= 0 && quickEntryItemIndex < dbItems.Count)
+                    {
+                        var chosenItem = dbItems[quickEntryItemIndex];
+                        if (chosenItem != null)
+                        {
+                            if (entriesProp != null)
+                            {
+                                int newIndex = entriesProp.arraySize;
+                                entriesProp.InsertArrayElementAtIndex(newIndex);
+                                var newEl = entriesProp.GetArrayElementAtIndex(newIndex);
+                                if (newEl != null)
+                                {
+                                    var pItem = newEl.FindPropertyRelative("item");
+                                    if (pItem != null) pItem.objectReferenceValue = chosenItem;
+
+                                    var pWeight = newEl.FindPropertyRelative("weight");
+                                    if (pWeight != null) pWeight.floatValue = Mathf.Max(0f, quickEntryWeight);
+
+                                    var pChance = newEl.FindPropertyRelative("chance");
+                                    if (pChance != null) pChance.floatValue = Mathf.Clamp01(quickEntryChance);
+
+                                    var pMin = newEl.FindPropertyRelative("minCount");
+                                    if (pMin != null) pMin.intValue = Mathf.Max(0, quickEntryMin);
+
+                                    var pMax = newEl.FindPropertyRelative("maxCount");
+                                    if (pMax != null) pMax.intValue = Mathf.Max(quickEntryMin, quickEntryMax);
+
+                                    var pUnique = newEl.FindPropertyRelative("unique");
+                                    if (pUnique != null) pUnique.boolValue = quickEntryUnique;
+                                }
+
+                                selectedLootTableSO.ApplyModifiedProperties();
+                                EditorUtility.SetDirty(selectedLootTable);
+                                AssetDatabase.SaveAssets();
+                            }
+                        }
+                    }
+                }
+
+                if (GUILayout.Button("Clear Quick Entry", GUILayout.Width(140)))
+                {
+                    quickEntryItemIndex = -1;
+                    quickEntryWeight = 1f;
+                    quickEntryChance = 1f;
+                    quickEntryMin = 1;
+                    quickEntryMax = 1;
+                    quickEntryUnique = true;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Save Table", GUILayout.Width(120)))
+            {
+                selectedLootTableSO.ApplyModifiedProperties();
+                EditorUtility.SetDirty(selectedLootTable);
+                AssetDatabase.SaveAssets();
+            }
+            if (GUILayout.Button("Close Editor", GUILayout.Width(120)))
+            {
+                selectedLootTable = null;
+                selectedLootTableSO = null;
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        EditorGUILayout.EndVertical();
+    }
+
+    private void CreateNewLootTableAsset(string name)
+    {
+        var lt = CreateInstance<LootTable>();
+        lt.name = string.IsNullOrWhiteSpace(name) ? "New Loot Table" : name;
+
+        string folder = "Assets/InGameItems/LootTables";
+        string uniquePath = EnsureFolderAndGetUniquePath(folder, SanitizeFileName(lt.name));
+        if (string.IsNullOrEmpty(uniquePath))
+        {
+            EditorUtility.DisplayDialog("Create Loot Table", "Could not determine a valid asset path.", "OK");
+            return;
+        }
+
+        AssetDatabase.CreateAsset(lt, uniquePath);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        var list = new List<LootTable>(database.lootTables ?? Array.Empty<LootTable>());
+        list.Add(lt);
+        database.lootTables = list.ToArray();
+        EditorUtility.SetDirty(database);
+        AssetDatabase.SaveAssets();
+        Selection.activeObject = lt;
     }
 
     private void RefreshTagList()
@@ -772,6 +1055,7 @@ public class ItemDatabaseWindow : EditorWindow
         var pIcon = editItemSO.FindProperty("itemIcon");
         var pMesh = editItemSO.FindProperty("itemMesh");
         var pMaxStack = editItemSO.FindProperty("maxStackSize");
+        var pRarity = editItemSO.FindProperty("rarity");
         var pTags = editItemSO.FindProperty("tags");
 
         if (pName != null) EditorGUILayout.PropertyField(pName, kItemName);
@@ -779,6 +1063,7 @@ public class ItemDatabaseWindow : EditorWindow
         if (pIcon != null) EditorGUILayout.PropertyField(pIcon, kItemIcon);
         if (pMesh != null) EditorGUILayout.PropertyField(pMesh, kItemMesh);
         if (pMaxStack != null) EditorGUILayout.PropertyField(pMaxStack, kMaxStackSize);
+        if (pRarity != null) EditorGUILayout.PropertyField(pRarity, kItemRarity);
         if (pTags != null) EditorGUILayout.PropertyField(pTags, new GUIContent("Tags"), true);
 
         // If equippable show equippable props
@@ -913,6 +1198,25 @@ public class ItemDatabaseWindow : EditorWindow
         EditorGUILayout.LabelField("Type", item.GetType().Name);
         EditorGUILayout.LabelField("ID", item.GetID() ?? string.Empty);
         EditorGUILayout.LabelField("Max Stack", item.GetMaxStackSize().ToString());
+
+        // Show rarity (read-only) using SerializedObject to read the enum property
+        var soTop = new SerializedObject(item);
+        soTop.Update();
+        var pRarity = soTop.FindProperty("rarity");
+        if (pRarity != null)
+        {
+            try
+            {
+                var rarityVal = (ItemRarity)pRarity.enumValueIndex;
+                EditorGUILayout.LabelField("Rarity", rarityVal.ToString());
+            }
+            catch
+            {
+                EditorGUILayout.LabelField("Rarity", "<Unknown>");
+            }
+        }
+        soTop.ApplyModifiedProperties();
+
         EditorGUILayout.EndVertical();
         EditorGUILayout.EndHorizontal();
 
@@ -1088,6 +1392,10 @@ public class ItemDatabaseWindow : EditorWindow
         so.FindProperty("itemMesh").objectReferenceValue = itemMesh;
         so.FindProperty("maxStackSize").intValue = Mathf.Max(1, maxStackSize);
 
+        // set rarity
+        var pR = so.FindProperty("rarity");
+        if (pR != null) pR.enumValueIndex = (int)itemRarity;
+
         // set tags (tg_ItemTag references)
         SerializedProperty tagsProp = so.FindProperty("tags");
         if (tagsProp != null)
@@ -1128,6 +1436,10 @@ public class ItemDatabaseWindow : EditorWindow
         so.FindProperty("itemIcon").objectReferenceValue = itemIcon;
         so.FindProperty("itemMesh").objectReferenceValue = itemMesh;
         so.FindProperty("maxStackSize").intValue = Mathf.Max(1, maxStackSize);
+
+        // set rarity
+        var pR = so.FindProperty("rarity");
+        if (pR != null) pR.enumValueIndex = (int)itemRarity;
 
         // set tags
         SerializedProperty tagsProp = so.FindProperty("tags");
@@ -1192,6 +1504,10 @@ public class ItemDatabaseWindow : EditorWindow
         so.FindProperty("itemIcon").objectReferenceValue = itemIcon;
         so.FindProperty("itemMesh").objectReferenceValue = itemMesh;
         so.FindProperty("maxStackSize").intValue = Mathf.Max(1, maxStackSize);
+
+        // set rarity
+        var pR = so.FindProperty("rarity");
+        if (pR != null) pR.enumValueIndex = (int)itemRarity;
 
         // set tags
         SerializedProperty tagsProp = so.FindProperty("tags");
@@ -1265,6 +1581,10 @@ public class ItemDatabaseWindow : EditorWindow
         so.FindProperty("itemIcon").objectReferenceValue = itemIcon;
         so.FindProperty("itemMesh").objectReferenceValue = itemMesh;
         so.FindProperty("maxStackSize").intValue = Mathf.Max(1, maxStackSize);
+
+        // set rarity
+        var pR = so.FindProperty("rarity");
+        if (pR != null) pR.enumValueIndex = (int)itemRarity;
 
         // set tags
         SerializedProperty tagsProp = so.FindProperty("tags");
@@ -1409,7 +1729,7 @@ public class ItemDatabaseWindow : EditorWindow
     {
         lastScanReport = string.Empty;
         lastScanAdded.Clear();
-        lastScanSkipped = new List<Item>();
+        lastScanSkipped.Clear();
 
         if (database == null)
         {
@@ -1595,7 +1915,7 @@ public class ItemDatabaseWindow : EditorWindow
             return;
         }
 
-        // First: assign IDs to items that have empty/"0" ids
+        // assign IDs to items that have empty/"0" ids
         bool assignedAny = false;
         for (int i = 0; i < database.items.Count; i++)
         {

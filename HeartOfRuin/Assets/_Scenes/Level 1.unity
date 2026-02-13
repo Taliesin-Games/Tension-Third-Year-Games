@@ -1402,7 +1402,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7922875856160554918, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 378907392}
   m_SourcePrefab: {fileID: 100100000, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
 --- !u!1001 &351857463
 PrefabInstance:
@@ -1466,6 +1469,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6925974849022785550, guid: bc3263fd88eef9d478b583646a6f74b3, type: 3}
   m_PrefabInstance: {fileID: 351857463}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &378907391 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7922875856160554918, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+  m_PrefabInstance: {fileID: 348320915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &378907392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378907391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2081df6ce5f347438af6bcc197a5bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LootComponent
+  lootTable: {fileID: 0}
+  lootInventories:
+  - {fileID: 378907400}
+  dropRates:
+    entries:
+    - rarity: 0
+      rate: 0
+    - rarity: 1
+      rate: 0
+    - rarity: 2
+      rate: 0
+    - rarity: 3
+      rate: 0
+    - rarity: 4
+      rate: 0
+    - rarity: 5
+      rate: 0.14
+--- !u!114 &378907400 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4727636871516878498, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+  m_PrefabInstance: {fileID: 348320915}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378907391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e962f96b85a53ed438c7213fd8e00d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
 --- !u!1001 &451542480
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3177,7 +3225,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3390565068289297619, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767010529}
   m_SourcePrefab: {fileID: 100100000, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
 --- !u!1001 &1174533776
 PrefabInstance:
@@ -4584,6 +4635,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6925974849022785550, guid: bc3263fd88eef9d478b583646a6f74b3, type: 3}
   m_PrefabInstance: {fileID: 1732080987}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1767010528 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3390565068289297619, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
+  m_PrefabInstance: {fileID: 1166924936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1767010529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767010528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde9b8c7099e9ba4a82fae7103359ac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LootGenerator
+  itemDatabase: {fileID: 11400000, guid: 636e95c65ccf4104ca08ff826a59f515, type: 2}
 --- !u!1001 &1768080599
 PrefabInstance:
   m_ObjectHideFlags: 0
