@@ -53,7 +53,7 @@ public class LootTable : ScriptableObject
         if (picks < 0) picks = 0;
     }
 
-    // Sample the table once. Returns a list of (Item, quantity)
+    // Sample the table.
     public List<(Item item, int qty)> Sample(System.Random? rng = null)
     {
         EnsureValid();

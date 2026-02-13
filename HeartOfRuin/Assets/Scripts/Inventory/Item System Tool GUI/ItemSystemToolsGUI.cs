@@ -6,14 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-public static class ItemIDGenerator
-{
-    public static string Generate()
-    {
-        return Guid.NewGuid().ToString("N"); // stable, compact
-    }
-}
-
 public class ItemDatabaseWindow : EditorWindow
 {
     private ItemDatabase database;
@@ -101,11 +93,16 @@ public class ItemDatabaseWindow : EditorWindow
     private Vector2 lootScrollPos;
     private LootTable selectedLootTable = null;
     private SerializedObject selectedLootTableSO = null;
+    private string selectedLootTableSnapshotJson = null;
+    private bool selectedLootTableDirty = false;
+    private Vector2 lootEditScrollPos;
     private string newLootTableName = "New Loot Table";
     private LootTable addExistingLootSelection = null;
 
     // Quick-entry fields to append an entry to the currently edited table (select item from DB)
-    private int quickEntryItemIndex = -1;
+    // replaced the index-based popup with a searchable selector
+    private string quickEntrySearch = string.Empty;
+    private Item quickEntrySelectedItem = null;
     private float quickEntryWeight = 1f;
     private float quickEntryChance = 1f;
     private int quickEntryMin = 1;
@@ -526,8 +523,11 @@ public class ItemDatabaseWindow : EditorWindow
             GUILayout.Label(lt.name, GUILayout.Width(240));
             if (GUILayout.Button("Edit", GUILayout.Width(80)))
             {
+                // capture snapshot for revert and create serialized object buffer
                 selectedLootTable = lt;
                 selectedLootTableSO = null;
+                selectedLootTableSnapshotJson = EditorJsonUtility.ToJson(selectedLootTable);
+                selectedLootTableDirty = false;
                 mainTab = MainTab.LootTables;
             }
             if (GUILayout.Button("Reveal", GUILayout.Width(80)))
@@ -565,21 +565,28 @@ public class ItemDatabaseWindow : EditorWindow
 
         EditorGUILayout.Space();
 
-        // If a table is selected for editing, show editor below
+        // If a table is selected for editing, show editor below (now scrollable)
         if (selectedLootTable != null)
         {
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField($"Editing: {selectedLootTable.name}", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField($"Editing: {selectedLootTable.name}" + (selectedLootTableDirty ? " *unsaved changes*" : ""), EditorStyles.boldLabel);
 
+            // create buffer SerializedObject if needed
             if (selectedLootTableSO == null || selectedLootTableSO.targetObject != selectedLootTable)
             {
                 selectedLootTableSO = new SerializedObject(selectedLootTable);
+                // call Update once to populate the buffer initially
                 selectedLootTableSO.Update();
             }
 
-            selectedLootTableSO.Update();
+            // Use a scroll view for the editing area
+            lootEditScrollPos = EditorGUILayout.BeginScrollView(lootEditScrollPos);
+
+            // sampling mode and picks (buffered; only applied on Save)
             var pSampling = selectedLootTableSO.FindProperty("samplingMode");
+            EditorGUI.BeginChangeCheck();
             if (pSampling != null) EditorGUILayout.PropertyField(pSampling);
+            if (EditorGUI.EndChangeCheck()) selectedLootTableDirty = true;
 
             var pPicks = selectedLootTableSO.FindProperty("picks");
             if (pPicks != null)
@@ -590,89 +597,134 @@ public class ItemDatabaseWindow : EditorWindow
                     var mode = (LootSamplingMode)pSampling.enumValueIndex;
                     if (mode == LootSamplingMode.WeightedPicks)
                     {
+                        EditorGUI.BeginChangeCheck();
                         EditorGUILayout.PropertyField(pPicks);
+                        if (EditorGUI.EndChangeCheck()) selectedLootTableDirty = true;
                     }
                 }
                 catch
                 {
+                    EditorGUI.BeginChangeCheck();
                     EditorGUILayout.PropertyField(pPicks);
+                    if (EditorGUI.EndChangeCheck()) selectedLootTableDirty = true;
                 }
             }
 
             EditorGUILayout.Space();
-            // entries array field (full inspector)
+            // entries array field (editable in the buffer)
             var entriesProp = selectedLootTableSO.FindProperty("entries");
             if (entriesProp != null)
             {
+                // Draw entries as a property field which edits the buffer; changes are not saved until ApplyModifiedProperties is called.
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(entriesProp, new GUIContent("Entries"), true);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    selectedLootTableDirty = true;
+                }
             }
 
             EditorGUILayout.Space();
-            // Quick-add entry UI (choose item from current database)
-            GUILayout.Label("Quick Add Entry (pick an Item from this database)", EditorStyles.miniBoldLabel);
-            var dbItems = database.items ?? new List<Item>();
-            string[] itemNames = dbItems.Select(it => it != null ? it.GetItemName() ?? it.name : "<Missing>").ToArray();
-            if (itemNames.Length == 0)
+            // Searchable item selector (instead of the popup)
+            GUILayout.Label("Quick Add Entry - select an Item from this database", EditorStyles.miniBoldLabel);
+
+            if (database.items == null || database.items.Count == 0)
             {
                 EditorGUILayout.HelpBox("No items in database to add. Create items first.", MessageType.Info);
             }
             else
             {
-                quickEntryItemIndex = Mathf.Clamp(quickEntryItemIndex, -1, itemNames.Length - 1);
-                quickEntryItemIndex = EditorGUILayout.Popup("Item", quickEntryItemIndex, itemNames);
+                // search box
+                quickEntrySearch = EditorGUILayout.TextField("Search", quickEntrySearch);
+
+                // filtered results
+                var dbItems = database.items.Where(it => it != null).ToList();
+                var filtered = string.IsNullOrWhiteSpace(quickEntrySearch)
+                    ? dbItems
+                    : dbItems.Where(it =>
+                        (it.GetItemName()?.IndexOf(quickEntrySearch, StringComparison.OrdinalIgnoreCase) >= 0)
+                        || (it.GetID()?.IndexOf(quickEntrySearch, StringComparison.OrdinalIgnoreCase) >= 0)
+                        || it.name.IndexOf(quickEntrySearch, StringComparison.OrdinalIgnoreCase) >= 0
+                      ).ToList();
+
+                // show selection area
+                EditorGUILayout.BeginVertical("box");
+                var resultAreaHeight = Mathf.Min(200, 20 + filtered.Count * 22);
+                var resultScroll = GUILayout.BeginScrollView(Vector2.zero, GUILayout.Height(resultAreaHeight));
+                foreach (var it in filtered)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label(it.GetItemName() ?? it.name, GUILayout.Width(300));
+                    if (GUILayout.Button("Select", GUILayout.Width(80)))
+                    {
+                        quickEntrySelectedItem = it;
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+                GUILayout.EndScrollView();
+                EditorGUILayout.EndVertical();
+
+                EditorGUILayout.Space();
+
+                // show selected item
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Selected Item:", GUILayout.Width(100));
+                if (quickEntrySelectedItem != null)
+                    EditorGUILayout.LabelField($"{quickEntrySelectedItem.GetItemName()} ({quickEntrySelectedItem.GetID()})");
+                else
+                    EditorGUILayout.LabelField("<none>");
+                EditorGUILayout.EndHorizontal();
+
+                // entry fields
                 quickEntryWeight = EditorGUILayout.FloatField("Weight", quickEntryWeight);
                 quickEntryChance = EditorGUILayout.Slider("Chance (PerEntry)", quickEntryChance, 0f, 1f);
                 EditorGUILayout.BeginHorizontal();
                 quickEntryMin = EditorGUILayout.IntField("Min Count", quickEntryMin);
                 quickEntryMax = EditorGUILayout.IntField("Max Count", quickEntryMax);
+                quickEntryMin = Mathf.Abs(quickEntryMin);
+                quickEntryMax = Mathf.Abs(quickEntryMax);
+                if (quickEntryMax < quickEntryMin) quickEntryMax = quickEntryMin;
                 EditorGUILayout.EndHorizontal();
                 quickEntryUnique = EditorGUILayout.Toggle("Unique (WeightedPicks)", quickEntryUnique);
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("Add Entry", GUILayout.Width(120)))
+                if (GUILayout.Button("Add Entry (buffered)", GUILayout.Width(160)))
                 {
-                    if (quickEntryItemIndex >= 0 && quickEntryItemIndex < dbItems.Count)
+                    if (quickEntrySelectedItem != null && entriesProp != null)
                     {
-                        var chosenItem = dbItems[quickEntryItemIndex];
-                        if (chosenItem != null)
+                        int newIndex = entriesProp.arraySize;
+                        entriesProp.InsertArrayElementAtIndex(newIndex);
+                        var newEl = entriesProp.GetArrayElementAtIndex(newIndex);
+                        if (newEl != null)
                         {
-                            if (entriesProp != null)
-                            {
-                                int newIndex = entriesProp.arraySize;
-                                entriesProp.InsertArrayElementAtIndex(newIndex);
-                                var newEl = entriesProp.GetArrayElementAtIndex(newIndex);
-                                if (newEl != null)
-                                {
-                                    var pItem = newEl.FindPropertyRelative("item");
-                                    if (pItem != null) pItem.objectReferenceValue = chosenItem;
+                            var pItem = newEl.FindPropertyRelative("item");
+                            if (pItem != null) pItem.objectReferenceValue = quickEntrySelectedItem;
 
-                                    var pWeight = newEl.FindPropertyRelative("weight");
-                                    if (pWeight != null) pWeight.floatValue = Mathf.Max(0f, quickEntryWeight);
+                            var pWeight = newEl.FindPropertyRelative("weight");
+                            if (pWeight != null) pWeight.floatValue = Mathf.Max(0f, quickEntryWeight);
 
-                                    var pChance = newEl.FindPropertyRelative("chance");
-                                    if (pChance != null) pChance.floatValue = Mathf.Clamp01(quickEntryChance);
+                            var pChance = newEl.FindPropertyRelative("chance");
+                            if (pChance != null) pChance.floatValue = Mathf.Clamp01(quickEntryChance);
 
-                                    var pMin = newEl.FindPropertyRelative("minCount");
-                                    if (pMin != null) pMin.intValue = Mathf.Max(0, quickEntryMin);
+                            var pMin = newEl.FindPropertyRelative("minCount");
+                            if (pMin != null) pMin.intValue = Mathf.Max(0, quickEntryMin);
 
-                                    var pMax = newEl.FindPropertyRelative("maxCount");
-                                    if (pMax != null) pMax.intValue = Mathf.Max(quickEntryMin, quickEntryMax);
+                            var pMax = newEl.FindPropertyRelative("maxCount");
+                            if (pMax != null) pMax.intValue = Mathf.Max(quickEntryMin, quickEntryMax);
 
-                                    var pUnique = newEl.FindPropertyRelative("unique");
-                                    if (pUnique != null) pUnique.boolValue = quickEntryUnique;
-                                }
-
-                                selectedLootTableSO.ApplyModifiedProperties();
-                                EditorUtility.SetDirty(selectedLootTable);
-                                AssetDatabase.SaveAssets();
-                            }
+                            var pUnique = newEl.FindPropertyRelative("unique");
+                            if (pUnique != null) pUnique.boolValue = quickEntryUnique;
                         }
+
+                        // mark as dirty in our UI buffer, but do NOT ApplyModifiedProperties() or Save assets yet
+                        selectedLootTableDirty = true;
                     }
                 }
 
-                if (GUILayout.Button("Clear Quick Entry", GUILayout.Width(140)))
+                if (GUILayout.Button("Clear Selection", GUILayout.Width(140)))
                 {
-                    quickEntryItemIndex = -1;
+                    quickEntrySearch = string.Empty;
+                    quickEntrySelectedItem = null;
                     quickEntryWeight = 1f;
                     quickEntryChance = 1f;
                     quickEntryMin = 1;
@@ -683,19 +735,78 @@ public class ItemDatabaseWindow : EditorWindow
             }
 
             EditorGUILayout.Space();
+
+            // Save / Revert / Close controls
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Save Table", GUILayout.Width(120)))
             {
-                selectedLootTableSO.ApplyModifiedProperties();
-                EditorUtility.SetDirty(selectedLootTable);
-                AssetDatabase.SaveAssets();
+                // Apply buffered edits and persist
+                if (selectedLootTableSO != null)
+                {
+                    selectedLootTableSO.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(selectedLootTable);
+                    AssetDatabase.SaveAssets();
+                    // refresh snapshot and clear dirty flag
+                    selectedLootTableSnapshotJson = EditorJsonUtility.ToJson(selectedLootTable);
+                    selectedLootTableDirty = false;
+                }
+            }
+            if (GUILayout.Button("Revert", GUILayout.Width(120)))
+            {
+                if (!string.IsNullOrEmpty(selectedLootTableSnapshotJson))
+                {
+                    EditorJsonUtility.FromJsonOverwrite(selectedLootTableSnapshotJson, selectedLootTable);
+                    selectedLootTableSO = new SerializedObject(selectedLootTable);
+                    // populate buffer from reverted asset state
+                    selectedLootTableSO.Update();
+                    selectedLootTableDirty = false;
+                }
+                else
+                {
+                    // fallback: reload asset from disk
+                    selectedLootTable = AssetDatabase.LoadAssetAtPath<LootTable>(AssetDatabase.GetAssetPath(selectedLootTable));
+                    selectedLootTableSO = new SerializedObject(selectedLootTable);
+                    selectedLootTableSO.Update();
+                    selectedLootTableDirty = false;
+                }
             }
             if (GUILayout.Button("Close Editor", GUILayout.Width(120)))
             {
+                if (selectedLootTableDirty)
+                {
+                    int choice = EditorUtility.DisplayDialogComplex("Unsaved Changes",
+                        "There are unsaved changes to this Loot Table. Save before closing?",
+                        "Save", "Discard", "Cancel");
+                    if (choice == 0) // Save
+                    {
+                        selectedLootTableSO?.ApplyModifiedProperties();
+                        EditorUtility.SetDirty(selectedLootTable);
+                        AssetDatabase.SaveAssets();
+                        selectedLootTableDirty = false;
+                    }
+                    else if (choice == 1) // Discard
+                    {
+                        if (!string.IsNullOrEmpty(selectedLootTableSnapshotJson))
+                            EditorJsonUtility.FromJsonOverwrite(selectedLootTableSnapshotJson, selectedLootTable);
+                    }
+                    else // Cancel
+                    {
+                        // do not close
+                        EditorGUILayout.EndHorizontal();
+                        EditorGUILayout.EndScrollView();
+                        EditorGUILayout.EndVertical();
+                        return;
+                    }
+                }
+
                 selectedLootTable = null;
                 selectedLootTableSO = null;
+                selectedLootTableSnapshotJson = null;
+                selectedLootTableDirty = false;
             }
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.EndScrollView(); // loot edit scroll
         }
 
         EditorGUILayout.EndVertical();
@@ -1385,7 +1496,7 @@ public class ItemDatabaseWindow : EditorWindow
         SerializedObject so = new SerializedObject(item);
 
         // Set serialized fields (private fields accessible via SerializedObject)
-        so.FindProperty("id").stringValue = ItemIDGenerator.Generate();
+        so.FindProperty("id").stringValue = ItemIDGenerator.GenerateID();
         so.FindProperty("itemName").stringValue = itemName;
         so.FindProperty("itemDescription").stringValue = itemDescription;
         so.FindProperty("itemIcon").objectReferenceValue = itemIcon;
@@ -1430,7 +1541,7 @@ public class ItemDatabaseWindow : EditorWindow
         SerializedObject so = new SerializedObject(armour);
 
         // Base item fields
-        so.FindProperty("id").stringValue = ItemIDGenerator.Generate();
+        so.FindProperty("id").stringValue = ItemIDGenerator.GenerateID();
         so.FindProperty("itemName").stringValue = itemName;
         so.FindProperty("itemDescription").stringValue = itemDescription;
         so.FindProperty("itemIcon").objectReferenceValue = itemIcon;
@@ -1498,7 +1609,7 @@ public class ItemDatabaseWindow : EditorWindow
         SerializedObject so = new SerializedObject(weapon);
 
         // Base item fields
-        so.FindProperty("id").stringValue = ItemIDGenerator.Generate();
+        so.FindProperty("id").stringValue = ItemIDGenerator.GenerateID();
         so.FindProperty("itemName").stringValue = itemName;
         so.FindProperty("itemDescription").stringValue = itemDescription;
         so.FindProperty("itemIcon").objectReferenceValue = itemIcon;
@@ -1575,7 +1686,7 @@ public class ItemDatabaseWindow : EditorWindow
         SerializedObject so = new SerializedObject(artifact);
 
         // Base item fields
-        so.FindProperty("id").stringValue = ItemIDGenerator.Generate();
+        so.FindProperty("id").stringValue = ItemIDGenerator.GenerateID();
         so.FindProperty("itemName").stringValue = itemName;
         so.FindProperty("itemDescription").stringValue = itemDescription;
         so.FindProperty("itemIcon").objectReferenceValue = itemIcon;
@@ -1790,7 +1901,7 @@ public class ItemDatabaseWindow : EditorWindow
                     var prop = so.FindProperty("id");
                     if (prop != null)
                     {
-                        prop.stringValue = ItemIDGenerator.Generate();
+                        prop.stringValue = ItemIDGenerator.GenerateID();
                         so.ApplyModifiedProperties();
                         AssetDatabase.SaveAssets();
                         id = asset.GetID();
@@ -1875,7 +1986,6 @@ public class ItemDatabaseWindow : EditorWindow
         return unique;
     }
 
-    // Sanitize filename by removing invalid chars and trimming.
     private string SanitizeFileName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -1928,7 +2038,7 @@ public class ItemDatabaseWindow : EditorWindow
                 var prop = so.FindProperty("id");
                 if (prop != null)
                 {
-                    prop.stringValue = ItemIDGenerator.Generate();
+                    prop.stringValue = ItemIDGenerator.GenerateID();
                     so.ApplyModifiedProperties();
                     EditorUtility.SetDirty(itm);
                     assignedAny = true;
