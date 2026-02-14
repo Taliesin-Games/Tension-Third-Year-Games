@@ -72,7 +72,7 @@ public class LootTable : ScriptableObject
                     int qty = e.minCount;
                     if (e.maxCount > e.minCount)
                     {
-                        // use Unity RNG for simplicity in editor; use rng for deterministic runs if you prefer.
+                        
                         qty = UnityEngine.Random.Range(e.minCount, e.maxCount + 1);
                     }
                     outList.Add((e.item, qty));

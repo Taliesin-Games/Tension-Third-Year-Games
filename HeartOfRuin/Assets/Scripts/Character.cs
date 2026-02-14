@@ -34,8 +34,22 @@ public abstract class Character : MonoBehaviour
     void InitialiseCharacter()
     {
         baseStats = characterStats;
-        inventory = GetComponent<Inventory>();
+        if (inventory == null)
+        {
+            inventory = GetComponent<Inventory>();
+        }
 
+        if (equipmentSlots == null)
+        {
+            foreach(Inventory inv in GetComponents<Inventory>())
+            {
+                if (inv != inventory)
+                {
+                    equipmentSlots = inv;
+                    break;
+                }
+            }
+        }
         controller = GetComponent<BMD.CharacterController>();
 
         if (equipmentSlots != null)

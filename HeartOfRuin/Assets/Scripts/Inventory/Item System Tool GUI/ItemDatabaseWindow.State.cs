@@ -6,15 +6,18 @@ using System.Collections.Generic;
 
 public partial class ItemDatabaseWindow
 {
-	private ItemDatabase database;
+    // datbase reference
+    private ItemDatabase database;
 
-	private enum MainTab { ItemCreation = 0, Database = 1, Tags = 2, LootTables = 3, EditItem = 4 }
+    // Main UI state
+    private enum MainTab { ItemCreation = 0, Database = 1, Tags = 2, LootTables = 3, EditItem = 4 }
 	private MainTab mainTab = MainTab.ItemCreation;
 
-	private enum CreateTab { Item = 0, Armour = 1, Weapon = 2, Artifact = 3 }
+    // tab states
+    private enum CreateTab { Item = 0, Armour = 1, Weapon = 2, Artifact = 3 }
 	private CreateTab createTab = CreateTab.Item;
 
-	// Common fields
+	// Common fields for item
 	private string itemName = "New Item";
 	private Sprite itemIcon;
 	private string itemDescription;

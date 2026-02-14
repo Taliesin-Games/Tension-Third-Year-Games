@@ -640,7 +640,7 @@ public class Inventory : MonoBehaviour
         ItemPickup pickup = droppedItem.GetComponent<ItemPickup>();
         if (pickup != null)
         {
-            Debug.Log("item dropped successfully");
+            Debug.Log($"{inventoryName} item dropped successfully");
             int dropAmount = (quantity == -1) ? slot.GetQuantity() : Mathf.Min(quantity, slot.GetQuantity());
             pickup.ItemSlot.Set(slot.GetItem(), dropAmount);
 
@@ -660,6 +660,18 @@ public class Inventory : MonoBehaviour
         {
             // if prefab is invalid, destroy it
             Destroy(droppedItem);
+        }
+    }
+
+
+    /// <summary>
+    /// Removes all items from the inventory and drops them into the game world.
+    /// </summary>
+    public void DropAllItems()
+    {
+        for (int i = 0; i < _inventorySlots.Count; i++)
+        {
+            DropItem(i);
         }
     }
 }

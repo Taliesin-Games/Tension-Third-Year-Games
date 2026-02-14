@@ -3,6 +3,10 @@ using UnityEngine;
 
 public partial class ItemDatabaseWindow
 {
+	/// <summary>
+	/// Draws the item creation section in the custom editor window, allowing users to input item details, assign tags and
+	/// effects, and configure properties for different item types.
+	/// </summary>
 	private void DrawCreationSection()
 	{
 		creationScrollPos = EditorGUILayout.BeginScrollView(creationScrollPos);
@@ -110,6 +114,9 @@ public partial class ItemDatabaseWindow
 		EditorGUILayout.EndScrollView();
 	}
 
+	/// <summary>
+	/// Creates a new item in the database based on the specified tab selection.
+	/// </summary>
 	private void CreateSelectedItem(CreateTab tab)
 	{
 		switch (tab)

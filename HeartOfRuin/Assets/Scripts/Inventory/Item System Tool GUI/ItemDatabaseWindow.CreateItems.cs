@@ -3,6 +3,9 @@ using UnityEngine;
 
 public partial class ItemDatabaseWindow
 {
+	/// <summary>
+	/// Creates a new base item asset with the current property values and adds it to the item database.
+	/// </summary>
 	private void CreateBaseItem()
 	{
 		Item item = CreateInstance<Item>();
@@ -47,6 +50,9 @@ public partial class ItemDatabaseWindow
 		Selection.activeObject = item;
 	}
 
+	/// <summary>
+	/// Creates a new Armour asset using the current editor state and adds it to the item database.
+	/// </summary>
 	private void CreateArmour()
 	{
 		Armour armour = CreateInstance<Armour>();
@@ -109,6 +115,9 @@ public partial class ItemDatabaseWindow
 		Selection.activeObject = armour;
 	}
 
+	/// <summary>
+	/// Creates a new Weapon asset using the current item configuration and adds it to the item database.
+	/// </summary>
 	private void CreateWeapon()
 	{
 		Weapon weapon = CreateInstance<Weapon>();
@@ -178,6 +187,9 @@ public partial class ItemDatabaseWindow
 		Selection.activeObject = weapon;
 	}
 
+	/// <summary>
+	/// Creates a new Artifact asset using the current editor window's input fields and adds it to the item database.
+	/// </summary>
 	private void CreateArtifact()
 	{
 		Artifact artifact = CreateInstance<Artifact>();

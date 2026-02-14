@@ -1,19 +1,29 @@
 using UnityEditor;
 using UnityEngine;
 using System;
-using System;
 using System.Linq;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// base class for the Item Database Editor Window, responsible for overall layout and tab management.
+/// </summary>
 public partial class ItemDatabaseWindow : EditorWindow
 {
+	/// <summary>
+	/// Opens the Item System Tools window in the Unity Editor.
+	/// </summary>
 	[MenuItem("Tools/Items/Item System Tools")]
 	public static void Open()
 	{
 		GetWindow<ItemDatabaseWindow>("Item System Tools");
 	}
 
-	private void OnGUI()
+
+    /// <summary>
+	/// handles drawing each page of the Item System Tools window based on the currently selected tab.
+	/// </summary>
+    private void OnGUI()
 	{
 		EditorGUILayout.Space();
 		EditorGUILayout.BeginVertical("box");

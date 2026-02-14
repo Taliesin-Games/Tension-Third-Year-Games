@@ -8,6 +8,10 @@ using System.Text;
 
 public partial class ItemDatabaseWindow
 {
+	/// <summary>
+	/// Draws the edit section of the custom editor UI, allowing users to view and modify the properties of the currently
+	/// selected item.
+	/// </summary>
 	private void DrawEditSection()
 	{
 		EditorGUILayout.BeginVertical("box");
@@ -163,7 +167,11 @@ public partial class ItemDatabaseWindow
 		EditorGUILayout.EndVertical();
 	}
 
-	private void DrawItemDetails(Item item)
+
+    /// <summary>
+    /// Draws a read-only display of the selected item's properties, used in the view mode of the editor
+    /// </summary>
+    private void DrawItemDetails(Item item)
 	{
 		EditorGUI.BeginDisabledGroup(true);
 

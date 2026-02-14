@@ -4,7 +4,11 @@ using System.IO;
 
 public partial class ItemDatabaseWindow
 {
-	private void DrawTagsSection()
+
+    /// <summary>
+	/// Draws the tag section of the item database editor, allowing users to create, edit, and manage item tags. Tags can be used to categorize items and add metadata for filtering and organization.
+	/// </summary>
+    private void DrawTagsSection()
 	{
 		EnsureTagsLoaded();
 
@@ -60,9 +64,14 @@ public partial class ItemDatabaseWindow
 			EditorGUILayout.BeginHorizontal("box");
 			Sprite icon = t.GetIcon();
 			if (icon != null)
+			{
 				GUILayout.Label(icon.texture, GUILayout.Width(24), GUILayout.Height(24));
+			}
+
 			else
+			{
 				GUILayout.Label(GUIContent.none, GUILayout.Width(24), GUILayout.Height(24));
+			}
 
 			Rect swatchRect = GUILayoutUtility.GetRect(18, 18);
 			EditorGUI.DrawRect(swatchRect, t.GetColor());
@@ -137,7 +146,10 @@ public partial class ItemDatabaseWindow
 		EditorGUILayout.EndVertical();
 	}
 
-	private void RefreshTagList()
+    /// <summary>
+	/// Refreshes the list of item tags by searching the project for all assets of type tg_ItemTag. This ensures that any new, edited, or deleted tags are reflected in the editor window.
+	/// </summary>
+    private void RefreshTagList()
 	{
 		allTags.Clear();
 		string[] guids = AssetDatabase.FindAssets("t:tg_ItemTag");
@@ -149,7 +161,10 @@ public partial class ItemDatabaseWindow
 		}
 	}
 
-	private void EnsureTagsLoaded()
+    /// <summary>
+    /// Checks if the tags have been loaded into the editor window, and if not, it calls RefreshTagList to load them. This is used to ensure that the tag list is populated before trying to display or interact with it in the UI.
+    /// </summary>
+    private void EnsureTagsLoaded()
 	{
 		if (!tagsLoaded)
 		{
@@ -158,7 +173,11 @@ public partial class ItemDatabaseWindow
 		}
 	}
 
-	private void CreateTagAsset(string tagName, Color color, Sprite icon, string description, bool addToSelection = false)
+    /// <summary>
+    /// Method creates a tg_tag asset with the specified properties and saves it to the project.
+	/// It also handles adding the new tag to the selection if requested, and ensures that the asset is created in a valid location within the project folder structure.
+    /// </summary>
+    private void CreateTagAsset(string tagName, Color color, Sprite icon, string description, bool addToSelection = false)
 	{
 		tg_ItemTag tag = CreateInstance<tg_ItemTag>();
 		SerializedObject so = new SerializedObject(tag);
@@ -192,7 +211,11 @@ public partial class ItemDatabaseWindow
 		}
 	}
 
-	private void ResetNewTagFields()
+
+    /// <summary>
+    /// Resets the tag creation fields to their default values after a tag has been created.
+    /// </summary>
+    private void ResetNewTagFields()
 	{
 		newTagName = "New Tag";
 		newTagColor = Color.white;

@@ -16,6 +16,10 @@ public class Enemy : Character
 
     private void OnDestroy()
     {
+        if (isDead)
+        {
+            inventory.DropAllItems();
+        }
         EnemySpawner.Instance?.RemoveEnemy(gameObject);
         GameManager.Instance.OnEnemyDefeated(); // TODO need to move this to object pooler, die method or on disable with a flag to prevent multiple calls
     }

@@ -7,7 +7,6 @@ public class ItemDatabase : ScriptableObject
 {
     public List<Item> items = new();
 
-    // Added: array of LootTable references so the database can also hold loot table assets.
     public LootTable[] lootTables = Array.Empty<LootTable>();
 
     private Dictionary<string, Item> lookup;

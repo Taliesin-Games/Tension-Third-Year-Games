@@ -6,7 +6,11 @@ using System.IO;
 
 public partial class ItemDatabaseWindow
 {
-	private void DrawDamageStructDisplay(SerializedProperty structProp)
+    /// <summary>
+    /// Helper for Drawing a read-only display of a DamageStruct property.
+    /// </summary>
+    /// <param name="structProp"></param>
+    private void DrawDamageStructDisplay(SerializedProperty structProp)
 	{
 		if (structProp == null) return;
 
@@ -35,7 +39,10 @@ public partial class ItemDatabaseWindow
 		EditorGUILayout.EndVertical();
 	}
 
-	private void DrawDamageStructFields(ref DamageStruct structField)
+    /// <summary>
+    /// Draws editable fields for a DamageStruct. This is used when creating or editing an item, allowing the user to input values for each damage type.
+    /// </summary>
+    private void DrawDamageStructFields(ref DamageStruct structField)
 	{
 		structField.None = EditorGUILayout.FloatField(new GUIContent("None", kDamageStructTooltip), structField.None);
 		structField.Physical = EditorGUILayout.FloatField(new GUIContent("Physical", kDamageStructTooltip), structField.Physical);
@@ -49,6 +56,9 @@ public partial class ItemDatabaseWindow
 		structField.Water = EditorGUILayout.FloatField(new GUIContent("Water", kDamageStructTooltip), structField.Water);
 	}
 
+	/// <summary>
+	/// Sets the numeric bonus properties on the specified serialized object for equippable item attributes.
+	/// </summary>
 	private void SetEquippableNumericProps(SerializedObject so)
 	{
 		SerializedProperty bonusStrProp = so.FindProperty("BonusStrength");
@@ -67,6 +77,10 @@ public partial class ItemDatabaseWindow
 		if (critDmgProp != null) critDmgProp.floatValue = bonusCriticalDamage;
 	}
 
+
+	/// <summary>
+	/// Sets the values of a serialized damage property to match the fields of the specified DamageStruct.
+	/// </summary>
 	private void SetDamageStructToProperty(SerializedObject so, string propertyName, DamageStruct source)
 	{
 		SerializedProperty prop = so.FindProperty(propertyName);
@@ -84,6 +98,10 @@ public partial class ItemDatabaseWindow
 		SerializedProperty pWater = prop.FindPropertyRelative("Water");        if (pWater != null) pWater.floatValue = source.Water;
 	}
 
+	/// <summary>
+	/// Ensures that the specified folder exists within the Unity Assets directory and returns a unique asset path for a
+	/// file with the given name.
+	/// </summary>
 	private string EnsureFolderAndGetUniquePath(string folderPath, string fileNameWithoutExtension)
 	{
 		if (string.IsNullOrWhiteSpace(fileNameWithoutExtension))
@@ -116,6 +134,9 @@ public partial class ItemDatabaseWindow
 		return unique;
 	}
 
+	/// <summary>
+	/// Returns a sanitized version of the specified file name by removing invalid characters and replacing directory separators.
+	/// </summary>
 	private string SanitizeFileName(string name)
 	{
 		if (string.IsNullOrWhiteSpace(name))

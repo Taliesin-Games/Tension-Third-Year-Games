@@ -8,6 +8,11 @@ using System.Text;
 
 public partial class ItemDatabaseWindow
 {
+
+	/// <summary>
+	/// Draws the database viewer UI within the Unity Editor, allowing users to browse, filter, sort, and manage items in
+	/// the assigned item database.
+	/// </summary>
     private void DrawDatabaseViewer()
 	{
 		EditorGUILayout.BeginVertical("box");
@@ -204,7 +209,11 @@ public partial class ItemDatabaseWindow
 		EditorGUILayout.EndVertical();
 	}
 
-	private void ScanFolderAndAddItems()
+
+    /// <summary>
+    /// Scans the selected folder for Item assets and adds them to the database if they are not already present.
+    /// </summary>
+    private void ScanFolderAndAddItems()
 	{
 		lastScanReport = string.Empty;
 		lastScanAdded.Clear();
@@ -308,6 +317,12 @@ public partial class ItemDatabaseWindow
 		database.BuildLookup();
 	}
 
+	/// <summary>
+	/// Rebuilds the item database and removes entries whose associated assets no longer exist on disk.
+	/// </summary>
+	/// <remarks>This method assigns new IDs to items with missing or invalid identifiers and prunes database
+	/// entries referencing missing or deleted assets. A confirmation dialog is displayed before any removal occurs. After
+	/// pruning, the database lookup is rebuilt and changes are saved. This operation cannot be undone.</remarks>
 	private void RebuildAndPruneDatabase()
 	{
 		if (database == null)

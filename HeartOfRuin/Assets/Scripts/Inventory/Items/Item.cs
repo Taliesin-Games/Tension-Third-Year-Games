@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-public enum ItemRarity { common, uncommon, rare, epic, lengendary, cosmic }
+public enum ItemRarity { common, uncommon, rare, epic, legendary, cosmic }
 
 [Serializable]
 public class Item : ScriptableObject

@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 public partial class ItemDatabaseWindow
 {
+
+	/// <summary>
+	/// Draws the Loot Tables management section in the custom editor UI, allowing users to create, add, edit, and remove
+	/// loot tables from the associated item database.
+	/// </summary>
 	private void DrawLootTablesSection()
 	{
 		EditorGUILayout.BeginVertical("box");
@@ -314,7 +319,11 @@ public partial class ItemDatabaseWindow
 		EditorGUILayout.EndVertical();
 	}
 
-	private void CreateNewLootTableAsset(string name)
+
+    /// <summary>
+    /// Method to create a new Loot Table asset, save it to the project, and add it to the current item database. The new asset will be created in a predefined folder, and the user will be prompted if the name is invalid or if there are issues determining the asset path.
+    /// </summary>
+    private void CreateNewLootTableAsset(string name)
 	{
 		LootTable lt = CreateInstance<LootTable>();
 		lt.name = string.IsNullOrWhiteSpace(name) ? "New Loot Table" : name;

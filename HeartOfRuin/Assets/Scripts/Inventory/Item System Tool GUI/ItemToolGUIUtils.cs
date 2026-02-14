@@ -1,9 +1,11 @@
 using System;
 using System.IO;
 using System.Text;
+using UnityEditor.Rendering.Universal.ShaderGUI;
 using UnityEngine;
 using WebSocketSharp;
 
+// simple id generator for items, using GUIDs for uniqueness and compactness. Non sequential.
 static class ItemIDGenerator
 {
 	public static string GenerateID()
@@ -11,6 +13,4 @@ static class ItemIDGenerator
 		return Guid.NewGuid().ToString("N"); // stable, compact
 	}
 }
-
-// Sanitize filename by removing invalid chars and trimming.
 
