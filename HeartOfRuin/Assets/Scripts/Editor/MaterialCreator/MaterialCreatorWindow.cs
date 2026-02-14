@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.PackageManager.UI;
@@ -6,18 +7,18 @@ using UnityEngine;
 
 public class MaterialCreatorWindow : EditorWindow
 {
-    
+    #region Constants and read only
     const float MIN_WIDTH = 300f;
     const float COLUMN_MIN_WIDTH = 200f;
     const int COLUMN_COUNT = 3;
     const float MIN_HEIGHT = 400f;
 
-    List<string> ignoredFolders = new List<string>() {
+    readonly List<string> ignoredFolders = new List<string>() {
         "Assets/_3rdParty",
         "Assets/_2ndParty"
     };
 
-    string[] mapTypes =
+    readonly string[] mapTypes =
     {
         "base",
         "normal",
@@ -26,8 +27,62 @@ public class MaterialCreatorWindow : EditorWindow
         "ao",
         "emission"
     };
+    #endregion
 
+    #region Styling Settings
+    GUILayoutOption[] ColumnLayoutOptions =>
+       new GUILayoutOption[]
+       {
+            GUILayout.MinWidth(COLUMN_MIN_WIDTH),
+            GUILayout.Width(position.width / COLUMN_COUNT),
+            GUILayout.ExpandWidth(false)
+       };
 
+    // Font styling for material warning button
+    GUIStyle materialWarningStyle;
+    GUIStyle MaterialWarningStyle
+    {
+        get
+        {
+            var defaultNew = new GUIStyle(EditorStyles.miniButton)
+            {
+                wordWrap = true,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                padding = new RectOffset(6, 6, 4, 4),
+                stretchHeight = true,
+                
+                
+            };
+            defaultNew.normal.textColor = Color.yellow;
+            materialWarningStyle ??= defaultNew;
+            return materialWarningStyle;
+        }
+    }
+       
+    // Button layout options for material warning
+    GUILayoutOption[] materialWarningLayoutOptions;
+    GUILayoutOption[] MaterialWarningLayoutOptions
+    { 
+        get 
+        {
+            var defaultNew = new GUILayoutOption[]
+                {
+                    GUILayout.MinWidth(COLUMN_MIN_WIDTH),
+                    GUILayout.Width(position.width / COLUMN_COUNT),
+                    GUILayout.ExpandWidth(false),
+                    GUILayout.ExpandHeight(false),
+                };
+
+            materialWarningLayoutOptions ??= defaultNew;
+
+            return materialWarningLayoutOptions;
+        } 
+    } 
+
+    #endregion
+
+    #region Runtime Variables
     Vector2 _horizontalScroll;
     Vector2 _fbxScroll;
     Vector2 _channelScroll;
@@ -35,22 +90,16 @@ public class MaterialCreatorWindow : EditorWindow
 
     List<FbxScanResult> fbxFiles = new();
     List<string> ignoredFiles = new();
-    List<string> _mockChannels = new();
+    List<string> materialChannels = new();
     List<string> _mockMaterials = new();
 
     private int selectedIndex = -1;
+    #endregion
 
-    GUILayoutOption[] ColumnLayoutOptions =>
-    new GUILayoutOption[]
-    {
-        GUILayout.MinWidth(COLUMN_MIN_WIDTH),
-        GUILayout.Width(position.width / COLUMN_COUNT),
-        GUILayout.ExpandWidth(false)
-    };
-
+    #region Properties
     static Vector2 MinWindowSize => new Vector2(MIN_WIDTH, MIN_HEIGHT);
     bool EnableHorizontalScroll => position.width < COLUMN_MIN_WIDTH * COLUMN_COUNT;
-
+    #endregion
     [MenuItem("Tools/Material Creator")]
     public static void OpenWindow()
     {
@@ -58,17 +107,17 @@ public class MaterialCreatorWindow : EditorWindow
         window.minSize = MinWindowSize;
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
         minSize = MinWindowSize;
 
         if (fbxFiles.Count == 0) FindModelData();
     }
 
-    private void FindModelData()
+    void FindModelData()
     {
         fbxFiles.Clear();
-        _mockChannels.Clear();
+        materialChannels.Clear();
         _mockMaterials.Clear();
 
         // Get fbx files first
@@ -105,11 +154,15 @@ public class MaterialCreatorWindow : EditorWindow
             newFBX.FbxName = Path.GetFileName(path);
             // Store folder path without file name
             newFBX.FolderPath = Path.GetDirectoryName(path);
+
+            ModelImporter importer = AssetImporter.GetAtPath(path) as ModelImporter;
+            newFBX.importMode = importer.materialImportMode;
+
             fbxFiles.Add(newFBX);
         }
 
         // Clear selection if list gets shorter
-        if (selectedIndex < fbxFiles.Count) selectedIndex = -1;
+        if (selectedIndex >= fbxFiles.Count) selectedIndex = -1;
 
 
     }
@@ -129,6 +182,8 @@ public class MaterialCreatorWindow : EditorWindow
         if (fbxFiles.Count == 0) return;
 
         FbxScanResult result = fbxFiles[selected];
+        result.MaterialSlots.Clear();   // Make sure we clear results incase this was prepopulated
+        materialChannels.Clear();       // These get connected by reference but clear both incased they are not connected yet.
 
         GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>(result.FbxPath);
 
@@ -144,10 +199,9 @@ public class MaterialCreatorWindow : EditorWindow
             }
         }
 
-        _mockChannels.Clear();
-        _mockChannels = result.MaterialSlots;
+        materialChannels = result.MaterialSlots;
     }
-    private void OnGUI()
+    void OnGUI()
     {
         DrawToolbar();
 
@@ -164,8 +218,7 @@ public class MaterialCreatorWindow : EditorWindow
 
         DrawInfoPanel();
     }
-
-    private void DrawToolbar()
+    void DrawToolbar()
     {
         EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
 
@@ -180,8 +233,7 @@ public class MaterialCreatorWindow : EditorWindow
 
         EditorGUILayout.EndHorizontal();
     }
-
-    private void DrawFbxColumn()
+    void DrawFbxColumn()
     {
         EditorGUILayout.BeginVertical(ColumnLayoutOptions);
         EditorGUILayout.LabelField("FBX Files", EditorStyles.boldLabel);
@@ -192,15 +244,24 @@ public class MaterialCreatorWindow : EditorWindow
         {
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Toggle(selectedIndex == i, fbxFiles[i].FbxName, "Button"))
+            int newIndex = selectedIndex;
+
+            // Add a button to select the file
+            if (GUILayout.Toggle(selectedIndex == i, fbxFiles[i].FbxName, "Button")) newIndex = i;
+
+            if (newIndex != selectedIndex)
             {
-                selectedIndex = i;
-                //GetChannels(selectedIndex);
+                selectedIndex = newIndex;
+                RefreshSelection(); // calls GetChannels + later texture/material detection
+                Repaint();
             }
+
+            // Create a button to hide the file
             if (GUILayout.Button("👁️", EditorStyles.toolbarButton, GUILayout.MaxWidth(50)))
             {
                 ignoredFiles.Add(fbxFiles[i].FbxPath);
                 fbxFiles.Remove(fbxFiles[i]);
+                RefreshSelection();
             }
 
             EditorGUILayout.EndHorizontal();
@@ -208,24 +269,69 @@ public class MaterialCreatorWindow : EditorWindow
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
     }
+    void RefreshSelection()
+    {
+        materialChannels.Clear();
+        _mockMaterials.Clear();
 
-    private void DrawChannelColumn()
+        if (selectedIndex < 0 || selectedIndex >= fbxFiles.Count) return;
+
+        GetChannels(selectedIndex);
+        // later: GetTextures(selectedIndex), GetExistingMaterials(selectedIndex)
+    }
+    void DrawChannelColumn()
     {
         EditorGUILayout.BeginVertical(ColumnLayoutOptions);
         EditorGUILayout.LabelField("Material Channels / Textures", EditorStyles.boldLabel);
 
+        if (materialChannels.Count <= 0 || selectedIndex < 0)
+        {
+            EditorGUILayout.EndVertical();
+            return;
+        }
+
+        // Draw a warning button if import mode is incorrect.
+        if (fbxFiles[selectedIndex].importMode != ModelImporterMaterialImportMode.ImportViaMaterialDescription)
+        {
+            
+            bool pressed = GUILayout.Button(
+                "!-Warning-! fbx file materials disabled.\nUnable to read material meta data.\nClick here to fix this.", 
+                MaterialWarningStyle, 
+                MaterialWarningLayoutOptions
+                );
+            if (pressed) SetMaterialImportMode(selectedIndex); 
+            
+        }
+
         _channelScroll = EditorGUILayout.BeginScrollView(_channelScroll);
 
-        //GetChannels(selectedIndex);
-
-        foreach (var c in _mockChannels)
+        // Draw each channel
+        foreach (var c in materialChannels)
+        {
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(c);
+            EditorGUILayout.EndHorizontal();
+        }
+            
 
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
     }
 
-    private void DrawMaterialColumn()
+    private void SetMaterialImportMode(int selectedIndex)
+    {
+
+        FbxScanResult selectedFile = fbxFiles[selectedIndex];
+
+        ModelImporter importer = AssetImporter.GetAtPath(selectedFile.FbxPath) as ModelImporter;
+
+        importer.materialImportMode = ModelImporterMaterialImportMode.ImportViaMaterialDescription;
+        selectedFile.importMode = importer.materialImportMode;
+        importer.SaveAndReimport();
+        GetChannels(selectedIndex);
+    }
+
+    void DrawMaterialColumn()
     {
         EditorGUILayout.BeginVertical(ColumnLayoutOptions);
         EditorGUILayout.LabelField("Existing Materials", EditorStyles.boldLabel);
@@ -239,7 +345,7 @@ public class MaterialCreatorWindow : EditorWindow
         EditorGUILayout.EndVertical();
     }
 
-    private void DrawInfoPanel()
+    void DrawInfoPanel()
     {
         EditorGUILayout.Space();
         EditorGUILayout.HelpBox(
