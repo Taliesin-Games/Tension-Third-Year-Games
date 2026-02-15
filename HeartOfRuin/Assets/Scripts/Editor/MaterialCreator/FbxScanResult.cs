@@ -7,6 +7,6 @@ public class FbxScanResult
     public string FolderPath;                           // Path without file name
 
     public ModelImporterMaterialImportMode importMode;
-    public List<string> MaterialSlots = new();
+    public List<ChannelInfo> MaterialSlots = new();
     public List<TextureMatchInfo> TextureMatches = new();
 }

@@ -12,6 +12,8 @@ public class MaterialCreatorWindow : EditorWindow
     const float COLUMN_MIN_WIDTH = 200f;
     const int COLUMN_COUNT = 3;
     const float MIN_HEIGHT = 400f;
+    const float CHANNEL_NAME_WIDTH = 0.38f;
+    const float MATERIAL_NAME_WIDTH = 0.58f;
 
     readonly List<string> ignoredFolders = new List<string>() {
         "Assets/_3rdParty",
@@ -90,10 +92,13 @@ public class MaterialCreatorWindow : EditorWindow
 
     List<FbxScanResult> fbxFiles = new();
     List<string> ignoredFiles = new();
-    List<string> materialChannels = new();
+    List<ChannelInfo> materialChannels = new();
     List<string> _mockMaterials = new();
 
     private int selectedIndex = -1;
+
+    float channelNameWidth;
+    float materialNameWidth;
     #endregion
 
     #region Properties
@@ -178,31 +183,43 @@ public class MaterialCreatorWindow : EditorWindow
     }
     void GetChannels(int selected)
     {
-        if (selectedIndex < 0) selected = 0;
+        if (selected < 0) selected = 0;
         if (fbxFiles.Count == 0) return;
 
-        FbxScanResult result = fbxFiles[selected];
-        result.MaterialSlots.Clear();   // Make sure we clear results incase this was prepopulated
+        FbxScanResult fbx = fbxFiles[selected];
+        fbx.MaterialSlots.Clear();      // Make sure we clear results incase this was prepopulated
         materialChannels.Clear();       // These get connected by reference but clear both incased they are not connected yet.
 
-        GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>(result.FbxPath);
+        AssetImporter importer = AssetImporter.GetAtPath(fbx.FbxPath);
+        if (importer == null) return;
 
-        var renderers = model.GetComponentsInChildren<Renderer>(true);
+        // Dictionary<SourceAssetIdentifier, UnityEngine.Object>
+        var externalMap = importer.GetExternalObjectMap();
 
-        foreach (var r in renderers)
+        foreach (var kvp in externalMap)
         {
-            foreach (var mat in r.sharedMaterials)
-            {
-                if (mat == null) continue;
+            var identifier = kvp.Key;
+            var assignedObj = kvp.Value;
 
-                result.MaterialSlots.Add(mat.name);
-            }
+            if (identifier.type != typeof(Material))
+                continue;
+
+            fbx.MaterialSlots.Add(new ChannelInfo
+            {
+                SlotName = identifier.name,
+                AssignedMaterial = assignedObj as Material
+            });
         }
 
-        materialChannels = result.MaterialSlots;
+        
+
+        materialChannels = fbx.MaterialSlots;
     }
     void OnGUI()
     {
+        channelNameWidth = (position.width / COLUMN_COUNT) * CHANNEL_NAME_WIDTH;
+        materialNameWidth = (position.width / COLUMN_COUNT) * MATERIAL_NAME_WIDTH;
+
         DrawToolbar();
 
         if (EnableHorizontalScroll) _horizontalScroll = EditorGUILayout.BeginScrollView(_horizontalScroll, false, true);
@@ -305,14 +322,31 @@ public class MaterialCreatorWindow : EditorWindow
 
         _channelScroll = EditorGUILayout.BeginScrollView(_channelScroll);
 
-        // Draw each channel
+        // Column headers
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Label("Channel", EditorStyles.miniBoldLabel, GUILayout.Width(channelNameWidth));
+        GUILayout.Label("Assigned Material", EditorStyles.miniBoldLabel, GUILayout.Width(materialNameWidth));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Space(2);
+
         foreach (var c in materialChannels)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(c);
+
+            EditorGUILayout.SelectableLabel(
+                c.SlotName,
+                GUILayout.Width(channelNameWidth),
+                GUILayout.Height(EditorGUIUtility.singleLineHeight));
+
+            EditorGUILayout.SelectableLabel(
+                c.AssignedMaterial.name ?? "None",
+                GUILayout.Width(materialNameWidth),
+                GUILayout.Height(EditorGUIUtility.singleLineHeight));
+
             EditorGUILayout.EndHorizontal();
         }
-            
+
 
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
