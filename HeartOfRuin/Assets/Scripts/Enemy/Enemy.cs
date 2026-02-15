@@ -20,7 +20,8 @@ public class Enemy : Character
         {
             inventory.DropAllItems();
         }
-        EnemySpawner.Instance?.RemoveEnemy(gameObject);
+        
+        if (EnemySpawner.Instance) EnemySpawner.Instance.RemoveEnemy(gameObject);
         GameManager.Instance.OnEnemyDefeated(); // TODO need to move this to object pooler, die method or on disable with a flag to prevent multiple calls
     }
 }
