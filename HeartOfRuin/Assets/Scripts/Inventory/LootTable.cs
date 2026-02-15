@@ -57,13 +57,13 @@ public class LootTable : ScriptableObject
     public List<(Item item, int qty)> Sample(System.Random? rng = null)
     {
         EnsureValid();
-        var outList = new List<(Item, int)>();
+        List<(Item, int)> outList = new List<(Item, int)>();
 
         if (rng == null) rng = new System.Random();
 
         if (samplingMode == LootSamplingMode.PerEntry)
         {
-            foreach (var e in entries)
+            foreach (LootEntry e in entries)
             {
                 if (e.item == null) continue;
                 // roll chance
@@ -82,7 +82,7 @@ public class LootTable : ScriptableObject
         else // WeightedPicks
         {
             // clone array and weights, optionally support unique
-            var pool = new List<LootEntry>(entries.Where(x => x.item != null && x.weight > 0f));
+            List<LootEntry> pool = new List<LootEntry>(entries.Where(x => x.item != null && x.weight > 0f));
             if (pool.Count == 0) return outList;
 
             for (int p = 0; p < picks; p++)

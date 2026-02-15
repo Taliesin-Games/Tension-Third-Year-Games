@@ -15,7 +15,7 @@ public class ItemDatabase : ScriptableObject
     {
         lookup = new Dictionary<string, Item>();
 
-        foreach (var item in items)
+        foreach (Item item in items)
         {
             if (item == null || string.IsNullOrEmpty(item.GetID()))
                 continue;
@@ -32,7 +32,7 @@ public class ItemDatabase : ScriptableObject
         }
 
 
-        lookup.TryGetValue(id, out var item);
+        lookup.TryGetValue(id, out Item item);
         return item;
     }
 
@@ -49,8 +49,8 @@ public class ItemDatabase : ScriptableObject
             BuildLookup(); 
         }
 
-        var result = new List<Item>(); 
-        foreach (var item in items) 
+        List<Item> result = new List<Item>(); 
+        foreach (Item item in items) 
         {
             if (item != null && item.HasTag(tag))
             {

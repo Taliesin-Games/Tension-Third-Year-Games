@@ -88,7 +88,7 @@ public class Item : ScriptableObject
     public bool HasTag(string tagName)
     {
         if (string.IsNullOrWhiteSpace(tagName)) return false;
-        var tn = tagName.Trim();
+        string tn = tagName.Trim();
         return GetTagObjects().Any(t => t != null && string.Equals(t.GetName(), tn, StringComparison.OrdinalIgnoreCase));
     }
 }
