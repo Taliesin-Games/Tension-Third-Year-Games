@@ -13,27 +13,27 @@ public class LootGenerator : MonoBehaviour
         if (component == null || component.GetLootTable() == null) return;
 
         // sample the table
-        var results = component.GetLootTable().Sample();
+        List<(Item item, int qty)> results = component.GetLootTable().Sample();
 
-        var inventories = component.GetLootInventories();
+        Inventory[] inventories = component.GetLootInventories();
         if (inventories == null || inventories.Length == 0) return;
 
         // ensure inventories are initialized
-        foreach (var inv in inventories) inv?.Initialise();
+        foreach (Inventory inv in inventories) inv?.Initialise();
 
         int invIndex = 0;
         int invCount = inventories.Length;
 
-        foreach (var (item, qty) in results)
+        foreach ((Item item, int qty) in results)
         {
             int remaining = qty;
             // try to add across inventories
             for (int i = 0; i < invCount && remaining > 0; i++)
             {
                 int idx = (invIndex + i) % invCount;
-                var inv = inventories[idx];
+                Inventory inv = inventories[idx];
                 if (inv == null) continue;
-                var remSlot = inv.AddItem(item, remaining);
+                ItemSlot remSlot = inv.AddItem(item, remaining);
                 if (remSlot == null)
                 {
                     remaining = 0;
@@ -53,6 +53,6 @@ public class LootGenerator : MonoBehaviour
         }
 
         // compact all inventories
-        foreach (var inv in inventories) inv?.CompactInventoryNonStacking();
+        foreach (Inventory inv in inventories) inv?.CompactInventoryNonStacking();
     }
 }
