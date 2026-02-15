@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
+[System.Serializable]
+public enum ItemRarity { common, uncommon, rare, epic, legendary, cosmic }
+
 [Serializable]
 public class Item : ScriptableObject
 {
@@ -12,11 +15,17 @@ public class Item : ScriptableObject
     [Tooltip("Description of the item")]
     [SerializeField] string itemDescription;
     [Tooltip("Unique identifier for the item")]
-    [SerializeField] int id; //TODO: Ensure unique IDs across all items
+    [SerializeField] private string id;
     [Tooltip("3D model of the item for world representation")]
     [SerializeField] GameObject itemMesh;
     [Tooltip("Max number of items that can be stacked into a single inventory slot")]
     [SerializeField] int maxStackSize = 1;
+    [Tooltip("Rarity level of the item, used for visual effects and loot generation")] 
+    [SerializeField] 
+    ItemRarity rarity = ItemRarity.common;
+
+    [Tooltip("Tags used to categorize this item for loot tables or filtering (reference Tag assets)")]
+    [SerializeField] tg_ItemTag[] tags = new tg_ItemTag[0];
 
     public Sprite GetItemIcon()
     {
@@ -33,7 +42,7 @@ public class Item : ScriptableObject
         return itemDescription;
     }
 
-    public int GetID()
+    public string GetID()
     {
         return id;
     }
@@ -48,9 +57,38 @@ public class Item : ScriptableObject
         return maxStackSize;
     }
 
+    // NEW: expose rarity to runtime code
+    public ItemRarity GetRarity()
+    {
+        return rarity;
+    }
+
     public virtual EquipSlotType GetEquipSlotType()
     {
         return EquipSlotType.None;
     }
 
+    // Tag helpers
+    public tg_ItemTag[] GetTagObjects()
+    {
+        return tags ?? Array.Empty<tg_ItemTag>();
+    }
+
+    public string[] GetTagNames()
+    {
+        return GetTagObjects().Where(t => t != null).Select(t => t.GetName()).ToArray();
+    }
+
+    public bool HasTag(tg_ItemTag tag)
+    {
+        if (tag == null) return false;
+        return GetTagObjects().Any(t => t != null && t.GetID() == tag.GetID());
+    }
+
+    public bool HasTag(string tagName)
+    {
+        if (string.IsNullOrWhiteSpace(tagName)) return false;
+        string tn = tagName.Trim();
+        return GetTagObjects().Any(t => t != null && string.Equals(t.GetName(), tn, StringComparison.OrdinalIgnoreCase));
+    }
 }

@@ -1335,6 +1335,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2438232886217197327, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2438232886217197327, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2942563014880224932, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1385,7 +1393,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6591145329568396798, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000021219254
+      value: 0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 6662080986768217175, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1398,6 +1406,14 @@ PrefabInstance:
     - target: {fileID: 7922875856160554918, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
       propertyPath: m_Name
       value: Elf Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7922875856160554918, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882188607315627206, guid: 7a186f71fbba81d4eb9e138376ca6969, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3177,7 +3193,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3390565068289297619, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767010529}
   m_SourcePrefab: {fileID: 100100000, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
 --- !u!1001 &1174533776
 PrefabInstance:
@@ -4584,6 +4603,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6925974849022785550, guid: bc3263fd88eef9d478b583646a6f74b3, type: 3}
   m_PrefabInstance: {fileID: 1732080987}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1767010528 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3390565068289297619, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
+  m_PrefabInstance: {fileID: 1166924936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1767010529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767010528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde9b8c7099e9ba4a82fae7103359ac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LootGenerator
+  itemDatabase: {fileID: 11400000, guid: 636e95c65ccf4104ca08ff826a59f515, type: 2}
 --- !u!1001 &1768080599
 PrefabInstance:
   m_ObjectHideFlags: 0

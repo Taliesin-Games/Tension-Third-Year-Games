@@ -20,6 +20,8 @@ GameObject:
   - component: {fileID: 6602795176196667281}
   - component: {fileID: 4427915400919398885}
   - component: {fileID: 2083632132247281666}
+  - component: {fileID: 1407167254472913541}
+  - component: {fileID: 6364022765882385359}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -125,8 +127,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   characterName: Boblin
+  activeEffects: []
   equipmentSlots: {fileID: 4427915400919398885}
-  inventory: {fileID: 0}
+  inventory: {fileID: 6364022765882385359}
   characterStats: {fileID: 2083632132247281666}
   castComponent: {fileID: 0}
 --- !u!114 &562441046664065344
@@ -320,6 +323,37 @@ MonoBehaviour:
   intelligence: 0
   criticalChance: 0
   criticalDamage: 0.5
+--- !u!114 &1407167254472913541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607250186916821478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2081df6ce5f347438af6bcc197a5bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LootComponent
+  lootTable: {fileID: 11400000, guid: 70c20a6b374ac70409542b5f50047454, type: 2}
+  lootInventories:
+  - {fileID: 6364022765882385359}
+--- !u!114 &6364022765882385359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607250186916821478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e962f96b85a53ed438c7213fd8e00d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  inventoryName: enemy main inventory
+  inventorySize: 20
+  startingItems: []
+  itemDropPrefab: {fileID: 3675725128406392298, guid: d75e7c45fd8002c4e8d78e4da88b1104, type: 3}
 --- !u!1001 &1906630441784115724
 PrefabInstance:
   m_ObjectHideFlags: 0

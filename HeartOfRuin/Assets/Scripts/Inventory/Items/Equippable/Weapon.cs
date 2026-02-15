@@ -9,7 +9,6 @@ public enum WeaponType
     Special, // For unique weapons such as the elves twinblade-bow-daggers
 }
 
-[CreateAssetMenu(fileName = "New Weapon", menuName = "Inventory/Weapon")]
 public class Weapon : EquippableItem
 {
     [SerializeField] DamageStruct weaponDamageScalings;

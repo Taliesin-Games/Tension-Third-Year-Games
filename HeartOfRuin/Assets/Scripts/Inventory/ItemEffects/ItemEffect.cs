@@ -1,115 +1,70 @@
 using UnityEngine;
 
-//[CreateAssetMenu(fileName = "New Item Effect", menuName = "Inventory/ItemEffect")]
-public abstract class ItemEffect
+[CreateAssetMenu(fileName = "New Item Effect", menuName = "Inventory/Item Effect")]
+public abstract class ItemEffect : ScriptableObject
 {
-    //not sure if we need these, may be useful if we want different items to have same effect, might make it simpler to memorise for players
-    string effectName; //example: "Balsalt" (definetly not brimstone from the binding of isaac) 
-    string effectDescription; //example: "Staff normal attack replaced with powerful red laser beam" (definetly not brimstone from the binding of isaac) 
+    [SerializeField] string effectName;
+    [SerializeField][TextArea] string effectDescription;
 
-    /* This class contains various methods that can be overridden to define specific item effects.
-     * Some Effects will require implementation in multiple methods depending on their nature.
-     * Some Effects may also require additional virables to track state. Example: A counter for number of attacks since effect last triggered, or a Timer for timed effects.
-     */
+    // Expose read-only accessors so other code can show these in the UI if needed.
+    public string EffectName => effectName;
+    public string EffectDescription => effectDescription;
 
-    //TODO: bind things to character class (clone)
+    // Optional lifecycle hooks — keep them virtual so specific effects can override.
+    public virtual void Init() { }
 
-    public void Init()
+    public virtual void Cleanup() { }
+
+    public virtual void EachFrameEffect(GameObject player)
     {
-
+        // Apply effect logic here (pass-through base implementation)
     }
 
-    public void Cleanup()
+    public virtual void OnPickupEffect(GameObject player)
     {
-
     }
 
-    virtual public void EachFrameEffect(GameObject player)
+    public virtual void OnEquipEffect(GameObject player)
     {
-        // Apply effect logic here
-        // Example: Passive health regeneration (isaac example: Placenta)
     }
 
-    virtual public void OnPickupEffect(GameObject player)
+    public virtual void OnDropEffect(GameObject player)
     {
-        // Apply effect logic here
-        // Heal the player by 20 health points upon pickup (isaac example: Breakfast)
     }
 
-    virtual public void OnEquipEffect(GameObject player)
+    public virtual void OnDodgeEffect(GameObject player)
     {
-        // Apply effect logic here
-        // Example: Increase player speed by 10% while equipped (isaac example: The Belt)
     }
 
-    virtual public void OnDropEffect(GameObject player)
+    public virtual void OnPerfectDodgeEffect(GameObject player)
     {
-        // TODO: Bind to 
-        // Apply effect logic here, primarily cleanup for persistent effects such as onPickup
-        // Could also have effects when dropped on the ground: Spawn harmful area effect (isaac example: Mom's Toenail)
     }
 
-    virtual public void OnDodgeEffect(GameObject player)
+    public virtual void OnAttackEffect(GameObject player)
     {
-        // TODO: Bind to player dodge event
-        // Apply effect logic here
-        // Example: Temporary speed boost after dodge
     }
 
-    virtual public void OnPerfectDodgeEffect(GameObject player)
+    public virtual void OnAttackHitEffect(GameObject player)
     {
-        // TODO: Bind to player dodge event
-        // Apply effect logic here
-        // Example: Grant temporary attack boost after perfect dodge
     }
 
-    virtual public void OnAttackEffect(GameObject player)
+    public virtual void OnTakeDamageEffect(GameObject player)
     {
-        // TODO: Bind to player attack
-        // Apply effect logic here
-        // Example: Every Third Attack deals double damage
     }
 
-    virtual public void OnAttackHitEffect(GameObject player)
+    public virtual void OnBlockEffect(GameObject player)
     {
-        // TODO: Bind to player hit feedback
-        // Apply effect logic here
-        // Example: Chance to spawn damaging ray of light on hit (isaac example: Holy Light)
     }
 
-    virtual public void OnTakeDamageEffect(GameObject player)
+    public virtual void OnHealEffect(GameObject player)
     {
-        // TODO: Bind to player take damage check
-        // Apply effect logic here
-        // Example: Chance to heal a small amount of health (isaac example: Gimpy)
     }
 
-    virtual public void OnBlockEffect(GameObject player)
+    public virtual void OnDeathEffect(GameObject player)
     {
-        // TODO: bind to player take damage check
-        // Apply effect logic here
-        // Example: Reflect a portion of damage back to the attacker 
     }
 
-    virtual public void OnHealEffect(GameObject player)
+    public virtual void PerProjectileEffect(GameObject player)
     {
-        // TODO: bind the player heal
-        // Apply effect logic here
-        // Example: Increase healing received by 15%
-    }
-
-    virtual public void OnDeathEffect(GameObject player)
-    {
-        // TODO: Bind to player death and ensure death flags on player dont trigger events
-        // Apply effect logic here
-        // Example: Respawn player with 1 health (isaac example: Dead Cat)
-    }
-
-    virtual public void PerProjectileEffect(GameObject player)
-    {
-        // TODO: Bind to player spawn projectile
-        // Apply effect logic here
-        // could be used to apply another ItemEffect to the projectile or modify its properties
-        // Example: Add homing effect to fired projectiles (isaac example: Spoon Bender)
     }
 }
