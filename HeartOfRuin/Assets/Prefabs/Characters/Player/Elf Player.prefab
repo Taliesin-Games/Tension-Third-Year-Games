@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 8828830358373169569}
   - component: {fileID: 2720698404454125142}
   - component: {fileID: 9075488631171371052}
+  - component: {fileID: 5276674339465016163}
   m_Layer: 0
   m_Name: Elf Player
   m_TagString: Untagged
@@ -230,14 +231,6 @@ MonoBehaviour:
   swimSpeed: 4
   swingSpeed: 8
   flySpeed: 12
-  lookSensitivity: 1
-  verticalClamp: 80
-  followDistance: 5
-  followHeight: 2
-  horizontalOffset: 0
-  isThirdPerson: 1
-  smoothSpeed: 10
-  cameraFollowDamping: 0.05
 --- !u!114 &660661359804496864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,13 +243,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f687527d5e18f419a847a259571dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BMD.CharacterMovementModule
-  walkSpeed: 2
-  runSpeed: 6
-  sprintSpeed: 10
-  movementAcceleration: 10
+  walkSpeed: 3
+  runSpeed: 8
+  sprintSpeed: 12
+  movementAcceleration: 12
   minMoveInputMagnitude: 0.05
   rotationEnabled: 1
-  rotationSpeed: 10
+  rotationSpeed: 15
   rotationType: 0
   instantTurnThreshold: 0.05
   canJump: 1
@@ -366,6 +359,41 @@ MonoBehaviour:
   interactMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5276674339465016163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922875856160554918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c198141c5b839646921621626665f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BMD.CharacterController.Runtime::BMD.CharacterCameraModule
+  cameraFocus: {fileID: 0}
+  camera: {fileID: 1657385326647698450}
+  tiltMode: 2
+  panMode: 2
+  zoomMode: 2
+  isThirdPerson: 1
+  maxLookdelta: 30
+  invertVerticalLook: 0
+  invertHorizontalLook: 0
+  invertZoomInput: 0
+  lookSensitivity: 100
+  zoomSpeed: 0.5
+  defaultZoomDistance: 5
+  minZoomDistance: 2
+  maxZoomdistance: 10
+  camZoomDampingRate: 0.1
+  cameraFollowDamping: 0.05
+  camFollowStyle: 0
+  followHeight: 2
+  tiltOffset: 0
+  verticalClamp: 80
+  horizontalOffset: 0
+  followSmoothRate: 0.5
 --- !u!1 &8475547856137853741
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,7 +920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Size
-      value: 1
+      value: 0.9999999
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Value
