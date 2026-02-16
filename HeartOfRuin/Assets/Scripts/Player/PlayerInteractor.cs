@@ -5,7 +5,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 
 
 //TODO: Setup as actual character module rather than just using Input.GetKeyDown()
-public class PlayerInteractor : MonoBehaviour, ICharacterModule
+public class PlayerInteractor : CharacterModule
 {
     [SerializeField] float interactDistance = 3f;
     [SerializeField] LayerMask interactMask;
@@ -13,11 +13,11 @@ public class PlayerInteractor : MonoBehaviour, ICharacterModule
     InputAction interact;
     IInteractableObject currentTarget;
 
-
-    public void Initialize(BMD.CharacterController controller) { }
-    public void Tick(float deltaTime) { }
-    public void FixedTick(float fixedDeltaTime) { }
-    public void Dispose() { }
+    public override void PreInitialize(BMD.CharacterController controller) { }
+    public override void Initialize(BMD.CharacterController controller) { }
+    public override void  Tick(float deltaTime) { }
+    public override void FixedTick(float fixedDeltaTime) { }
+    public override void Dispose() { }
 
     private void Awake()
     {
