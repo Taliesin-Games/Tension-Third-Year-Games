@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 1494999133833634003}
   - component: {fileID: 660661359804496864}
   - component: {fileID: 6701897996978430247}
+  - component: {fileID: 4318316196210790961}
   - component: {fileID: 1207980942263171655}
   - component: {fileID: 8828830358373169569}
   - component: {fileID: 2720698404454125142}
@@ -218,6 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   characterName: Navi
+  activeEffects: []
   equipmentSlots: {fileID: 8418716091057550401}
   inventory: {fileID: 4727636871516878498}
   characterStats: {fileID: 5568387887786979083}
@@ -339,14 +341,6 @@ MonoBehaviour:
   swimSpeed: 4
   swingSpeed: 8
   flySpeed: 12
-  lookSensitivity: 1
-  verticalClamp: 80
-  followDistance: 5
-  followHeight: 2
-  horizontalOffset: 0
-  isThirdPerson: 1
-  smoothSpeed: 10
-  cameraFollowDamping: 0.05
 --- !u!114 &660661359804496864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,6 +396,41 @@ MonoBehaviour:
   blendTreeTransitionRate: 0.05
   attackLayerTransitionInTime: 0.05
   attackLayerTransitionOutTime: 0.2
+--- !u!114 &4318316196210790961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922875856160554918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c198141c5b839646921621626665f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BMD.CharacterController.Runtime::BMD.CharacterCameraModule
+  cameraFocus: {fileID: 0}
+  camera: {fileID: 1657385326647698450}
+  tiltMode: 2
+  panMode: 2
+  zoomMode: 2
+  isThirdPerson: 1
+  maxLookdelta: 30
+  invertVerticalLook: 0
+  invertHorizontalLook: 0
+  invertZoomInput: 0
+  lookSensitivity: 100
+  zoomSpeed: 0.5
+  defaultZoomDistance: 5
+  minZoomDistance: 2
+  maxZoomdistance: 10
+  camZoomDampingRate: 0.1
+  cameraFollowDamping: 0.05
+  camFollowStyle: 1
+  followHeight: 2
+  tiltOffset: 0
+  verticalClamp: 80
+  horizontalOffset: 0
+  followSmoothRate: 0.5
 --- !u!114 &1207980942263171655
 MonoBehaviour:
   m_ObjectHideFlags: 0

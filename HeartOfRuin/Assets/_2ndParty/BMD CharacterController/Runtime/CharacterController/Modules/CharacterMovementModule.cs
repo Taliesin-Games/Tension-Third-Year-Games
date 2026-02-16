@@ -4,7 +4,7 @@ using UnityEngine;
 namespace BMD
 {
     [RequireComponent(typeof(UnityEngine.CharacterController))]
-    public class CharacterMovementModule : MonoBehaviour, ICharacterModule
+    public class CharacterMovementModule : CharacterModule
     {
         [Serializable] private enum RotationType
         {
@@ -118,12 +118,14 @@ namespace BMD
         private bool InstantTurn => isDodging || isRolling || currentHorizontalVelocity.magnitude < instantTurnThreshold;
 
         #endregion
-        public void Initialize(CharacterController controller)
+        public override void PreInitialize(CharacterController controller)
         {
-            InitializeReferences(controller);
+            CacheReferences(controller);
+        }
+        public override void Initialize(CharacterController controller)
+        {
             InitializeSignals(controller);
             InitializeSanityChecks();
-            
         }
         private void InitializeSanityChecks()
         {
@@ -148,12 +150,12 @@ namespace BMD
             controller.OnSprintDown += HandleSprintDown;
             controller.OnSprintUp += HandleSprintUp;
         }
-        private void InitializeReferences(CharacterController controller)
+        private void CacheReferences(CharacterController controller)
         {
             this.controller = controller;
             unityController = controller.GetComponent<UnityEngine.CharacterController>();
         }
-        public void Tick(float deltaTime)
+        public override void Tick(float deltaTime)
         {
             isSprinting = IsSprinting;
 
@@ -163,7 +165,7 @@ namespace BMD
             HandleInvulnerability();
 
         }
-        public void FixedTick(float fixedDeltaTime)
+        public override void FixedTick(float fixedDeltaTime)
         {
             
             ApplyVerticalMovement(fixedDeltaTime);                      // 1) update verticalVelocity, landing, coyote
@@ -454,7 +456,7 @@ namespace BMD
                 controller.NotifyStateChanged(CurrentState);
             }
         }
-        public void Dispose()
+        public override void Dispose()
         {
             if(dodgeRollCoroutine != null) StopCoroutine(dodgeRollCoroutine);
 

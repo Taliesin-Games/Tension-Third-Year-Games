@@ -17,9 +17,10 @@ namespace BMD
         #region Actions
         public event Action<CharacterState> OnStateChanged;
         public event Action<Vector3> OnMoveDirectionChanged;
+        public event Action<float> OnZoomChanged;
         public event Action OnJumpRequested;    // Event fdired attempting to jump
         public event Action OnJumpPerformed;    // Event fired when jump is performed
-        public event Action OnLanded;           // Evenet fires when character lands
+        public event Action OnJumpLanded;       // Evenet fires when character lands
 
         public event Action OnSprintDown;
         public event Action OnSprintUp;
@@ -78,7 +79,8 @@ namespace BMD
 
         #region Runtime variables
         protected Vector3 moveDirection = Vector3.zero; // Current movement direction of the character
-        public Vector3 MoveDirection => moveDirection;
+
+        protected Vector2 lookInput = Vector2.zero;
 
         protected CharacterState currentState = CharacterState.Idle;
         private Coroutine idleLoopCoroutine;    // Coroutine for handling idle loop animations
@@ -90,9 +92,13 @@ namespace BMD
         private bool isDead = false;
         private bool isAttacking = false;
 
+        private Camera _camera; // This is the camera attached to this character, it is not necessarily the player camera.
+
         #endregion
 
         #region Properties
+        public Vector3 MoveDirection => moveDirection;
+        public Vector2 LookInput => lookInput;
         public CharacterState CurrentState 
         {
             get { return currentState; }
@@ -141,16 +147,21 @@ namespace BMD
         private bool IsDead => isDead;      // TODO optional call to character
         public bool IsAttacking => isAttacking;
         private bool CantAttack => IsDead || IsAttacking;
+        /// <summary>
+        /// Defines the camera attached to this character. Returns null if no camera module is enabld.
+        /// </summary>
+        public Camera Camera => _camera;
         #endregion
 
         #region Signal Helpers
         // --- Signal helpers (so modules can’t fire events directly) ---
         public void NotifyStateChanged(CharacterState state) => OnStateChanged?.Invoke(state);
+        public void NotifyZoomChanged(float delta) => OnZoomChanged?.Invoke(delta);
 
         // Jump signal helpers
         public void RequestJump() => OnJumpRequested?.Invoke();
         public void NotifyJumpPerformed() => OnJumpPerformed?.Invoke();
-        public void NotifyJumpLanded() => OnLanded?.Invoke();
+        public void NotifyJumpLanded() => OnJumpLanded?.Invoke();
 
         // Roll signal helpers
         public void RequestRoll() => OnRollRequested?.Invoke();
@@ -267,10 +278,10 @@ namespace BMD
             unityController = GetComponent<UnityEngine.CharacterController>();
             animator = GetComponent<Animator>();
 
-            foreach (var module in GetComponents<ICharacterModule>())
+            foreach (var module in GetComponents<CharacterModule>())
             {
                 RegisterModule(module);
-                module.Initialize(this);
+                module.PreInitialize(this);
             }
         }
         protected virtual void Start()
@@ -279,7 +290,9 @@ namespace BMD
             {
                 Debug.LogError("CharacterController component is missing on " + gameObject.name);
             }
-            
+
+            foreach (var (_, module) in modules)
+                module.Initialize(this);
         }
         protected virtual void Update()
         {
@@ -357,8 +370,8 @@ namespace BMD
 
             modules.Clear();
         }
-        public void RegisterModule<T>(T module) where T : ICharacterModule => RegisterModule((ICharacterModule)module);
-        public void RegisterModule(ICharacterModule module)
+        public void RegisterModule<T>(T module) where T : CharacterModule => RegisterModule((CharacterModule)module);
+        public void RegisterModule(CharacterModule module)
         {
             var type = module.GetType(); // concrete type, e.g., CharacterMovementModule
 
@@ -370,7 +383,7 @@ namespace BMD
                 return;
             }
 
-            modules[type] = module;
+            if(CharacterModuleValidator.CheckModuleCompatibility(this.gameObject, module)) modules[type] = module;
         }
         public bool TryGetModule<T>(out T module) where T : class, ICharacterModule
         {
@@ -382,7 +395,26 @@ namespace BMD
             module = null;
             return false;
         }
+        /// <summary>
+        /// Registers a camera to this character. Does not manage player camera
+        /// or camera settings/activation. This only assigns a camera to this character for reference.
+        /// </summary>
+        /// <param name="camera"></param>
+        public void RegisterCamera(Camera camera)
+        {
+            if (camera == null)
+            {
+                Debug.LogError($"{this.name}: Specified Camera is null.");
+                return;
+            }
 
+            if (_camera != null)
+            {
+                Debug.LogWarning($"{this.name}: Attempting to specify a camera when one is already assigned.");
+            }
+
+            _camera = camera;
+        }
 
     }
 }

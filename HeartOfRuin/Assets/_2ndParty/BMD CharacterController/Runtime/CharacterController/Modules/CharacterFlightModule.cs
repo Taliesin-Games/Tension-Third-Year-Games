@@ -1,25 +1,31 @@
+using BMD;
 using UnityEngine;
 
-public class CharacterFlightModule : MonoBehaviour, ICharacterModule
+public class CharacterFlightModule : CharacterModule
 {
     private Animator animator;
     private BMD.CharacterController controller;
 
-    public void Initialize(BMD.CharacterController controller)
+    public override void PreInitialize(BMD.CharacterController controller)
     {
         this.controller = controller;
         animator = controller.GetComponent<Animator>();
     }
 
-    public void Tick(float deltaTime)
+    public override void Initialize(BMD.CharacterController controller)
+    {
+        
+    }
+
+    public override void Tick(float deltaTime)
     {
 
     }
-    public void FixedTick(float fixedDeltaTime)
+    public override void FixedTick(float fixedDeltaTime)
     {
 
     }
-    public void Dispose()
+    public override void Dispose()
     {
 
     }
