@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace BMD
 {
     [RequireComponent(typeof(Animator))]
-    public class CharacterAnimatorModule : MonoBehaviour, ICharacterModule
+    public class CharacterAnimatorModule : CharacterModule
     {
         [Tooltip("Rate of change when a parameter affects a blend tree.\n" +
             "Only applies to values inside blend trees. Does NOT affect animator transitions.\n" +
@@ -69,6 +69,7 @@ namespace BMD
         private HashSet<int> warnedParams;  // avoid duplicate warnings
 #endif
         (float walk, float run, float sprint) locomotionScales;
+        bool preInitialized = false;
         bool initialized = false;
         float attackLayerTargetWeight = 0f;
         #endregion
@@ -79,12 +80,18 @@ namespace BMD
         bool IsAttacking => controller.IsAttacking;
         float AttackLayerTransitionTime => IsAttacking ? attackLayerTransitionInTime : attackLayerTransitionOutTime;
         #endregion
-        public void Initialize(CharacterController controller)
+
+        public override void PreInitialize(BMD.CharacterController controller)
+        {
+            if (preInitialized) return;    // Prevent double initialization
+            preInitialized = true;
+
+            CacheReferences(controller);
+        }
+        public override void Initialize(BMD.CharacterController controller)
         {
             if (initialized) return;    // Prevent double initialization
             initialized = true;
-
-            InitializeReferences(controller);
 
             if (attackLayerIndex == -1) attackLayerIndex = animator.GetLayerIndex("Attack Layer");  // TODO magic string remove!!!
 
@@ -93,7 +100,7 @@ namespace BMD
             locomotionScales = controller.LocomotionScales;
         }
 
-        private void InitializeReferences(CharacterController controller)
+        private void CacheReferences(CharacterController controller)
         {
             this.controller = controller;
             animator = controller.GetComponent<Animator>();
@@ -111,7 +118,7 @@ namespace BMD
 
             // Jump events
             controller.OnJumpPerformed += HandleJumpPerformed;
-            controller.OnLanded += HandleLanded;
+            controller.OnJumpLanded += HandleLanded;
 
             // Roll events
             controller.OnRollPerformed += HandleRollPerformed;
@@ -132,7 +139,7 @@ namespace BMD
             controller.OnSpecialAttackEnded  += HandleSpecialAttackEnded;
 
         }
-        public void Tick(float deltaTime)
+        public override void Tick(float deltaTime)
         {
             // Safety check for missing references
             if (animator == null || controller == null|| unityController == null) return;
@@ -177,7 +184,7 @@ namespace BMD
                 );
             animator.SetLayerWeight(attackLayerIndex, newWeight);
         }
-        public void FixedTick(float fixedDeltaTime)
+        public override void FixedTick(float fixedDeltaTime)
         {
             // Animator does not need fixed-timestep updates
         }
@@ -272,12 +279,12 @@ namespace BMD
         {
             attackLayerTargetWeight = enable ? 1 : 0;
         }
-        public void Dispose()
+        public override void Dispose()
         {
             if (controller == null) return;
             
             controller.OnJumpPerformed -= HandleJumpPerformed;
-            controller.OnLanded -= HandleLanded;
+            controller.OnJumpLanded -= HandleLanded;
             controller.OnStateChanged -= HandleStateChanged;
 
             controller.OnRollPerformed -= HandleRollPerformed;

@@ -15,8 +15,10 @@ public class DamageNumbers : MonoBehaviour
     void Awake()
     {
         mainCamera = Camera.main;
+        if (mainCamera == null ) mainCamera = Camera.current; // TODO we need a fallbakc detection for this to search the players camera reference
        
         timer = lifetime;
+        Destroy(this.gameObject, lifetime);
     }
 
     public void Initialize(float damage)
@@ -32,18 +34,29 @@ public class DamageNumbers : MonoBehaviour
 
     void Update()
     {
-        // Face camera
-        transform.LookAt(mainCamera.transform);
-        transform.Rotate(0, 180, 0); // because TMP text faces backward
+        UpdateCameraTrasnform();
 
+        FadeNumber();
+    }
+
+    void UpdateCameraTrasnform()
+    {
+        if (mainCamera != null )
+        {
+            // Face camera
+            transform.LookAt(mainCamera.transform);
+            transform.Rotate(0, 180, 0); // because TMP text faces backward
+        }
+       
         // Move upward
         transform.position += Vector3.up * floatSpeed * Time.deltaTime;
+    }
 
+    void FadeNumber()
+    {
         // Fade out
         timer -= Time.deltaTime;
-        if (timer <= 0)
-            Destroy(gameObject);
-        else
-            textMesh.alpha = timer / lifetime;
+        timer = Mathf.Max(timer, 0);
+        textMesh.alpha = timer / lifetime;
     }
 }

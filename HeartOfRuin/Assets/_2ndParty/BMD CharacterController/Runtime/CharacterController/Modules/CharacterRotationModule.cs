@@ -4,28 +4,37 @@ using UnityEngine;
 /// Simplified alterative to CharacterMovementModule that only handles character rotation.
 /// </summary> 
 // TODO move rotation logic from movement module to here
-public class CharacterRotationModule : MonoBehaviour, ICharacterModule
+namespace BMD
 {
-    private Animator animator;
-    private BMD.CharacterController controller;
-
-    public void Initialize(BMD.CharacterController controller)
-    {
-        this.controller = controller;
-        animator = controller.GetComponent<Animator>();
-    }
-
-    public void Tick(float deltaTime)
-    {
-        var c = new CharacterFlightModule();
-        c.Initialize(controller);
-    }
-    public void FixedTick(float fixedDeltaTime)
+    public class CharacterRotationModule : CharacterModule
     {
 
-    }
-    public void Dispose()
-    {
+        private Animator animator;
+        private BMD.CharacterController controller;
 
+        public override void PreInitialize(BMD.CharacterController controller)
+        {
+            this.controller = controller;
+            animator = controller.GetComponent<Animator>();
+        }
+        public override void Initialize(BMD.CharacterController controller)
+        {
+
+        }
+
+        public override void Tick(float deltaTime)
+        {
+            var c = new CharacterFlightModule();
+            c.Initialize(controller);
+        }
+        public override void FixedTick(float fixedDeltaTime)
+        {
+
+        }
+        public override void Dispose()
+        {
+
+        }
     }
 }
+
