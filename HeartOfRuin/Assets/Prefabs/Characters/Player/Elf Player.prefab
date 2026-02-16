@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 1207980942263171655}
   - component: {fileID: 8828830358373169569}
   - component: {fileID: 2720698404454125142}
+  - component: {fileID: 5129469992808466830}
   m_Layer: 0
   m_Name: Elf Player
   m_TagString: Untagged
@@ -488,6 +489,22 @@ MonoBehaviour:
     Earth: 1
     Wind: 1
     Water: 1
+--- !u!114 &5129469992808466830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922875856160554918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03eb1e4aebc52a84383644247567a3d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
+  interactDistance: 3
+  interactMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &8475547856137853741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,11 +1031,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Size
-      value: 1
+      value: 0.9999999
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9199831194438809938, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1026,6 +1043,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9199831194438809938, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199831194438809938, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
