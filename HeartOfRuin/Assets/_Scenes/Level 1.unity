@@ -3197,6 +3197,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3390565068289297619, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1767010529}
+    - targetCorrespondingSourceObject: {fileID: 3390565068289297619, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1767010530}
   m_SourcePrefab: {fileID: 100100000, guid: ebf162478c746264dac77e8df78ac8a3, type: 3}
 --- !u!1001 &1174533776
 PrefabInstance:
@@ -4621,6 +4624,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LootGenerator
   itemDatabase: {fileID: 11400000, guid: 636e95c65ccf4104ca08ff826a59f515, type: 2}
+--- !u!114 &1767010530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767010528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a784d0becb1b894d884d2b6e40caf9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkyboxColourManager
+  setAColor1: {r: 0.6392157, g: 0.17254902, b: 0.92941177, a: 1}
+  setAColor2: {r: 0.7254902, g: 0.29803923, b: 1, a: 1}
+  setAColor3: {r: 0.6039216, g: 0.25882354, b: 1, a: 1}
+  setBColor1: {r: 1, g: 0, b: 0, a: 1}
+  setBColor2: {r: 0, g: 1, b: 0, a: 1}
+  setBColor3: {r: 0, g: 0, b: 1, a: 1}
+  tileCountX: 6
+  tileCountY: 8
+  tileIndex: 9
+  framesPerSecond: 24
+  blend: 0
+  alpha: 135
 --- !u!1001 &1768080599
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5581,7 +5608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1529344194202924366, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: tileIndex
-      value: 15
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 1529344194202924366, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: tileCountX
@@ -5723,7 +5750,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -135
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1529344194202924366, guid: 95e788ad9694cae4092134361260ca37, type: 3}
     m_RemovedGameObjects:
     - {fileID: 8513638023534378158, guid: 95e788ad9694cae4092134361260ca37, type: 3}
     m_AddedGameObjects: []
