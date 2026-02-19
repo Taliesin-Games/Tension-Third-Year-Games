@@ -44,12 +44,33 @@ public class SkyboxColourManager : MonoBehaviour
     private Color _lastBlended3;
     private bool _colorsInitialized;
 
+    private GameManager gameManager;
+
     private void OnEnable()
     {
         _colorsInitialized = false;
         UpdateShaderGlobals(true);
         computeTile(); // ensure initial tile globals are set too
     }
+
+    private void Start()
+    {
+        gameManager = GetComponent<GameManager>();
+        if (gameManager)
+        {
+        
+            gameManager.OnTensionChanged += TensionChanged;
+
+        }
+    }
+
+
+    private void TensionChanged(float tensionCompletionRatio, float currentTension)
+    {
+        // Example: Map tension completion ratio to blend (0 to 1)
+        blend = Mathf.Clamp01(tensionCompletionRatio);
+    }
+
 
     private void Update()
     {
@@ -63,6 +84,7 @@ public class SkyboxColourManager : MonoBehaviour
             return;
         }
 #endif
+
         // In play mode, only push color globals if values actually changed
         UpdateShaderGlobals(false);
         computeTile();
