@@ -30,7 +30,7 @@ public class Player : Character
 
         if (invToggle)
         {        
-            if (Input.GetKeyDown(KeyCode.V))
+            if (Input.GetKeyDown(KeyCode.V))    // TODO convert to new input system
             {
                 inventoryUiController.GetMouse().DropHeldItemToWorld();
                 Debug.Log("drop key pressed");
