@@ -1,6 +1,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
 
+[RequireComponent(typeof(DamageComponent))]
 public class CharacterWeapon : MonoBehaviour
 {
     #region Configuration
@@ -10,6 +11,7 @@ public class CharacterWeapon : MonoBehaviour
     #region Cached References
     Character character;
     Rigidbody rb;
+    DamageComponent damageComponent;
     #endregion
 
     #region Runtime Variables
@@ -24,6 +26,8 @@ public class CharacterWeapon : MonoBehaviour
 
         character = GetComponentInParent<Character>();
         if (!character) Debug.LogError($"Character not found for {name}");
+
+        damageComponent = GetComponent<DamageComponent>();
 
     }
 
@@ -42,7 +46,18 @@ public class CharacterWeapon : MonoBehaviour
 
         if (velocity.magnitude > velocityDamageThreshold)
         {
-            character.HitWithWeapon(other.gameObject);
+            HitWithWeapon(other.gameObject);
         }
+    }
+
+    private void HitWithWeapon(GameObject target) 
+    {
+        Debug.Log("Hit object: " + target.name);
+
+        CharacterStats playerStats = GetComponentInParent<Character>()?.GetCharacterStats();
+
+        DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats);
+
+        target.GetComponent<Health>()?.TakeDamage(damage);
     }
 }

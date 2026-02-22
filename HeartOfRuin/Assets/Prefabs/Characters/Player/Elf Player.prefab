@@ -21,12 +21,11 @@ GameObject:
   - component: {fileID: 6701897996978430247}
   - component: {fileID: 1207980942263171655}
   - component: {fileID: 8828830358373169569}
-  - component: {fileID: 2720698404454125142}
   - component: {fileID: 9075488631171371052}
   - component: {fileID: 5276674339465016163}
   m_Layer: 0
   m_Name: Elf Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -305,7 +304,7 @@ MonoBehaviour:
   selectedSpell: 2
   castPosOffset: {x: 0, y: 2, z: 2}
   mana: {fileID: 8828830358373169569}
-  damageComponent: {fileID: 2720698404454125142}
+  damageComponent: {fileID: 0}
 --- !u!114 &8828830358373169569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,29 +319,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Mana
   maxValue: 100
   regenRate: 10
---- !u!114 &2720698404454125142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7922875856160554918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 090fb96d13786254c8c54fe647d8862d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DamageComponent
-  damageScaling:
-    None: 1
-    Physical: 1
-    Magical: 1
-    True: 1
-    Fire: 1
-    Lightning: 1
-    Ice: 1
-    Earth: 1
-    Wind: 1
-    Water: 1
 --- !u!114 &9075488631171371052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -770,6 +746,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865318963600452104, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.000022888184
+      objectReference: {fileID: 0}
     - target: {fileID: 1245748949514355488, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Name
       value: PlayerUI
@@ -920,7 +900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Size
-      value: 0.9999999
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Value
@@ -1006,11 +986,43 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwordBlockout
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4359245513648104845, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6588795040206621437, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3305925810694267648}
   m_SourcePrefab: {fileID: 100100000, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
+--- !u!1 &4378213010494053494 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6588795040206621437, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
+  m_PrefabInstance: {fileID: 7472197078641464971}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3305925810694267648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4378213010494053494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090fb96d13786254c8c54fe647d8862d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageComponent
+  damageScaling:
+    None: 1
+    Physical: 1
+    Magical: 1
+    True: 1
+    Fire: 1
+    Lightning: 1
+    Ice: 1
+    Earth: 1
+    Wind: 1
+    Water: 1
 --- !u!4 &6796437850161769326 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4171282753579105765, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}

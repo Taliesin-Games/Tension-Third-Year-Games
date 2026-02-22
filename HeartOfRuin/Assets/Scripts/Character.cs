@@ -20,7 +20,7 @@ public abstract class Character : MonoBehaviour
     #region Cached References
     BMD.CharacterController controller;
     CharacterStats baseStats;
-    DamageComponent damageComponent;
+
     #endregion
 
     #region Runtime Variables
@@ -36,7 +36,6 @@ public abstract class Character : MonoBehaviour
     {
         baseStats = characterStats;
 
-        damageComponent = GetComponent<DamageComponent>();
 
         if (inventory == null)
         {
@@ -99,9 +98,7 @@ public abstract class Character : MonoBehaviour
     }
     public void HitWithWeapon(GameObject target)
     {
-        DamageStruct damage = damageComponent.CalculatePlayerDamage(baseStats);
 
-        target.GetComponent<Health>()?.TakeDamage(damage);
     }
 
     public void AddItemEffect(ItemEffect effect)
@@ -132,6 +129,11 @@ public abstract class Character : MonoBehaviour
         {
             activeEffects.Remove(effect);
         }
+    }
+
+    public CharacterStats GetCharacterStats()
+    {
+        return characterStats;
     }
 
     public void OnItemEquipped(Item item)
