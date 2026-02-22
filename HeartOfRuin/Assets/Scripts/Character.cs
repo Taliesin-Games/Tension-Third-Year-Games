@@ -24,7 +24,11 @@ public abstract class Character : MonoBehaviour
     #endregion
 
     #region Runtime Variables
+    bool weaponDamageEnabled;
+    #endregion
 
+    #region Properties
+    public bool WeaponDamageEnabled => weaponDamageEnabled;
     #endregion
 
     protected virtual void Awake()
@@ -76,13 +80,15 @@ public abstract class Character : MonoBehaviour
 
     private void OnEnable()
     {
-        controller.OnDealDamageFromWeapon += HandleDealDamage;
+        controller.OnEnableDamageFromWeapon += HangleEnableWeaponDamage;
+        controller.OnDisableDamageFromWeapon += HandleDisableWeaponDamage;
         controller.OnCastSpell += HandleCastSpell;
     }
 
     private void OnDisable()
     {
-        controller.OnDealDamageFromWeapon -= HandleDealDamage;
+        controller.OnEnableDamageFromWeapon -= HangleEnableWeaponDamage;
+        controller.OnDisableDamageFromWeapon -= HandleDisableWeaponDamage;
         controller.OnCastSpell -= HandleCastSpell;
     }
 
@@ -92,9 +98,13 @@ public abstract class Character : MonoBehaviour
         castComponent.TryCastSpell();
     }
 
-    private void HandleDealDamage()
+    private void HangleEnableWeaponDamage()
     {
-
+        weaponDamageEnabled = true;
+    }
+    private void HandleDisableWeaponDamage()
+    {
+        weaponDamageEnabled = false;
     }
     public void HitWithWeapon(GameObject target)
     {
@@ -155,4 +165,10 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalChance(characterStats.getCriticalChance() - equippedItem.GetBonusCriticalChance());
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
     }
+
+    /// <summary>
+    /// newState: 0 = no damage, 1 = player weapon damage
+    /// </summary>
+    /// <param name="newState"></param>
+  
 }

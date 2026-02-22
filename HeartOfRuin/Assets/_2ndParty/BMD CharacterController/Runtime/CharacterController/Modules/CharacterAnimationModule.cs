@@ -133,7 +133,7 @@ namespace BMD
             controller.OnFireWeaponEnded     += HandleFireWeaponEnded;
 
             controller.OnAttackPerformed     += HandleAttackPerformed;
-            controller.OnAttackEnded         += HandleAttackEnded;
+            controller.OnDisableDamageFromWeapon         += HandleAttackEnded;
 
             controller.OnSpecialAttackPerformed += HandleSpecialAttackPerformed;
             controller.OnSpecialAttackEnded  += HandleSpecialAttackEnded;
@@ -268,10 +268,10 @@ namespace BMD
         #endregion
 
         #region Animation Triggers
-        public void AT_AttackEnded() { controller.NotifyAttackEnded(); }
+        public void AT_DisableWeaponDamage() { controller.NotifyAttackEnded(); }
         public void AT_SpecialAttackEnded() { controller.NotifySpecialAttackEnded(); }
         public void AT_FireWeaponEnded() { controller.NotifyFireWeaponEnded(); }
-        public void AT_DealDamage() { controller.NotifyDealDamageFromWeapon(); }
+        public void AT_EnableWeaponDamage() { controller.NotifyEnableDamageFromWeapon(); }
         public void AT_CastSpell() { controller.NotifyCastSpell(); }
         #endregion
 
@@ -294,7 +294,7 @@ namespace BMD
             controller.OnDodgeEnded -= HandleDodgeEnded;
 
             controller.OnAttackPerformed -= HandleAttackPerformed;
-            controller.OnAttackEnded -= HandleAttackEnded;
+            controller.OnDisableDamageFromWeapon -= HandleAttackEnded;
 
             controller.OnSpecialAttackPerformed -= HandleSpecialAttackPerformed;
             controller.OnSpecialAttackEnded -= HandleSpecialAttackEnded;

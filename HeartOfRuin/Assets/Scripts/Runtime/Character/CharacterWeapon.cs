@@ -4,26 +4,14 @@ using UnityEngine;
 [RequireComponent(typeof(DamageComponent))]
 public class CharacterWeapon : MonoBehaviour
 {
-    #region Configuration
-    [SerializeField] float velocityDamageThreshold = 1f;
-    #endregion
-
     #region Cached References
     Character character;
-    Rigidbody rb;
     DamageComponent damageComponent;
     #endregion
 
-    #region Runtime Variables
-    Vector3 lastPosition;
-    Vector3 velocity;
-    #endregion
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        if (!rb) Debug.LogError($"Rigidbody not found on {name}");
-
         character = GetComponentInParent<Character>();
         if (!character) Debug.LogError($"Character not found for {name}");
 
@@ -31,23 +19,18 @@ public class CharacterWeapon : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        velocity = (transform.position - lastPosition) / Time.deltaTime;
-        lastPosition = transform.position;
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (character == null) return;
         
-        // Check layer is enemy layer
-        if ((other.gameObject.layer) != 7) return;  // Layer 7 is Enemy
+        if(!character.WeaponDamageEnabled) return;
 
-        if (velocity.magnitude > velocityDamageThreshold)
-        {
-            HitWithWeapon(other.gameObject);
-        }
+        if ((other.gameObject.layer) == 6) return;  // Layer 6 Player, ignore collisions with player layer
+
+        // Check if the collided object has a Health component
+        if (other.GetComponent<Health>() == null) return;
+        HitWithWeapon(other.gameObject);
+        
     }
 
     private void HitWithWeapon(GameObject target) 
