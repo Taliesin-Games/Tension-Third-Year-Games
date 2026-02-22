@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7812214504409942699}
   - component: {fileID: 3520680764183025732}
   - component: {fileID: 3705103960711749171}
+  - component: {fileID: 3374113976120646657}
   m_Layer: 0
   m_Name: SwordBlockout
   m_TagString: Untagged
@@ -127,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 178d6345ff25f8c488329e295080b252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterWeapon
+  velocityDamageThreshold: 1
 --- !u!54 &3705103960711749171
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -154,3 +156,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3374113976120646657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6588795040206621437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090fb96d13786254c8c54fe647d8862d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageComponent
+  damageScaling:
+    None: 1
+    Physical: 1
+    Magical: 1
+    True: 1
+    Fire: 1
+    Lightning: 1
+    Ice: 1
+    Earth: 1
+    Wind: 1
+    Water: 1

@@ -20,11 +20,15 @@ public abstract class Character : MonoBehaviour
     #region Cached References
     BMD.CharacterController controller;
     CharacterStats baseStats;
-    DamageComponent damageComponent;
+
     #endregion
 
     #region Runtime Variables
+    bool weaponDamageEnabled;
+    #endregion
 
+    #region Properties
+    public bool WeaponDamageEnabled => weaponDamageEnabled;
     #endregion
 
     protected virtual void Awake()
@@ -36,7 +40,6 @@ public abstract class Character : MonoBehaviour
     {
         baseStats = characterStats;
 
-        damageComponent = GetComponent<DamageComponent>();
 
         if (inventory == null)
         {
@@ -77,13 +80,15 @@ public abstract class Character : MonoBehaviour
 
     private void OnEnable()
     {
-        controller.OnDealDamageFromWeapon += HandleDealDamage;
+        controller.OnEnableDamageFromWeapon += HangleEnableWeaponDamage;
+        controller.OnDisableDamageFromWeapon += HandleDisableWeaponDamage;
         controller.OnCastSpell += HandleCastSpell;
     }
 
     private void OnDisable()
     {
-        controller.OnDealDamageFromWeapon -= HandleDealDamage;
+        controller.OnEnableDamageFromWeapon -= HangleEnableWeaponDamage;
+        controller.OnDisableDamageFromWeapon -= HandleDisableWeaponDamage;
         controller.OnCastSpell -= HandleCastSpell;
     }
 
@@ -93,15 +98,17 @@ public abstract class Character : MonoBehaviour
         castComponent.TryCastSpell();
     }
 
-    private void HandleDealDamage()
+    private void HangleEnableWeaponDamage()
     {
-
+        weaponDamageEnabled = true;
+    }
+    private void HandleDisableWeaponDamage()
+    {
+        weaponDamageEnabled = false;
     }
     public void HitWithWeapon(GameObject target)
     {
-        DamageStruct damage = damageComponent.CalculatePlayerDamage(baseStats);
 
-        target.GetComponent<Health>()?.TakeDamage(damage);
     }
 
     public void AddItemEffect(ItemEffect effect)
@@ -134,6 +141,11 @@ public abstract class Character : MonoBehaviour
         }
     }
 
+    public CharacterStats GetCharacterStats()
+    {
+        return characterStats;
+    }
+
     public void OnItemEquipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
@@ -153,4 +165,10 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalChance(characterStats.getCriticalChance() - equippedItem.GetBonusCriticalChance());
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
     }
+
+    /// <summary>
+    /// newState: 0 = no damage, 1 = player weapon damage
+    /// </summary>
+    /// <param name="newState"></param>
+  
 }
