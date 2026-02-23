@@ -1,0 +1,190 @@
+animVersion 1.1;
+mayaVersion 2026;
+timeUnit film;
+linearUnit cm;
+angularUnit deg;
+startTime 0;
+endTime 1;
+anim C_hips_jnt 0 3 0;
+anim C_spineA_jnt 0 1 0;
+anim C_spineB_jnt 0 1 0;
+anim C_spineC_jnt 0 3 0;
+anim C_neckA_jnt 0 1 0;
+anim C_neckB_jnt 0 1 0;
+anim C_head_jnt 0 0 0;
+anim L_clavicle_jnt 0 1 0;
+anim L_shoulder_jnt 0 1 0;
+anim L_elbow_jnt 0 1 0;
+anim L_wrist_jnt 0 5 0;
+anim L_middlefingerA_jnt 0 1 0;
+anim L_middlefingerB_jnt 0 1 0;
+anim L_middlefingerC_jnt 0 1 0;
+anim L_middlefingerD_jnt 0 0 0;
+anim L_thumbA_jnt 0 1 0;
+anim L_thumbB_jnt 0 1 0;
+anim L_thumbC_jnt 0 0 0;
+anim L_indexfingerA_jnt 0 1 0;
+anim L_indexfiingerB_jnt 0 1 0;
+anim L_indexfingerC_jnt 0 1 0;
+anim L_indexfingerD_jnt 0 0 0;
+anim L_ringfingerA_jnt 0 1 0;
+anim L_ringfingerB_jnt 0 1 0;
+anim L_ringfingerC_jnt 0 1 0;
+anim L_ringfingerD_jnt 0 0 0;
+anim L_pinkyfingerA_jnt 0 1 0;
+anim L_pinkyfingerB_jnt 0 1 0;
+anim L_pinkyfingerC_jnt 0 1 0;
+anim L_pinkyfingerD_jnt 0 0 0;
+anim R_clavicle_jnt 0 1 0;
+anim visibility visibility R_shoulder_jnt 0 1 0;
+animData {
+  input time;
+  output unitless;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 1 fixed step 1 0 0 0 1;
+  }
+}
+anim translate.translateX translateX R_shoulder_jnt 0 1 1;
+animData {
+  input time;
+  output linear;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 22.38282 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim translate.translateY translateY R_shoulder_jnt 0 1 2;
+animData {
+  input time;
+  output linear;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 0 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim translate.translateZ translateZ R_shoulder_jnt 0 1 3;
+animData {
+  input time;
+  output linear;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 0 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim rotate.rotateX rotateX R_shoulder_jnt 0 1 4;
+animData {
+  input time;
+  output angular;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 0 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim rotate.rotateY rotateY R_shoulder_jnt 0 1 5;
+animData {
+  input time;
+  output angular;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 0 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim rotate.rotateZ rotateZ R_shoulder_jnt 0 1 6;
+animData {
+  input time;
+  output angular;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 0 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim scale.scaleX scaleX R_shoulder_jnt 0 1 7;
+animData {
+  input time;
+  output unitless;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 1 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim scale.scaleY scaleY R_shoulder_jnt 0 1 8;
+animData {
+  input time;
+  output unitless;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 1 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim scale.scaleZ scaleZ R_shoulder_jnt 0 1 9;
+animData {
+  input time;
+  output unitless;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 1 fixed fixed 1 0 0 0 1 0 1;
+  }
+}
+anim lockInfluenceWeights lockInfluenceWeights R_shoulder_jnt 0 1 10;
+animData {
+  input time;
+  output unitless;
+  weighted 0;
+  preInfinity constant;
+  postInfinity constant;
+  keys {
+    0 0 fixed step 1 0 0 0 1;
+  }
+}
+anim R_elbow_jnt 0 1 0;
+anim R_wrist_jnt 0 5 0;
+anim R_thumbA_jnt 0 1 0;
+anim R_thumbB_jnt 0 1 0;
+anim R_thumbC_jnt 0 0 0;
+anim R_indexfingerA_jnt 0 1 0;
+anim R_indexfiingerB_jnt 0 1 0;
+anim R_indexfingerC_jnt 0 1 0;
+anim R_indexfingerD_jnt 0 0 0;
+anim R_middlefingerA_jnt 0 1 0;
+anim R_middlefingerB_jnt 0 1 0;
+anim R_middlefingerC_jnt 0 1 0;
+anim R_middlefingerD_jnt 0 0 0;
+anim R_ringfingerA_jnt 0 1 0;
+anim R_ringfingerB_jnt 0 1 0;
+anim R_ringfingerC_jnt 0 1 0;
+anim R_ringfingerD_jnt 0 0 0;
+anim R_pinkyfingerA_jnt 0 1 0;
+anim R_pinkyfingerB_jnt 0 1 0;
+anim R_pinkyfingerC_jnt 0 1 0;
+anim R_pinkyfingerD_jnt 0 0 0;
+anim L_thigh_jnt 0 1 0;
+anim L_knee_jnt 0 1 0;
+anim L_ankle_jnt 0 1 0;
+anim L_foot_jnt 0 1 0;
+anim L_toe_jnt 0 0 0;
+anim R_thigh_jnt 0 1 0;
+anim R_knee_jnt 0 1 0;
+anim R_ankle_jnt 0 1 0;
+anim R_foot_jnt 0 1 0;
+anim R_toe_jnt 0 0 0;
