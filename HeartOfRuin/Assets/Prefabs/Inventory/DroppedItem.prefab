@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7239347301271476650}
   - component: {fileID: 4301855463212435013}
   - component: {fileID: 2020728458148627785}
+  - component: {fileID: 8952659424966668261}
   m_Layer: 0
   m_Name: DroppedItem
   m_TagString: Untagged
@@ -77,12 +78,15 @@ MonoBehaviour:
   pickupEffect: {fileID: 0}
   vfxColorPropertyName: Main Colour
   pickupColorIntensity: 6
+  opacity: 0.5
   commonColor: {r: 1, g: 1, b: 1, a: 1}
   uncommonColor: {r: 0.3, g: 1, b: 0.3, a: 1}
   rareColor: {r: 0.3, g: 0.6, b: 1, a: 1}
   epicColor: {r: 0.7, g: 0.3, b: 0.9, a: 1}
   legendaryColor: {r: 1, g: 0.6, b: 0.1, a: 1}
   cosmicColor: {r: 1, g: 0, b: 0.4752922, a: 1}
+  amplitude: 0.2
+  speed: 1
 --- !u!2083052967 &4301855463212435013
 VisualEffect:
   m_ObjectHideFlags: 0
@@ -167,6 +171,20 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &8952659424966668261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3675725128406392298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 841a5a29c9428df4fb6a50571cb12caf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleRotate
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationSpeed: -5
 --- !u!1 &6792075333525739402
 GameObject:
   m_ObjectHideFlags: 0

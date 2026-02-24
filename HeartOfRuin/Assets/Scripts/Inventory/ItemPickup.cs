@@ -11,6 +11,7 @@ public class ItemPickup : MonoBehaviour
     // Exposed VFX parameter name and HDR color settings
     [SerializeField] string vfxColorPropertyName = "Main Colour";
     [SerializeField] float pickupColorIntensity = 4f; // >1 makes it HDR
+    [SerializeField] float opacity = 0.5f;
 
     // Rarity-based color mapping (override defaults as needed in Inspector)
     [Header("Rarity Colors")]
@@ -20,6 +21,11 @@ public class ItemPickup : MonoBehaviour
     [SerializeField] Color epicColor = new Color(0.7f, 0.3f, 0.9f);         // Purple
     [SerializeField] Color legendaryColor = new Color(1f, 0.6f, 0.1f);      // Orange
     [SerializeField] Color cosmicColor = new Color(0.1f, 1f, 1f);           // Cyan
+
+    [Header("Movement Controls")]
+    [SerializeField] float amplitude = 1f;
+    [SerializeField] float speed     = 1f;
+    Vector3 startPos;
 
     bool itemSet = false;
     GameObject worldRepresentation;
@@ -46,6 +52,7 @@ public class ItemPickup : MonoBehaviour
             {
                 Color rarityBase = GetRarityColor(itemSlot.GetItem().GetRarity());
                 Color hdrColor = rarityBase * pickupColorIntensity;
+                hdrColor.a = opacity;
 
                 if (vfx.HasVector4(vfxColorPropertyName))
                 {
@@ -54,11 +61,18 @@ public class ItemPickup : MonoBehaviour
             }
 
             itemSet = true;
+
+            startPos = worldRepresentation.transform.position;
+
         }
 
         if (itemSet)
         {
             pickupLockoutTimer -= Time.deltaTime;
+
+            float yOffset = Mathf.Sin(Time.time*speed)*amplitude;
+            worldRepresentation.transform.position = startPos + new Vector3(0f, yOffset, 0f);
+
         }
     }
 
