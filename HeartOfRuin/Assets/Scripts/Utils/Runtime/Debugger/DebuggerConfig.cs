@@ -47,7 +47,7 @@ namespace Utils
         static DebuggerConfig()
         {
 #if UNITY_EDITOR
-            string[] guids = UnityEditor.AssetDatabase.FindAssets(DebuggerSettingsInitializer.SETTINGS_FILE_NAME + " t:Utils.DebuggerSettings");
+            string[] guids = UnityEditor.AssetDatabase.FindAssets(DebuggerSettingsInitializerConstants.SETTINGS_FILE_NAME + " t:Utils.DebuggerSettings");
             if (guids.Length > 0)
             {
                 string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
@@ -55,7 +55,7 @@ namespace Utils
             }
 #else
             // Build: load from Resources
-            settings = Resources.Load<DebuggerSettings>(DebuggerSettingsInitializer.RESOURCES_FILE_NAME);
+            settings = Resources.Load<DebuggerSettings>(DebuggerSettingsInitializerConstants.RESOURCES_FILE_NAME);
 #endif
         }
 

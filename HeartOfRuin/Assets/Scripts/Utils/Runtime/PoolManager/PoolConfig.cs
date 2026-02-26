@@ -17,7 +17,7 @@ namespace Utils
         static PoolConfig()
         {
 #if UNITY_EDITOR
-            string[] guids = UnityEditor.AssetDatabase.FindAssets(PoolManagerSettingsInitializer.SETTINGS_FILE_NAME + " t:Utils.PoolManagerSettings");
+            string[] guids = UnityEditor.AssetDatabase.FindAssets(PoolManagerSettingsInitializerConstants.SETTINGS_FILE_NAME + " t:Utils.PoolManagerSettings");
             if (guids.Length > 0)
             {
                 string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
@@ -25,7 +25,7 @@ namespace Utils
             }
 #else
             // Build: load from Resources
-            settings = Resources.Load<PoolManagerSettings>(PoolManagerSettingsInitializer.RESOURCES_FILE_NAME);
+            settings = Resources.Load<PoolManagerSettings>(PoolManagerSettingsInitializerConstants.RESOURCES_FILE_NAME);
 #endif
         }
 

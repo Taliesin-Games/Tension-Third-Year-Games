@@ -3,16 +3,17 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
+// Create alias for DebuggerSettingsInitializerConstants as DSI constants
+using DSIC = DebuggerSettingsInitializerConstants;
 [InitializeOnLoad]
 public static class DebuggerSettingsInitializer
 {
     private const string MarkerPath = "Assets/Settings/.debugger_settings_initialized";
 
-    public static string SETTINGS_FOLDER_NAME = "Settings";
-    public static string RESOURCES_FOLDER_NAME = "Resources";
-    public static string SETTINGS_FILE_NAME = "EditorDebuggerSettings";
-    public static string RESOURCES_FILE_NAME = "BuiltDebuggerSettings";
+    public static string SETTINGS_FOLDER_NAME   => DSIC.SETTINGS_FOLDER_NAME;
+    public static string RESOURCES_FOLDER_NAME  => DSIC.RESOURCES_FOLDER_NAME;
+    public static string SETTINGS_FILE_NAME     => DSIC.SETTINGS_FILE_NAME;
+    public static string RESOURCES_FILE_NAME    => DSIC.RESOURCES_FILE_NAME;
 
     static DebuggerSettingsInitializer()
     {
