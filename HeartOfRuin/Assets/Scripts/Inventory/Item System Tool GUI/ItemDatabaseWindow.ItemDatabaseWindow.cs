@@ -1,9 +1,7 @@
+// TODO split this into editor/runtime/shared
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 
 /// <summary>
 /// base class for the Item Database Editor Window, responsible for overall layout and tab management.
@@ -59,3 +57,4 @@ public partial class ItemDatabaseWindow : EditorWindow
 		}
 	}
 }
+#endif

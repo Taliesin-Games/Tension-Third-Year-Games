@@ -133,7 +133,7 @@ namespace BMD
             controller.OnFireWeaponEnded     += HandleFireWeaponEnded;
 
             controller.OnAttackPerformed     += HandleAttackPerformed;
-            controller.OnAttackEnded         += HandleAttackEnded;
+            controller.OnDisableDamageFromWeapon         += HandleAttackEnded;
 
             controller.OnSpecialAttackPerformed += HandleSpecialAttackPerformed;
             controller.OnSpecialAttackEnded  += HandleSpecialAttackEnded;
@@ -294,7 +294,7 @@ namespace BMD
             controller.OnDodgeEnded -= HandleDodgeEnded;
 
             controller.OnAttackPerformed -= HandleAttackPerformed;
-            controller.OnAttackEnded -= HandleAttackEnded;
+            controller.OnDisableDamageFromWeapon -= HandleAttackEnded;
 
             controller.OnSpecialAttackPerformed -= HandleSpecialAttackPerformed;
             controller.OnSpecialAttackEnded -= HandleSpecialAttackEnded;

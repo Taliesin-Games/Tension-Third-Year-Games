@@ -1,3 +1,5 @@
+// TODO split this into editor/runtime/shared
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using System;
@@ -126,3 +128,4 @@ public partial class ItemDatabaseWindow
 	private static readonly GUIContent kTagIcon = new GUIContent("Icon", "Optional icon for the tag");
 	private static readonly GUIContent kTagDescription = new GUIContent("Description", "Optional longer description for the tag");
 }
+#endif
