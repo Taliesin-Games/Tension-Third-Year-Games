@@ -36,7 +36,7 @@ public class DamageComponent : MonoBehaviour
 
 
         // Apply damage bonus percentage pre crit multiplier
-        damageDealt = damageDealt * (1f + damageBonusPercentage);
+        damageDealt = damageDealt * ( damageBonusPercentage + 1f);
 
         
 

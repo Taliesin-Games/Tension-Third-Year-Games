@@ -63,7 +63,7 @@ public class DamageCalculator : EditorWindow
             showDamageNumbers = true;
             DamageStruct playerDamage = CalculatePlayerDamage(damageScaling);
 
-            playerDamage = playerDamage * (1 + damageBonusPercentage);
+            playerDamage = playerDamage * (damageBonusPercentage + 1f);
 
             DamageStruct adjustedDamage = ApplyResistances(playerDamage, Resistances);
             Vector3 damageNumbers = ComputeDamageVector(adjustedDamage, critChance, critMultiplier);
