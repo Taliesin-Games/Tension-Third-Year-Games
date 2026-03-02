@@ -14,12 +14,14 @@ public abstract class Character : MonoBehaviour
     [SerializeField] protected Inventory equipmentSlots;
     [SerializeField] protected Inventory inventory;
     [SerializeField] protected CharacterStats characterStats;
+    [SerializeField] DamageStruct characterDamageBonusPercentage;
     [SerializeField] SpellCaster castComponent;
     #endregion
 
     #region Cached References
     BMD.CharacterController controller;
     CharacterStats baseStats;
+    DamageStruct baseDamageBonusPercentage;
 
     #endregion
 
@@ -39,6 +41,7 @@ public abstract class Character : MonoBehaviour
     void InitialiseCharacter()
     {
         baseStats = characterStats;
+        baseDamageBonusPercentage = characterDamageBonusPercentage;
 
 
         if (inventory == null)
@@ -146,6 +149,11 @@ public abstract class Character : MonoBehaviour
         return characterStats;
     }
 
+    public DamageStruct GetCharacterDamageBonusPercentage()
+    {
+        return characterDamageBonusPercentage;
+    }
+
     public void OnItemEquipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
@@ -154,6 +162,7 @@ public abstract class Character : MonoBehaviour
         characterStats.setStrength(characterStats.getStrength() + equippedItem.GetBonusStrength());
         characterStats.setCriticalChance(characterStats.getCriticalChance() + equippedItem.GetBonusCriticalChance());
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() + equippedItem.GetBonusCriticalDamage());
+        characterDamageBonusPercentage += equippedItem.GetDamageBonusPercentages();
     }
 
     public void OnItemUnequipped(Item item)
@@ -164,6 +173,7 @@ public abstract class Character : MonoBehaviour
         characterStats.setStrength(characterStats.getStrength() - equippedItem.GetBonusStrength());
         characterStats.setCriticalChance(characterStats.getCriticalChance() - equippedItem.GetBonusCriticalChance());
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
+        characterDamageBonusPercentage = characterDamageBonusPercentage - equippedItem.GetDamageBonusPercentages();
     }
 
     /// <summary>

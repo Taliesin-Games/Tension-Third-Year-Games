@@ -5,7 +5,7 @@ public class DamageComponent : MonoBehaviour
 {
 
     // OVERALL DAMAGE CALCULATION 
-    // For each damage type in damageStruct Damage = ((damageScaling.stat * playerStats.relevantStat) * (1 + critMultiplier)) * (1 - target.resistance.stat)
+    // For each damage type in damageStruct Damage = ((damageScaling.stat * playerStats.relevantStat) * (1 + damageBonusPercentage) * (1 + critMultiplier)) * (1 - target.resistance.stat)
 
     [Tooltip("Damage scaling percentage per relevant player stat, 0.1 = 10%\n" +
         "Damage of each type is scaled from a specific player stat: (damageScaling * playerStats.relevantStat)\n" +
@@ -16,7 +16,7 @@ public class DamageComponent : MonoBehaviour
     [SerializeField] DamageStruct damageScaling;
     public DamageStruct GetDamageScaling() { return damageScaling; }
     public void SetDamageScaling(DamageStruct inputScaling) { damageScaling = inputScaling; }
-    public DamageStruct CalculatePlayerDamage(CharacterStats playerStats, DamageStruct damageScaling)
+    public DamageStruct CalculatePlayerDamage(CharacterStats playerStats, DamageStruct damageBonusPercentage, DamageStruct damageScaling)
     {
         float critMultiplier = criticalHitMultiplier(playerStats.getCriticalChance(), playerStats.getCriticalDamage());
 
@@ -35,16 +35,26 @@ public class DamageComponent : MonoBehaviour
         damageDealt.Water = (playerStats.getIntelligence() * damageScaling.Water);
 
 
+        // Apply damage bonus percentage pre crit multiplier
+        damageDealt = damageDealt * (1f + damageBonusPercentage);
+
+        
+
+
+
         // Apply crit multiplier
         damageDealt = damageDealt * (1f + critMultiplier);
+
+        
 
         return damageDealt;
     }
 
-    public DamageStruct CalculatePlayerDamage(CharacterStats playerStats)
+    public DamageStruct CalculatePlayerDamage(CharacterStats playerStats, DamageStruct damageBonusPercentage)
     {
         DamageStruct damageDealt = new DamageStruct();
-        damageDealt = CalculatePlayerDamage(playerStats, damageScaling);
+        damageDealt = CalculatePlayerDamage(playerStats, damageBonusPercentage, damageScaling);
+
 
         return damageDealt;
     }
