@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Item Effect", menuName = "Inventory/Item Effect")]
-public abstract class ItemEffect : ScriptableObject
+//[CreateAssetMenu(fileName = "New Item Effect", menuName = "Inventory/Item Effect")]
+public class ItemEffect : ScriptableObject
 {
     [SerializeField] string effectName;
     [SerializeField][TextArea] string effectDescription;
