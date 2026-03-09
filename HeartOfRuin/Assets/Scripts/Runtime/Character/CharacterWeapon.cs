@@ -41,6 +41,13 @@ public class CharacterWeapon : MonoBehaviour
 
         DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats);
 
-        target.GetComponent<Health>()?.TakeDamage(damage);
+        if(target.TryGetComponent<Health>(out Health health))
+        {
+            health.TakeDamage(damage);
+            if(target.TryGetComponent<Character>(out Character targetChar))
+            character.OnHitTarget(targetChar);
+            character.OnHitTarget(targetChar);
+            
+        }
     }
 }

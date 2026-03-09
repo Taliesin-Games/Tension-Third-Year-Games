@@ -27,9 +27,13 @@ public abstract class EquippableItem : Item
         return equipSlotType;
     }
 
-    public void OnEquip(Character charcter)
+    public void OnEquip(Character character)
     {
-        charcter.AddItemEffects(itemEffects);
+        character.AddItemEffects(itemEffects);
+        foreach(ItemEffect effect in itemEffects)
+        {
+            effect.OnEquipEffect(character.gameObject);
+        }
     }
 
     public int GetBonusStrength() {return BonusStrength;}
