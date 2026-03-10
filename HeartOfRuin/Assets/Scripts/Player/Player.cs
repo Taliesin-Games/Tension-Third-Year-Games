@@ -37,12 +37,14 @@ public class Player : Character
             }
             inventoryUiController.ShowInventory();
             equipmentUiController.ShowInventory();
+            HUDOffsetController.Instance.SetOffsetEnabled(true);
         }
         else
         {
 
             inventoryUiController.HideInventory();
             equipmentUiController.HideInventory();
+            HUDOffsetController.Instance.SetOffsetEnabled(false);
         }
 
     }
