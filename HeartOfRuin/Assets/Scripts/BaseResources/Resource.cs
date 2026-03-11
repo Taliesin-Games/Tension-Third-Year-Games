@@ -13,12 +13,12 @@ public class Resource : MonoBehaviour
         currentValue = maxValue;
     }
 
-    protected float GetMaxResource()
+    public float GetMaxResource()
     {
         return maxValue;
     }
 
-    protected float GetCurrentResource()
+    public float GetCurrentResource()
     {
         return currentValue;
     }

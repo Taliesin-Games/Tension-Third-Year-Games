@@ -103,15 +103,17 @@ public class DPSPanelUIController : MonoBehaviour
         if (mode == DPSPanelMode.Basic)
         {
             basicSlot.SetLabel("DPS");
-            basicSlot.SetNumber((int)dpsTracker.GetDPSCombined());
+            basicSlot.SetNumber((int)dpsTracker.GetDPS());
         }
 
         else if (mode == DPSPanelMode.Advanced)
         {
-            basicSlot.SetLabel("DPS");
-            basicSlot.SetNumber((int)dpsTracker.GetDPSCombined());
+            DamageStruct DPS = dpsTracker.GetDPS();
 
-            var advancedData = dpsTracker.GetDPSByType();
+            basicSlot.SetLabel("DPS");
+            basicSlot.SetNumber((int)DPS);
+
+            var advancedData = DPS;
 
             AdvancedSlots[0].SetLabel("None");
             AdvancedSlots[0].SetNumber((int)advancedData.None);

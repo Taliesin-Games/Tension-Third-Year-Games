@@ -1,10 +1,13 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
     [SerializeField] private Player player;
     [SerializeField] private DPSPanelUIController DPSPanel;
+    [SerializeField] private GameObject HealthBar;
+    [SerializeField] private GameObject ManaBar;
 
     private void Start()
     {
@@ -37,16 +40,29 @@ public class HUD : MonoBehaviour
         {
             DPSPanel.UpdateUI();
         }
+
+        DisplayHealth();
+        DisplayMana();
     }
 
     void DisplayHealth()
     {
+        if (HealthBar == null || player == null)
+        {
+            return;
+        }
 
+        HealthBar.GetComponent<Image>().fillAmount = player.GetComponent<Health>().GetCurrentResource() / player.GetComponent<Health>().GetMaxResource();
     }
 
     void DisplayMana()
     {
+        if (ManaBar == null || player == null)
+        {
+            return;
+        }
 
+        ManaBar.GetComponent<Image>().fillAmount = player.GetComponent<Mana>().GetCurrentResource() / player.GetComponent<Mana>().GetMaxResource();
     }
 
     void DisplayTension()

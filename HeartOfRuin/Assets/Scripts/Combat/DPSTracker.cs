@@ -1,60 +1,43 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DpsTracker : MonoBehaviour
 {
-    struct DamageEvent
-    {
-        public float time;
-        public DamageStruct damage;
-    }
-
-    Queue<DamageEvent> events = new Queue<DamageEvent>();
-
-    float totalDamage = 0f;
-    DamageStruct totalDamageByType;
-
     [SerializeField] float window = 5f;
 
-    public void RecordDamage(DamageStruct damage)
+    DamageStruct currentDPS;
+    float lastUpdateTime;
+
+    void Awake()
     {
-        float now = Time.time;
-
-        events.Enqueue(new DamageEvent
-        {
-            time = now,
-            damage = damage
-        });
-
-        totalDamage += (float)damage;
-        totalDamageByType += damage;
-
-        Cleanup(now);
+        lastUpdateTime = Time.time;
     }
 
     void Update()
     {
-        Cleanup(Time.time);
+        UpdateDecay();
     }
 
-    void Cleanup(float now)
+    void UpdateDecay()
     {
-        while (events.Count > 0 && now - events.Peek().time > window)
-        {
-            var old = events.Dequeue();
+        float now = Time.time;
+        float dt = now - lastUpdateTime;
+        lastUpdateTime = now;
 
-            totalDamage -= (float)old.damage;
-            totalDamageByType -= old.damage;
-        }
+        float decay = Mathf.Exp(-dt / window);
+
+        currentDPS *= decay;
     }
 
-    public float GetDPSCombined()
+    public void RecordDamage(DamageStruct damage)
     {
-        return totalDamage / window;
+        UpdateDecay();
+
+        currentDPS += damage / window;
     }
 
-    public DamageStruct GetDPSByType()
+    public DamageStruct GetDPS()
     {
-        return totalDamageByType / window;
+        UpdateDecay();
+        return currentDPS;
     }
 }
