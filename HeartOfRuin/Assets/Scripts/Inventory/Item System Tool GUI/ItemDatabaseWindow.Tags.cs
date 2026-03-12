@@ -1,3 +1,6 @@
+
+// TODO split this into editor/runtime/shared
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using System.IO;
@@ -223,3 +226,4 @@ public partial class ItemDatabaseWindow
 		newTagDescription = string.Empty;
 	}
 }
+#endif

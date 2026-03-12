@@ -133,6 +133,7 @@ public class ColourCreator : MonoBehaviour
             variant.SetColor("_Color", colour);
         }
 
+
         // ---- Emission handling ----
         if (variant.HasProperty("_EmissionColor"))
         {

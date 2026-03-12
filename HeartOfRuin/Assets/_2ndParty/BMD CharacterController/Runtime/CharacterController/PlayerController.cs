@@ -1,6 +1,4 @@
-﻿using PlasticPipe.PlasticProtocol.Messages;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace BMD
@@ -31,12 +29,12 @@ namespace BMD
             {
                 Debug.LogWarning("No camera defined by character controller, attempting to search children");
                 RegisterCamera(GetComponentInChildren<Camera>());       // Attempt backup setup, find camera in child to assign to character controller.
-                
+
                 if (Camera == null) Debug.LogWarning("No camera found on the player. Please attach a camera module or child camera.");
                 return;
             }
         }
-        
+
         private void SetupControls()
         {
             playerControls = new PlayerControls();
@@ -85,11 +83,11 @@ namespace BMD
                 RequestJump();
             }
         }
-        private void HandleAttackInput() 
+        private void HandleAttackInput()
         {
-            if (attack.WasPressedThisFrame())        RequestAttack();
+            if (attack.WasPressedThisFrame()) RequestAttack();
             if (specialAttack.WasPressedThisFrame()) RequestSpecialAttack();
-            if (fire.WasPressedThisFrame())          RequestFireWeapon();
+            if (fire.WasPressedThisFrame()) RequestFireWeapon();
         }
         protected override void FixedUpdate()
         {

@@ -1,3 +1,5 @@
+// TODO split this into editor/runtime/shared
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -132,3 +134,4 @@ public partial class ItemDatabaseWindow
 		AssetDatabase.SaveAssets();
 	}
 }
+#endif

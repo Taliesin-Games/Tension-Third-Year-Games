@@ -1,10 +1,9 @@
-#if UNITY_EDITOR
 using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-
+using PMSIC = PoolManagerSettingsInitializerConstants;
 namespace Utils
 {
     [InitializeOnLoad]
@@ -12,10 +11,10 @@ namespace Utils
     {
         private const string MarkerPath = "Assets/Settings/.pool_settings_initialized";
 
-        public static string SETTINGS_FOLDER_NAME = "Settings";
-        public static string RESOURCES_FOLDER_NAME = "Resources";
-        public static string SETTINGS_FILE_NAME = "EditorPoolManagerSettings";
-        public static string RESOURCES_FILE_NAME = "BuiltPoolManagerSettings";
+        public static string SETTINGS_FOLDER_NAME   => PMSIC.SETTINGS_FOLDER_NAME;
+        public static string RESOURCES_FOLDER_NAME  => PMSIC.RESOURCES_FOLDER_NAME;
+        public static string SETTINGS_FILE_NAME     => PMSIC.SETTINGS_FILE_NAME;
+        public static string RESOURCES_FILE_NAME    => PMSIC.RESOURCES_FILE_NAME;
 
         static PoolManagerSettingsInitializer()
         {
@@ -62,4 +61,3 @@ namespace Utils
         }
     }
 }
-#endif

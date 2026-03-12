@@ -15,5 +15,11 @@ namespace Utils
         [Min(2)] [SerializeField] int maxSize = 100;
 
         [SerializeField] int expansionPriority = 0;
+        public void DebugTest()
+        {
+            // Method exists to confirm variables working
+            Debug.Log($"DefaultSize: {defaultSize}, minSize: {minSize}, maxSize: {maxSize}, expansionPriority: {expansionPriority}");
+        }
     }
+    
 }

@@ -186,7 +186,7 @@ namespace BMD
         public void RequestFireWeapon() => _RequestFireWeapon();
         public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
         public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
-        public void NotifyEnableDamageFromWeapon() => OnEnableDamageFromWeapon?.Invoke();
+        public void NotifyDealDamageFromWeapon() => OnEnableDamageFromWeapon?.Invoke();
         public void NotifyCastSpell() => OnCastSpell?.Invoke();
 
         protected void NotifySprintTriggered(bool triggered) 
