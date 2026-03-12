@@ -25,10 +25,10 @@ public class DemoWeapon : MonoBehaviour
         Debug.Log("Hit object: " + collision.gameObject.name);
 
         CharacterStats playerStats = GetComponentInParent<DemoPlayer>()?.playerStats;
+      //DamageStruct damageBonusPercentage = GetComponentInParent<Character>()?.GetCharacterDamageBonusPercentage() ?? new DamageStruct();
+      //DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats);
 
-        DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats);
-
-        collision.gameObject.GetComponent<Health>()?.TakeDamage(damage);
+        //collision.gameObject.GetComponent<Health>()?.TakeDamage(damage, damageBonusPercentage);
 
     }
 

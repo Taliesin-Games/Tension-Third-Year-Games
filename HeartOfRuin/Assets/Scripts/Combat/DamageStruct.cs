@@ -32,6 +32,24 @@ public struct DamageStruct
         };
     }
 
+
+    public static DamageStruct operator +(DamageStruct a, DamageStruct b)
+    {
+        return new DamageStruct
+        {
+            None = a.None + b.None,
+            Physical = a.Physical + b.Physical,
+            Magical = a.Magical + b.Magical,
+            True = a.True + b.True,
+            Fire = a.Fire + b.Fire,
+            Lightning = a.Lightning + b.Lightning,
+            Ice = a.Ice + b.Ice,
+            Earth = a.Earth + b.Earth,
+            Wind = a.Wind + b.Wind,
+            Water = a.Water + b.Water
+        };
+    }
+
     // Add a float to each field of DamageStruct (DamageStruct + float)
     public static DamageStruct operator +(DamageStruct a, float number)
     {
@@ -84,6 +102,24 @@ public struct DamageStruct
             Water = number - a.Water
         };
     }
+
+    public static DamageStruct operator -(DamageStruct a, DamageStruct b)
+    {
+        return new DamageStruct
+        {
+            None = a.None - b.None,
+            Physical = a.Physical - b.Physical,
+            Magical = a.Magical - b.Magical,
+            True = a.True - b.True,
+            Fire = a.Fire - b.Fire,
+            Lightning = a.Lightning - b.Lightning,
+            Ice = a.Ice - b.Ice,
+            Earth = a.Earth - b.Earth,
+            Wind = a.Wind - b.Wind,
+            Water = a.Water - b.Water
+        };
+    }
+
 
     //Multiply DamageStruct by another DamageStruct (DamageStruct * DamageStruct)
     public static DamageStruct operator *(DamageStruct a, DamageStruct b)
