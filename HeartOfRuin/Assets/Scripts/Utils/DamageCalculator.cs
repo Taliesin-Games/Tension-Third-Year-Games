@@ -12,7 +12,7 @@ public class DamageCalculator : EditorWindow
     float critChance;
     float critMultiplier;
 
-
+    DamageStruct damageBonusPercentage;
     DamageStruct damageScaling;
     DamageStruct Resistances;
     private bool showDamageNumbers;
@@ -41,6 +41,10 @@ public class DamageCalculator : EditorWindow
         critChance = EditorGUILayout.FloatField("Critical Chance", critChance);
         critMultiplier = EditorGUILayout.FloatField("Critical Multiplier percentage", critMultiplier);
 
+
+        GUILayout.Space(10);
+        damageBonusPercentage = DamageStructGUILayout.Draw(damageBonusPercentage, "Damage Bonus percentage (found on equipment): 0.1 = 10%");
+
         GUILayout.Space(10);
         damageScaling = DamageStructGUILayout.Draw(damageScaling, "Damage Scaling percentage (found on weapon/skill damage component): 0.1 = 10%");
         Resistances = DamageStructGUILayout.Draw(Resistances, "Target Resistances percentage (found on target health component): 0.1 = 10%");
@@ -50,7 +54,7 @@ public class DamageCalculator : EditorWindow
         GUILayout.Space(10);
         GUILayout.Label("OVERALL DAMAGE CALCULATION", EditorStyles.boldLabel);
         GUILayout.Label("For each damage type in damageStruct:");
-        GUILayout.Label("Damage = ((damageScaling.stat * playerStats.relevantStat) * (1 + critMultiplier)) * (1 - target.resistance.stat)");
+        GUILayout.Label("Damage = ((damageScaling.stat * playerStats.relevantStat) * (1 + damageBonusPercentage) * (1 + critMultiplier)) * (1 - target.resistance.stat) ");
         GUILayout.Label("Damage for each type is then added together to compute the final damage number.");
 
 
@@ -58,6 +62,9 @@ public class DamageCalculator : EditorWindow
         {
             showDamageNumbers = true;
             DamageStruct playerDamage = CalculatePlayerDamage(damageScaling);
+
+            playerDamage = playerDamage * (damageBonusPercentage + 1f);
+
             DamageStruct adjustedDamage = ApplyResistances(playerDamage, Resistances);
             Vector3 damageNumbers = ComputeDamageVector(adjustedDamage, critChance, critMultiplier);
             message = $"Damage Dealt:\n" +

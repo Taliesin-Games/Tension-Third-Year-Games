@@ -37,5 +37,6 @@ public abstract class EquippableItem : Item
     public int GetBonusIntelligence() { return BonusIntelligence;}
     public float GetBonusCriticalChance() { return BonusCriticalChance; }
     public float GetBonusCriticalDamage() { return BonusCriticalDamage;}
+    public DamageStruct GetDamageBonusPercentages() { return damageBonusPercentages; }
 
 }

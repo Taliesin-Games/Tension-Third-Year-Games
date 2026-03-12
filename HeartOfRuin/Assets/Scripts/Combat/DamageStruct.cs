@@ -49,24 +49,6 @@ public struct DamageStruct
         };
     }
 
-    // Multiply DamageStruct by a float (DamageStruct * float)
-    public static DamageStruct operator /(DamageStruct a, float divisor)
-    {
-        return new DamageStruct
-        {
-            None = a.None / divisor,
-            Physical = a.Physical / divisor,
-            Magical = a.Magical / divisor,
-            True = a.True / divisor,
-            Fire = a.Fire / divisor,
-            Lightning = a.Lightning / divisor,
-            Ice = a.Ice / divisor,
-            Earth = a.Earth / divisor,
-            Wind = a.Wind / divisor,
-            Water = a.Water / divisor
-        };
-    }
-
     // Add a float to each field of DamageStruct (DamageStruct + float)
     public static DamageStruct operator +(DamageStruct a, float number)
     {
@@ -121,6 +103,22 @@ public struct DamageStruct
         };
     }
 
+    public static DamageStruct operator -(DamageStruct a, DamageStruct b)
+    {
+        return new DamageStruct
+        {
+            None = a.None - b.None,
+            Physical = a.Physical - b.Physical,
+            Magical = a.Magical - b.Magical,
+            True = a.True - b.True,
+            Fire = a.Fire - b.Fire,
+            Lightning = a.Lightning - b.Lightning,
+            Ice = a.Ice - b.Ice,
+            Earth = a.Earth - b.Earth,
+            Wind = a.Wind - b.Wind,
+            Water = a.Water - b.Water
+        };
+    }
 
 
     //Multiply DamageStruct by another DamageStruct (DamageStruct * DamageStruct)

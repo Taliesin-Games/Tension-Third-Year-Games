@@ -38,8 +38,9 @@ public class CharacterWeapon : MonoBehaviour
         Debug.Log("Hit object: " + target.name);
 
         CharacterStats playerStats = GetComponentInParent<Character>()?.GetCharacterStats();
+        DamageStruct damageBonusPercentage = GetComponentInParent<Character>()?.GetCharacterDamageBonusPercentage() ?? new DamageStruct();
 
-        DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats);
+        DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats, damageBonusPercentage);
 
         target.GetComponent<Health>()?.TakeDamage(damage);
 
