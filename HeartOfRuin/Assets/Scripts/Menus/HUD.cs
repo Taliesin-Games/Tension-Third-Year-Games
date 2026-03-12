@@ -2,10 +2,19 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public enum PanelMode
+{
+    None,
+    Basic,
+    Advanced,
+}
+
 public class HUD : MonoBehaviour
 {
     [SerializeField] private Player player;
     [SerializeField] private DPSPanelUIController DPSPanel;
+    [SerializeField] private StatPanelUIController StatPanel;
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject ManaBar;
 
@@ -32,6 +41,11 @@ public class HUD : MonoBehaviour
         {
             DPSPanel.initialise();
         }
+
+        if (StatPanel != null)
+        {
+            StatPanel.initialise();
+        }
     }
 
     private void Update()
@@ -39,6 +53,11 @@ public class HUD : MonoBehaviour
         if (DPSPanel != null)
         {
             DPSPanel.UpdateUI();
+        }
+
+        if (StatPanel != null)
+        {
+            StatPanel.UpdateUI();
         }
 
         DisplayHealth();

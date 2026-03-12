@@ -1,12 +1,21 @@
+using System;
 using TMPro;
 using UnityEngine;
 
 public class LabelledNumberUI : MonoBehaviour
 {
+
+    public enum LabelledNumberType
+    {
+        Integer,
+        Float,
+    }
+
     [SerializeField] string labelValue = "Label";
-    [SerializeField] int numberValue = 0;
+    [SerializeField] float numberValue = 0;
     [SerializeField] private TextMeshProUGUI numberText;
     [SerializeField] private TextMeshProUGUI labelText;
+    public LabelledNumberType numberType = LabelledNumberType.Integer;
 
     private void Start()
     {
@@ -19,7 +28,7 @@ public class LabelledNumberUI : MonoBehaviour
         UpdateUI();
     }
 
-    public void SetNumber(int newNumber)
+    public void SetNumber(float newNumber)
     {
         numberValue = newNumber;
         UpdateUI();
@@ -33,7 +42,14 @@ public class LabelledNumberUI : MonoBehaviour
         }
         if (numberText != null)
         {
-            numberText.text = numberValue.ToString();
+            if (numberType == LabelledNumberType.Integer)
+            {
+                numberText.text = ((int)numberValue).ToString();
+            }
+            else if (numberType == LabelledNumberType.Float)
+            {
+                numberText.text = Math.Round(numberValue, 2).ToString();
+            }
         }
     }
 }

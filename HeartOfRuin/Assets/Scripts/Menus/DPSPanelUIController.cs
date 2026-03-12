@@ -4,21 +4,15 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[System.Serializable]
-public enum DPSPanelMode
-{
-    None,
-    Basic,
-    Advanced,
-}
+
 
 
 
 
 public class DPSPanelUIController : MonoBehaviour
 {
-    [SerializeField] DPSPanelMode mode = DPSPanelMode.Basic;
-    DPSPanelMode modeLastUpdate = DPSPanelMode.None;
+    [SerializeField] PanelMode mode = PanelMode.Basic;
+    PanelMode modeLastUpdate = PanelMode.None;
     [SerializeField] GameObject gridUI;
     [SerializeField] GameObject UIPrefab;
     [SerializeField] DpsTracker dpsTracker;
@@ -30,16 +24,18 @@ public class DPSPanelUIController : MonoBehaviour
     {
         currentSlots = gridUI.GetComponentsInChildren<LabelledNumberUI>(true).ToList();
 
-        if (currentSlots.Count > 11)
+        int SlotsIntendedTotal = 11;
+
+        if (currentSlots.Count > SlotsIntendedTotal)
         {
-            for (int i = 11; i < currentSlots.Count; i++)
+            for (int i = SlotsIntendedTotal; i < currentSlots.Count; i++)
             {
                 Destroy(currentSlots[i].gameObject);
                 currentSlots.RemoveAt(i);
             }
         }
 
-        while (currentSlots.Count < 11)
+        while (currentSlots.Count < SlotsIntendedTotal)
         {
             GameObject slotObj = Instantiate(UIPrefab, gridUI.transform);
             currentSlots.Add(slotObj.GetComponent<LabelledNumberUI>());
@@ -54,7 +50,7 @@ public class DPSPanelUIController : MonoBehaviour
         EnsureCorrectSlotCount();
     }
 
-    public void SetMode(DPSPanelMode newMode)
+    public void SetMode(PanelMode newMode)
     {
         mode = newMode;
         UpdateUI();
@@ -69,51 +65,51 @@ public class DPSPanelUIController : MonoBehaviour
 
         if (modeLastUpdate != mode)
         {
-            if (mode == DPSPanelMode.None)
+            if (mode == PanelMode.None)
             {
                 Debug.Log("Setting DPS Panel to None mode");
                 basicSlot.gameObject.SetActive(false);
-                foreach (var slot in AdvancedSlots)
+                foreach (LabelledNumberUI slot in AdvancedSlots)
                 {
                     slot.gameObject.SetActive(false);
                 }
             }
 
-            if (mode == DPSPanelMode.Basic)
+            if (mode == PanelMode.Basic)
             {
                 Debug.Log("Setting DPS Panel to Basic mode");
                 basicSlot.gameObject.SetActive(true);
-                foreach (var slot in AdvancedSlots)
+                foreach (LabelledNumberUI slot in AdvancedSlots)
                 {
                     slot.gameObject.SetActive(false);
                 }
             }
 
-            if (mode == DPSPanelMode.Advanced)
+            if (mode == PanelMode.Advanced)
             {
                 Debug.Log("Setting DPS Panel to Advanced mode");
                 basicSlot.gameObject.SetActive(true);
-                foreach (var slot in AdvancedSlots)
+                foreach (LabelledNumberUI slot in AdvancedSlots)
                 {
                     slot.gameObject.SetActive(true);
                 }
             }
         }
 
-        if (mode == DPSPanelMode.Basic)
+        if (mode == PanelMode.Basic)
         {
             basicSlot.SetLabel("DPS");
             basicSlot.SetNumber((int)dpsTracker.GetDPS());
         }
 
-        else if (mode == DPSPanelMode.Advanced)
+        else if (mode == PanelMode.Advanced)
         {
             DamageStruct DPS = dpsTracker.GetDPS();
 
             basicSlot.SetLabel("DPS");
             basicSlot.SetNumber((int)DPS);
 
-            var advancedData = DPS;
+            DamageStruct advancedData = DPS;
 
             AdvancedSlots[0].SetLabel("None");
             AdvancedSlots[0].SetNumber((int)advancedData.None);
