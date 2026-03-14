@@ -17,6 +17,7 @@ public class Health : Resource
 
     #region Cached References
     BMD.CharacterController characterController;
+    Character character;
     #endregion
 
     protected override void Start()
@@ -25,6 +26,7 @@ public class Health : Resource
         
         // Cache references
         characterController = GetComponent<BMD.CharacterController>();
+        character = GetComponent<Character>();
     }
 
     public void TakeDamage(DamageStruct damage)

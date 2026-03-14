@@ -75,6 +75,7 @@ namespace BMD
         protected Vector3 gravity = UnityEngine.Physics.gravity; // Gravity vector for the character
         protected UnityEngine.CharacterController unityController; // Reference to the CharacterController component    
         protected Animator animator;
+        
         #endregion
 
         #region Runtime variables

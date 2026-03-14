@@ -6,7 +6,7 @@ namespace BMD
 {
     [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
     [RequireComponent(typeof(BMD.PlayerController))] // Ensure that a CharacterController component is attached
-    public class Player : Character
+    public class Player : CharacterExample
     {
 
         // This class inherits from Character and can override methods or add new functionality specific to players

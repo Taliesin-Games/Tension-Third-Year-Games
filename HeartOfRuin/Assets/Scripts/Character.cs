@@ -8,7 +8,7 @@ public abstract class Character : MonoBehaviour
 {
     #region Configuration
     [SerializeField] string characterName = "Glorp Gleep";
-    
+
     [SerializeField] List<ItemEffect> activeEffects;
     //protected Dictionary<EquipSlotType, ItemSlot> equipmentSlots;
     [SerializeField] protected Inventory equipmentSlots;
@@ -40,6 +40,16 @@ public abstract class Character : MonoBehaviour
 
     void InitialiseCharacter()
     {
+        SetupInventory();
+        SetupSignaling();
+    }
+
+    void SetupSignaling()
+    {
+        controller.OnAttackPerformed += OnAttack; 
+    }
+    private void SetupInventory()
+    {
         baseStats = characterStats;
         baseDamageBonusPercentage = characterDamageBonusPercentage;
 
@@ -51,7 +61,7 @@ public abstract class Character : MonoBehaviour
 
         if (equipmentSlots == null)
         {
-            foreach(Inventory inv in GetComponents<Inventory>())
+            foreach (Inventory inv in GetComponents<Inventory>())
             {
                 if (inv != inventory)
                 {
@@ -101,6 +111,14 @@ public abstract class Character : MonoBehaviour
         castComponent.TryCastSpell();
     }
 
+    private void FixedUpdate()
+    {
+        foreach (var effect in activeEffects)
+        {
+            effect.EachFrameEffect(this.gameObject);
+        }
+    }
+
     private void HangleEnableWeaponDamage()
     {
         weaponDamageEnabled = true;
@@ -118,7 +136,6 @@ public abstract class Character : MonoBehaviour
     {
         activeEffects.Add(effect);
         effect.Init();
-        effect.OnEquipEffect(this.gameObject);
     }
 
     public void RemoveItemEffect(ItemEffect effect)
@@ -129,7 +146,7 @@ public abstract class Character : MonoBehaviour
 
     public void AddItemEffects(ItemEffect[] effects)
     {
-        if(effects == null) { return; }
+        if(effects == null) return;
         foreach (ItemEffect effect in effects)
         {
             activeEffects.Add(effect);
@@ -174,6 +191,29 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalChance(characterStats.getCriticalChance() - equippedItem.GetBonusCriticalChance());
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage = characterDamageBonusPercentage - equippedItem.GetDamageBonusPercentages();
+    }
+
+    public void OnAttack()
+    {
+        foreach (var effect in activeEffects)
+        {
+            effect.OnAttackEffect(this.gameObject);
+        }
+    }
+
+    public void OnTakeDamage()
+    {
+        foreach (var effect in activeEffects)
+        {
+            effect.OnTakeDamageEffect(this.gameObject);
+        }
+    }
+    public void OnHitTarget(Character target)
+    {
+        foreach(var effect in activeEffects)
+        {
+            effect.OnAttackHitEffect(this, target);
+        }
     }
 
     /// <summary>
