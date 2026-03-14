@@ -46,7 +46,6 @@ public class CharacterWeapon : MonoBehaviour
             health.TakeDamage(damage);
             if(target.TryGetComponent<Character>(out Character targetChar))
             character.OnHitTarget(targetChar);
-            character.OnHitTarget(targetChar);
             
         }
     }
