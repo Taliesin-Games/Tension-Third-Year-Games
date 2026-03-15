@@ -35,4 +35,10 @@ public class SpellCaster : MonoBehaviour
             spells[spellIndex].Cast(spellContext);
         }
     }
+
+    public List<SpellBase> GetSpells()
+    {
+        return spells;
+    }
+
 }
