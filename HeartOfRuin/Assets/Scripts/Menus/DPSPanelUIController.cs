@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Bson;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -99,12 +98,12 @@ public class DPSPanelUIController : MonoBehaviour
         if (mode == PanelMode.Basic)
         {
             basicSlot.SetLabel("DPS");
-            basicSlot.SetNumber((int)dpsTracker.GetDPS());
+            basicSlot.SetNumber((int)dpsTracker.GetDPS(0));
         }
 
         else if (mode == PanelMode.Advanced)
         {
-            DamageStruct DPS = dpsTracker.GetDPS();
+            DamageStruct DPS = dpsTracker.GetDPS(0);
 
             basicSlot.SetLabel("DPS");
             basicSlot.SetNumber((int)DPS);

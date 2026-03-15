@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class DpsTracker : MonoBehaviour
 {
-    [SerializeField] float window = 5f;
+    [SerializeField] DpsChannel[] channels;
 
-    DamageStruct currentDPS;
     float lastUpdateTime;
 
     void Awake()
@@ -14,30 +13,29 @@ public class DpsTracker : MonoBehaviour
 
     void Update()
     {
-        UpdateDecay();
-    }
-
-    void UpdateDecay()
-    {
         float now = Time.time;
         float dt = now - lastUpdateTime;
         lastUpdateTime = now;
 
-        float decay = Mathf.Exp(-dt / window);
-
-        currentDPS *= decay;
+        for (int i = 0; i < channels.Length; i++)
+        {
+            channels[i].UpdateDecay(dt);
+        }
     }
 
     public void RecordDamage(DamageStruct damage)
     {
-        UpdateDecay();
-
-        currentDPS += damage / window;
+        for (int i = 0; i < channels.Length; i++)
+        {
+            channels[i].AddDamage(damage);
+        }
     }
 
-    public DamageStruct GetDPS()
+    public DamageStruct GetDPS(int index)
     {
-        UpdateDecay();
-        return currentDPS;
+        if (index < 0 || index >= channels.Length)
+            return default;
+
+        return channels[index].value;
     }
 }
