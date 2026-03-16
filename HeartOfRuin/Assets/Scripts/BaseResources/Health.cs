@@ -31,6 +31,7 @@ public class Health : Resource
 
     public void TakeDamage(DamageStruct damage)
     {
+        Debug.Log($"Taking damage on {gameObject.name}");
         if (isDead) return; // Ignore damage if already dead
 
         // apply resistances

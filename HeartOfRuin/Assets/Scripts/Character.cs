@@ -19,7 +19,7 @@ public abstract class Character : MonoBehaviour
     #endregion
 
     #region Cached References
-    BMD.CharacterController controller;
+    protected BMD.CharacterController controller;
     CharacterStats baseStats;
     DamageStruct baseDamageBonusPercentage;
 
@@ -90,21 +90,18 @@ public abstract class Character : MonoBehaviour
             equipmentSlots.ForceReAddItemInvoke();
         }
     }
-
     private void OnEnable()
     {
         controller.OnEnableDamageFromWeapon += HangleEnableWeaponDamage;
         controller.OnDisableDamageFromWeapon += HandleDisableWeaponDamage;
         controller.OnCastSpell += HandleCastSpell;
     }
-
     private void OnDisable()
     {
         controller.OnEnableDamageFromWeapon -= HangleEnableWeaponDamage;
         controller.OnDisableDamageFromWeapon -= HandleDisableWeaponDamage;
         controller.OnCastSpell -= HandleCastSpell;
     }
-
     private void HandleCastSpell()
     {
         if (!castComponent) return;
@@ -131,19 +128,16 @@ public abstract class Character : MonoBehaviour
     {
 
     }
-
     public void AddItemEffect(ItemEffect effect)
     {
         activeEffects.Add(effect);
         effect.Init();
     }
-
     public void RemoveItemEffect(ItemEffect effect)
     {
         activeEffects.Remove(effect);
         effect.Cleanup();
     }
-
     public void AddItemEffects(ItemEffect[] effects)
     {
         if(effects == null) return;
@@ -152,7 +146,6 @@ public abstract class Character : MonoBehaviour
             activeEffects.Add(effect);
         }
     }
-
     public void RemoveItemEffects(ItemEffect[] effects)
     {
         foreach (ItemEffect effect in effects)
@@ -160,17 +153,14 @@ public abstract class Character : MonoBehaviour
             activeEffects.Remove(effect);
         }
     }
-
     public CharacterStats GetCharacterStats()
     {
         return characterStats;
     }
-
     public DamageStruct GetCharacterDamageBonusPercentage()
     {
         return characterDamageBonusPercentage;
     }
-
     public void OnItemEquipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
@@ -181,7 +171,6 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() + equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage += equippedItem.GetDamageBonusPercentages();
     }
-
     public void OnItemUnequipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
@@ -192,7 +181,6 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage = characterDamageBonusPercentage - equippedItem.GetDamageBonusPercentages();
     }
-
     public void OnAttack()
     {
         foreach (var effect in activeEffects)
@@ -200,7 +188,6 @@ public abstract class Character : MonoBehaviour
             effect.OnAttackEffect(this.gameObject);
         }
     }
-
     public void OnTakeDamage()
     {
         foreach (var effect in activeEffects)

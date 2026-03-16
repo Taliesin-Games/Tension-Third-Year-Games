@@ -113,6 +113,17 @@ MonoBehaviour:
   equipmentSlots: {fileID: 8418716091057550401}
   inventory: {fileID: 4727636871516878498}
   characterStats: {fileID: 5568387887786979083}
+  characterDamageBonusPercentage:
+    None: 0
+    Physical: 0
+    Magical: 0
+    True: 0
+    Fire: 0
+    Lightning: 0
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
   castComponent: {fileID: 1207980942263171655}
   inventoryUI: {fileID: 6658703779675659377}
   equipmentUI: {fileID: 7645577257941896190}
@@ -145,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10dc0306df5227a4aac8a6917b30b2bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxValue: 100
+  maxValue: 50000
   resistances:
     None: 0
     Physical: 0
@@ -157,7 +168,7 @@ MonoBehaviour:
     Earth: 0
     Wind: 0
     Water: 0
-  damageNumberPrefab: {fileID: 0}
+  damageNumberPrefab: {fileID: 2727937956588806166, guid: 0ec123089ae39ff4295be25bd54e7585, type: 3}
 --- !u!114 &4727636871516878498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1317,7 +1328,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Value
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7968640737656887215, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Layer
@@ -1371,10 +1382,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5451620325200075928}
     m_Modifications:
-    - target: {fileID: 3520680764183025732, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4171282753579105765, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.492
@@ -1418,10 +1425,6 @@ PrefabInstance:
     - target: {fileID: 6588795040206621437, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
       propertyPath: m_Name
       value: SwordBlockout
-      objectReference: {fileID: 0}
-    - target: {fileID: 6588795040206621437, guid: f997f4bebc23d9340a159c7a235bb2b8, type: 3}
-      propertyPath: m_Layer
-      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
