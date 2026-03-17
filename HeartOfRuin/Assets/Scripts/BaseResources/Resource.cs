@@ -7,34 +7,52 @@ public class Resource : MonoBehaviour
     [SerializeField] float maxValue = 100;
     float currentValue;
 
+    // Cahced reference
+    HUD hud;
+    public float CurrentValue
+    {
+        get { return currentValue; }
+        private set
+        {
+            currentValue = value;
+            if (hud == null) return;
+            hud.UpdateResource(currentValue, maxValue, GetType());
+        }
+    }
 
     protected virtual void Start()
     {
-        currentValue = maxValue;
+        hud = HUD.Instance;
+        // Must be assigned in awake or execution order must ensure its created first
+        // Alternatively I have aslo used some smart properties that return the instance,
+        // but if the instance is null search/create/find as appropriate.
+        // This only runs the heavy find once but doen't cache until needed which can sometimes be beneficial.
+        // It also heeps searching for teh valid HUD instance inside the HUD
+        CurrentValue = maxValue;
     }
 
-    public float GetMaxResource()
+    protected float GetMaxResource()
     {
         return maxValue;
     }
 
-    public float GetCurrentResource()
+    protected float GetCurrentResource()
     {
-        return currentValue;
+        return CurrentValue;
     }
 
     protected void increaseResource(float amount)
     {
-        if (currentValue >= maxValue) return;
+        if (CurrentValue >= maxValue) return;
         if (amount <= 0) return;
-        currentValue = Mathf.Min(currentValue + amount, maxValue);
+        CurrentValue = Mathf.Min(CurrentValue + amount, maxValue);
     }
 
     protected void decreaseResource(float amount)
     {
-        if (currentValue <= 0) return;
+        if (CurrentValue <= 0) return;
         if (amount <= 0) return;
-        currentValue = Mathf.Max(currentValue - amount, 0);
+        CurrentValue = Mathf.Max(CurrentValue - amount, 0);
     }
 
 }

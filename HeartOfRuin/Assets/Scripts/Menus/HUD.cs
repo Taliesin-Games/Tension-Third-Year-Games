@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public enum PanelMode
 
 public class HUD : MonoBehaviour
 {
+    public static HUD Instance;
     [SerializeField] private Player player;
     [SerializeField] private DPSPanelUIController DPSPanel;
     [SerializeField] private StatPanelUIController StatPanel;
@@ -19,6 +21,13 @@ public class HUD : MonoBehaviour
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject ManaBar;
 
+    private Image HealthBarImage;
+    private Image ManaBarImage;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         if (player == null)
@@ -30,19 +39,19 @@ public class HUD : MonoBehaviour
             Debug.LogError("DPSPanel reference is not set in the HUD.");
         }
 
-        if (StatPanel == null) {
+        if (StatPanel == null)
+        {
             Debug.LogError("StatPanel reference is not set in the HUD.");
         }
 
-        if (SpellPanel == null) {
+        if (SpellPanel == null)
+        {
             Debug.LogError("SpellPanel reference is not set in the HUD.");
         }
 
         if (player != null)
         {
             // Initialize health, mana, and tension displays here if needed
-            DisplayHealth();
-            DisplayMana();
             DisplayTension();
         }
 
@@ -59,6 +68,16 @@ public class HUD : MonoBehaviour
         if (SpellPanel != null)
         {
             SpellPanel.initialise();
+        }
+
+        if (HealthBar != null)
+        {
+            HealthBarImage = HealthBar.GetComponent<Image>();
+        }
+
+        if (ManaBar != null)
+        {
+            ManaBarImage = ManaBar.GetComponent<Image>();
         }
 
     }
@@ -79,30 +98,27 @@ public class HUD : MonoBehaviour
         {
             SpellPanel.updateUI();
         }
-
-
-        DisplayHealth();
-        DisplayMana();
     }
 
-    void DisplayHealth()
+    public void UpdateResource(float currentResource, float maxResource, Type resourceType)
     {
-        if (HealthBar == null || player == null)
+        if (resourceType == typeof(Health)) UpdateHealth(currentResource, maxResource);
+        else if (resourceType == typeof(Mana)) UpdateMana(currentResource, maxResource);
+        else
         {
-            return;
+            Debug.LogError($"Atteampting to update resource of type {resourceType.GetType()} with no subtype method handler exists.");
         }
-
-        HealthBar.GetComponent<Image>().fillAmount = player.GetComponent<Health>().GetCurrentResource() / player.GetComponent<Health>().GetMaxResource();
     }
 
-    void DisplayMana()
+    // No need to be public now!
+    void UpdateHealth(float currentHealth, float maxHealth)
     {
-        if (ManaBar == null || player == null)
-        {
-            return;
-        }
-
-        ManaBar.GetComponent<Image>().fillAmount = player.GetComponent<Mana>().GetCurrentResource() / player.GetComponent<Mana>().GetMaxResource();
+        // Should probably cache the component too but focusing on the player side for now.
+        HealthBarImage.fillAmount = currentHealth / maxHealth;
+    }
+    void UpdateMana(float currentMana, float maxMana)
+    {
+        ManaBarImage.fillAmount = currentMana / maxMana;
     }
 
     void DisplayTension()
