@@ -3,17 +3,22 @@ using UnityEngine;
 [System.Serializable]
 public class DpsChannel
 {
-    public float window = 5f;
-    public DamageStruct value;
+    [SerializeField] float timeWindow = 5f;
+    [SerializeField] DamageStruct value;
 
     public void UpdateDecay(float dt)
     {
-        float decay = Mathf.Exp(-dt / window);
+        float decay = Mathf.Exp(-dt / timeWindow);
         value *= decay;
     }
 
     public void AddDamage(DamageStruct damage)
     {
-        value += damage / window;
+        value += damage / timeWindow;
+    }
+
+    public DamageStruct GetDPS() 
+    {
+        return value; 
     }
 }
