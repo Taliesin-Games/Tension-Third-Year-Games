@@ -1,0 +1,78 @@
+using UnityEngine;
+using UnityEngine.Rendering;
+
+
+
+public class DamageUIVisualisationController : MonoBehaviour
+{
+    public static DamageUIVisualisationController Instance;
+
+    [SerializeField] private GameObject damageNumberPrefab;
+    [SerializeField] private GameObject healthBarPrefab;
+    [SerializeField] Player player;
+    [SerializeField] private bool showDamageNumbers;
+    [SerializeField] private bool showEnemyHealthBars;
+    [SerializeField] private float healthbarHeightOffset = 2;
+
+    public void Awake()
+    {
+        Instance = this;
+    }
+
+    public void VisualiseDamage(float damageAmount, GameObject damageTarget, Health targetHealth)
+    {
+        if (damageTarget == null)
+        {
+            return;
+        }
+
+        //Handle Damage Numbers
+        if (damageNumberPrefab != null && showDamageNumbers)
+        {
+            GameObject instance = Instantiate(damageNumberPrefab, damageTarget.transform.position, Quaternion.identity);
+            DamageNumbers DN = instance.GetComponent<DamageNumbers>();
+            if (DN != null)
+            {
+                DN.Initialize(damageAmount, damageTarget == player.gameObject);
+            }
+            else
+            {
+                Debug.LogError("DamageNumberPrefab does not have a DamageNumbers component");
+            }
+        }
+        else
+        {
+            Debug.LogError("DamageNumberPrefab not set");
+        }
+
+        if (healthBarPrefab != null && showEnemyHealthBars )
+        {
+            if (damageTarget == player.gameObject)
+            {
+                return; // Don't show health bars for the player
+            }
+
+            if (gameObject.GetComponentInChildren<HealthBarWorld>() != null)
+            {
+                return; // Health bar already exists for this target
+            }
+
+            GameObject healthBarInstance = Instantiate(healthBarPrefab, damageTarget.transform.position + Vector3.up * healthbarHeightOffset, Quaternion.identity);
+            HealthBarWorld healthBar = healthBarInstance.GetComponent<HealthBarWorld>();
+
+            if (healthBar != null)
+            {
+                healthBar.Initialize(targetHealth);
+                healthBarInstance.transform.SetParent(damageTarget.transform);
+                healthBarInstance.transform.localPosition = Vector3.up * healthbarHeightOffset;
+                healthBarInstance.transform.rotation = Quaternion.identity;
+            }
+            else
+            {
+                Debug.LogError("HealthBarPrefab does not have a HealthBarWorld component");
+            }
+        }
+    }
+
+
+}

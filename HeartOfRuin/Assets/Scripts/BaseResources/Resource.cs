@@ -1,11 +1,27 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
+
+public struct ResourceChangeEventArgs
+{
+    public float Percent;
+    public float CurrentValue;
+    public float MaxValue;
+    public ResourceChangeEventArgs(float percent, float currentValue, float maxValue)
+    {
+        Percent = percent;
+        CurrentValue = currentValue;
+        MaxValue = maxValue;
+    }
+}
 
 public class Resource : MonoBehaviour
 {
 
     [SerializeField] float maxValue = 100;
     float currentValue;
+
+    public event Action<ResourceChangeEventArgs> OnResourceChanged;
 
     // Cahced reference
     HUD hud;
@@ -17,6 +33,7 @@ public class Resource : MonoBehaviour
             currentValue = value;
             if (hud == null) return;
             hud.UpdateResource(currentValue, maxValue, GetType());
+            InvokeResourceChanged();
         }
     }
 
@@ -55,4 +72,11 @@ public class Resource : MonoBehaviour
         CurrentValue = Mathf.Max(CurrentValue - amount, 0);
     }
 
+
+
+    protected void InvokeResourceChanged()
+    {
+        float percent = currentValue/ maxValue;
+        OnResourceChanged?.Invoke(new ResourceChangeEventArgs(percent, currentValue, maxValue));
+    }
 }
