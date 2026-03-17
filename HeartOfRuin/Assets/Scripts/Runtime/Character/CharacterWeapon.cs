@@ -1,5 +1,3 @@
-using Unity.Cinemachine;
-using UnityEditor.UI;
 using UnityEngine;
 
 [RequireComponent(typeof(DamageComponent))]
