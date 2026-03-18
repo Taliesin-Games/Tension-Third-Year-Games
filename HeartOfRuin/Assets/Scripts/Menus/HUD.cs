@@ -21,6 +21,9 @@ public class HUD : MonoBehaviour
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject ManaBar;
 
+    [SerializeField] private Health health;
+    [SerializeField] private Mana mana;
+
     private Image HealthBarImage;
     private Image ManaBarImage;
 
@@ -28,6 +31,7 @@ public class HUD : MonoBehaviour
     {
         Instance = this;
     }
+
     private void Start()
     {
         if (player == null)
@@ -49,6 +53,16 @@ public class HUD : MonoBehaviour
             Debug.LogError("SpellPanel reference is not set in the HUD.");
         }
 
+        if (health == null)
+        {
+            Debug.LogError("Health reference is not set in the HUD.");
+        }
+
+        if (mana == null)
+        {
+            Debug.LogError("Mana reference is not set in the HUD.");
+        }
+
         if (player != null)
         {
             // Initialize health, mana, and tension displays here if needed
@@ -57,17 +71,17 @@ public class HUD : MonoBehaviour
 
         if (DPSPanel != null)
         {
-            DPSPanel.initialise();
+            DPSPanel.Initialise();
         }
 
         if (StatPanel != null)
         {
-            StatPanel.initialise();
+            StatPanel.Initialise();
         }
 
         if (SpellPanel != null)
         {
-            SpellPanel.initialise();
+            SpellPanel.Initialise();
         }
 
         if (HealthBar != null)
@@ -78,6 +92,16 @@ public class HUD : MonoBehaviour
         if (ManaBar != null)
         {
             ManaBarImage = ManaBar.GetComponent<Image>();
+        }
+
+        if (health != null)
+        {
+            health.OnResourceChanged += UpdateHealth;
+        }
+
+        if (mana != null)
+        {
+            mana.OnResourceChanged += UpdateMana;
         }
 
     }
@@ -100,27 +124,31 @@ public class HUD : MonoBehaviour
         }
     }
 
-    public void UpdateResource(float currentResource, float maxResource, Type resourceType)
-    {
-        if (resourceType == typeof(Health)) UpdateHealth(currentResource, maxResource);
-        else if (resourceType == typeof(Mana)) UpdateMana(currentResource, maxResource);
-        else
-        {
-            Debug.LogError($"Atteampting to update resource of type {resourceType.GetType()} with no subtype method handler exists.");
-        }
-    }
-
     // No need to be public now!
-    void UpdateHealth(float currentHealth, float maxHealth)
+    void UpdateHealth(ResourceChangeEventArgs args)
     {
         // Should probably cache the component too but focusing on the player side for now.
-        HealthBarImage.fillAmount = currentHealth / maxHealth;
+        HealthBarImage.fillAmount = args.CurrentValue / args.MaxValue;
     }
-    void UpdateMana(float currentMana, float maxMana)
+    void UpdateMana(ResourceChangeEventArgs args)
     {
-        ManaBarImage.fillAmount = currentMana / maxMana;
+        ManaBarImage.fillAmount = args.CurrentValue / args.MaxValue;
     }
 
+
+    private void OnDestroy()
+    {
+        if (health != null)
+        {
+            health.OnResourceChanged -= UpdateHealth;
+        }
+
+        if (mana != null)
+        {
+            mana.OnResourceChanged -= UpdateMana;
+        }
+
+    }
     void DisplayTension()
     {
 

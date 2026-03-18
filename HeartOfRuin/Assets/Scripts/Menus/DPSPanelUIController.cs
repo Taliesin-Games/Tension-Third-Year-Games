@@ -44,7 +44,7 @@ public class DPSPanelUIController : MonoBehaviour
         AdvancedSlots = currentSlots.Skip(1).ToList();
     }
 
-    public void initialise()
+    public void Initialise()
     {
         EnsureCorrectSlotCount();
     }

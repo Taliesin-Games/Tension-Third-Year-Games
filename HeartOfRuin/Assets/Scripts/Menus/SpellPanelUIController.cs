@@ -34,7 +34,7 @@ public class SpellPanelUIController : MonoBehaviour
 
     }
 
-    public void initialise()
+    public void Initialise()
     {
         EnsureCorrectSlotCount();
     }

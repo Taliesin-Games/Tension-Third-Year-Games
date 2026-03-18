@@ -27,7 +27,7 @@ public class HealthBarWorld : MonoBehaviour
         if (mainCamera == null) mainCamera = Camera.current;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (mainCamera != null)
         {

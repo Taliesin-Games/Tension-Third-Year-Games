@@ -45,7 +45,7 @@ public class StatPanelUIController : MonoBehaviour
     }
 
 
-    public void initialise()
+    public void Initialise()
     {
         EnsureCorrectSlotCount();
     }

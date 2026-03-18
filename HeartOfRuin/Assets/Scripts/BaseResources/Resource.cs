@@ -23,28 +23,18 @@ public class Resource : MonoBehaviour
 
     public event Action<ResourceChangeEventArgs> OnResourceChanged;
 
-    // Cahced reference
-    HUD hud;
     public float CurrentValue
     {
         get { return currentValue; }
         private set
         {
             currentValue = value;
-            if (hud == null) return;
-            hud.UpdateResource(currentValue, maxValue, GetType());
             InvokeResourceChanged();
         }
     }
 
     protected virtual void Start()
     {
-        hud = HUD.Instance;
-        // Must be assigned in awake or execution order must ensure its created first
-        // Alternatively I have aslo used some smart properties that return the instance,
-        // but if the instance is null search/create/find as appropriate.
-        // This only runs the heavy find once but doen't cache until needed which can sometimes be beneficial.
-        // It also heeps searching for teh valid HUD instance inside the HUD
         CurrentValue = maxValue;
     }
 
