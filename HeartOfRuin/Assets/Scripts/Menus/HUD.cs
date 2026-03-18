@@ -69,6 +69,12 @@ public class HUD : MonoBehaviour
             DisplayTension();
         }
 
+        if (player != null)
+        {
+            player.NotifyStatChange += PlayerStatUpdate;
+            PlayerStatUpdate();
+        }
+
         if (DPSPanel != null)
         {
             DPSPanel.Initialise();
@@ -113,11 +119,6 @@ public class HUD : MonoBehaviour
             DPSPanel.UpdateUI();
         }
 
-        if (StatPanel != null)
-        {
-            StatPanel.UpdateUI();
-        }
-
         if (SpellPanel != null)
         {
             SpellPanel.updateUI();
@@ -136,6 +137,15 @@ public class HUD : MonoBehaviour
     }
 
 
+    void PlayerStatUpdate()
+    {
+        if (StatPanel != null)
+        {
+            StatPanel.UpdateUI();
+        }
+
+    }
+
     private void OnDestroy()
     {
         if (health != null)
@@ -146,6 +156,11 @@ public class HUD : MonoBehaviour
         if (mana != null)
         {
             mana.OnResourceChanged -= UpdateMana;
+        }
+
+        if (player != null)
+        {
+            player.NotifyStatChange -= PlayerStatUpdate;
         }
 
     }
