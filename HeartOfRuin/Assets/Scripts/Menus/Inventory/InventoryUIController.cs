@@ -4,7 +4,28 @@ using UnityEngine;
 
 public class InventoryUIController : MonoBehaviour
 {
-    public static InventoryUIController Instance;
+    private static InventoryUIController instance;
+    public static InventoryUIController Instance 
+    {
+        get
+        {
+            if (instance == null)
+            {
+                var foundObjects = FindObjectsByType<InventoryUIController>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None
+                );
+
+                foreach (var foundObject in foundObjects)
+                {
+                    if (foundObject.GetComponentsInChildren<InventoryUIController>(true).Length > 1)
+                        instance = foundObject;
+                }
+            }
+
+            return instance;
+        }
+    }
 
     [SerializeField] GameObject gridUI;
     [SerializeField] GameObject itemSlotUIPrefab;
@@ -13,10 +34,7 @@ public class InventoryUIController : MonoBehaviour
 
     Inventory inventory;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+
     void Start()
     {
         HideInventory();

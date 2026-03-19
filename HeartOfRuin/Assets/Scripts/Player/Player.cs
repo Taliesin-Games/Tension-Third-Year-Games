@@ -61,7 +61,7 @@ public class Player : Character
         inventoryUiController = InventoryUIController.Instance;
         inventoryUiController.SetInventory(inventory);
 
-        var controllers = inventoryUiController.GetComponentsInChildren<InventoryUIController>();
+        var controllers = inventoryUiController.GetComponentsInChildren<InventoryUIController>(true);
 
         foreach (var controller in controllers)
         {
