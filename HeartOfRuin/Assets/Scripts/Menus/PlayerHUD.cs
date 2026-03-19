@@ -14,18 +14,19 @@ public enum PanelMode
 public class PlayerHUD : MonoBehaviour
 {
     public static PlayerHUD Instance;
-    [SerializeField] private Player player;
     [SerializeField] private DPSPanelUIController DPSPanel;
     [SerializeField] private StatPanelUIController StatPanel;
     [SerializeField] private SpellPanelUIController SpellPanel;
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject ManaBar;
 
-    [SerializeField] private Health health;
-    [SerializeField] private Mana mana;
+    private Player player;
+    private Health health;
+    private Mana mana;
 
     private Image HealthBarImage;
     private Image ManaBarImage;
+
 
     private void Awake()
     {
@@ -98,7 +99,11 @@ public class PlayerHUD : MonoBehaviour
         if (ManaBar != null)
         {
             ManaBarImage = ManaBar.GetComponent<Image>();
-        }
+        }        
+
+        player = Player.Instance;
+        health = player.GetComponent<Health>();
+        mana = player.GetComponent<Mana>();
 
         if (health != null)
         {
