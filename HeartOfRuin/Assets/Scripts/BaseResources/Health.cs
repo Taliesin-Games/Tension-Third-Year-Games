@@ -12,8 +12,6 @@ public class Health : Resource
         "True damage resistance will be ignored.")]
     [SerializeField] DamageStruct resistances;
 
-    //Demo purpose only - visualise Damage Numbers !!REMOVE AFTER DEMO!!
-    [SerializeField] GameObject damageNumberPrefab;
 
     #region Cached References
     BMD.CharacterController characterController;
@@ -42,15 +40,10 @@ public class Health : Resource
         Debugger.Log($"{transform.root.name} has taken {finalDamage} damage");
         Debugger.Log($"Remaining Health: {GetCurrentResource()} / {GetMaxResource()}");
 
-#if DEMO_MODE
-        //DEMO PURPOSE ONLY - SHOW DAMAGE NUMBERS !!REMOVE AFTER DEMO!!
-        if (damageNumberPrefab != null)
-        {
-            GameObject instance = Instantiate(damageNumberPrefab, transform.position, Quaternion.identity);
-            instance.GetComponent<DamageNumbers>().Initialize(finalDamage);
-        }
-        //END DEMO PURPOSE ONLY
-#endif
+        DamageUIVisualisationController.Instance.VisualiseDamage(finalDamage, gameObject, this);
+        InvokeResourceChanged();
+        
+
         if (GetCurrentResource() <= 0)
         {
             Die();

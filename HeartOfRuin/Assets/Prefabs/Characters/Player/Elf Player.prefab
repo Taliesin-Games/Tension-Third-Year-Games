@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 8828830358373169569}
   - component: {fileID: 9075488631171371052}
   - component: {fileID: 5276674339465016163}
+  - component: {fileID: 1635114599638197084}
   m_Layer: 6
   m_Name: Elf Player
   m_TagString: Player
@@ -44,7 +45,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1593932732753110080}
-  - {fileID: 8952604006524515815}
   - {fileID: 6167431725955613883}
   - {fileID: 7726613813596625610}
   m_Father: {fileID: 0}
@@ -124,9 +124,21 @@ MonoBehaviour:
     Earth: 0
     Wind: 0
     Water: 0
+  characterDamageBonusPercentage:
+    None: 0
+    Physical: 0
+    Magical: 0
+    True: 0
+    Fire: 0
+    Lightning: 0
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
   castComponent: {fileID: 1207980942263171655}
-  inventoryUI: {fileID: 6658703779675659377}
-  equipmentUI: {fileID: 7645577257941896190}
+  inventoryUI: {fileID: 0}
+  equipmentUI: {fileID: 0}
+  playerHUD: {fileID: 0}
 --- !u!114 &5568387887786979083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,6 +394,31 @@ MonoBehaviour:
   verticalClamp: 80
   horizontalOffset: 0
   followSmoothRate: 0.5
+--- !u!114 &1635114599638197084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922875856160554918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7054f4a6cea40db479cbc5a423d927f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  channels:
+  - timeWindow: 5
+    value:
+      None: 0
+      Physical: 0
+      Magical: 0
+      True: 0
+      Fire: 0
+      Lightning: 0
+      Ice: 0
+      Earth: 0
+      Wind: 0
+      Water: 0
 --- !u!1 &8475547856137853741
 GameObject:
   m_ObjectHideFlags: 0

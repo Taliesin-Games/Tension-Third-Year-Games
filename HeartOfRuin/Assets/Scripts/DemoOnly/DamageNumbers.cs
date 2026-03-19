@@ -7,6 +7,9 @@ public class DamageNumbers : MonoBehaviour
     [SerializeField]float lifetime = 1f;
     [SerializeField]Vector3 floatOffset = new Vector3(0, 1.5f, 0);
 
+    [SerializeField] TMP_ColorGradient damageToEnemies;
+    [SerializeField] TMP_ColorGradient damageToFriendlies;
+
     [SerializeField]private GameObject text;
     private TextMeshProUGUI textMesh;
     private Camera mainCamera;
@@ -21,7 +24,7 @@ public class DamageNumbers : MonoBehaviour
         Destroy(this.gameObject, lifetime);
     }
 
-    public void Initialize(float damage)
+    public void Initialize(float damage, bool isDamageOnFriendly)
     {
 
         if (text != null)
@@ -30,6 +33,11 @@ public class DamageNumbers : MonoBehaviour
         }
         textMesh.text = Mathf.RoundToInt(damage).ToString();
         transform.position += floatOffset;
+
+
+        textMesh.colorGradientPreset = isDamageOnFriendly ? damageToFriendlies : damageToEnemies;
+
+
     }
 
     void Update()
