@@ -214,27 +214,6 @@ public abstract class Character : MonoBehaviour
             effect.OnAttackHitEffect(this, target);
         }
     }
-    public void OnAttack()
-    {
-        foreach (var effect in activeEffects)
-        {
-            effect.OnAttackEffect(this.gameObject);
-        }
-    }
-    public void OnTakeDamage()
-    {
-        foreach (var effect in activeEffects)
-        {
-            effect.OnTakeDamageEffect(this.gameObject);
-        }
-    }
-    public void OnHitTarget(Character target)
-    {
-        foreach(var effect in activeEffects)
-        {
-            effect.OnAttackHitEffect(this, target);
-        }
-    }
 
     /// <summary>
     /// newState: 0 = no damage, 1 = player weapon damage

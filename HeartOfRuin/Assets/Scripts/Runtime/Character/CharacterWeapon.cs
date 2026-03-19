@@ -49,7 +49,7 @@ public class CharacterWeapon : MonoBehaviour
             if(target.TryGetComponent<Character>(out Character targetChar))
                 character.OnHitTarget(targetChar);
 
-            if(character.TryGetComponent<DpsTracker>(out dpsTracker))
+            if(character.TryGetComponent<DpsTracker>(out DpsTracker dpsTracker))
                 dpsTracker.RecordDamage(damage);
             
         }
