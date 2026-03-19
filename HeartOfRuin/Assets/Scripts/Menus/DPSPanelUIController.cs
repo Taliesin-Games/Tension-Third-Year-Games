@@ -14,10 +14,24 @@ public class DPSPanelUIController : MonoBehaviour
     PanelMode modeLastUpdate = PanelMode.None;
     [SerializeField] GameObject gridUI;
     [SerializeField] GameObject UIPrefab;
-    [SerializeField] DpsTracker dpsTracker;
+    
     private List<LabelledNumberUI> currentSlots = new List<LabelledNumberUI>();
     private LabelledNumberUI basicSlot;
     private List<LabelledNumberUI> AdvancedSlots = new List<LabelledNumberUI>();
+
+    DpsTracker dpsTracker;
+
+    private DpsTracker DpsTracker {  
+        get 
+        { 
+            if (dpsTracker == null)
+            {
+                dpsTracker = Player.Instance.GetComponent<DpsTracker>();
+            }
+            return dpsTracker; 
+        } 
+        set { dpsTracker = value; }
+    }
 
     void EnsureCorrectSlotCount()
     {
@@ -57,7 +71,7 @@ public class DPSPanelUIController : MonoBehaviour
 
     public void UpdateUI()
     {
-        if (dpsTracker == null || gridUI == null)
+        if (DpsTracker == null || gridUI == null)
             return;
 
         EnsureCorrectSlotCount();
@@ -98,12 +112,12 @@ public class DPSPanelUIController : MonoBehaviour
         if (mode == PanelMode.Basic)
         {
             basicSlot.SetLabel("DPS");
-            basicSlot.SetNumber((int)dpsTracker.GetDPS(0));
+            basicSlot.SetNumber((int)DpsTracker.GetDPS(0));
         }
 
         else if (mode == PanelMode.Advanced)
         {
-            DamageStruct DPS = dpsTracker.GetDPS(0);
+            DamageStruct DPS = DpsTracker.GetDPS(0);
 
             basicSlot.SetLabel("DPS");
             basicSlot.SetNumber((int)DPS);
