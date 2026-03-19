@@ -110,6 +110,8 @@ public class DPSPanelUIController : MonoBehaviour
 
             DamageStruct advancedData = DPS;
 
+            // TODO find a better way to predefine these
+
             AdvancedSlots[0].SetLabel("None");
             AdvancedSlots[0].SetNumber((int)advancedData.None);
             AdvancedSlots[1].SetLabel("Physical");
