@@ -2091,8 +2091,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000061035156}
-  m_SizeDelta: {x: 0, y: -0.00012207}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4276919841564845070
 CanvasRenderer:
@@ -3459,6 +3459,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6387359838445382914, guid: d111768578d8da249bb7f1edfd7c6e18, type: 3}
+      propertyPath: m_CellSize.x
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 6387359838445382914, guid: d111768578d8da249bb7f1edfd7c6e18, type: 3}
+      propertyPath: m_CellSize.y
+      value: 26
+      objectReference: {fileID: 0}
     - target: {fileID: 6582193273674302952, guid: d111768578d8da249bb7f1edfd7c6e18, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0.24998474
@@ -3521,7 +3529,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8030621774698555509, guid: d111768578d8da249bb7f1edfd7c6e18, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 200
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 8030621774698555509, guid: d111768578d8da249bb7f1edfd7c6e18, type: 3}
       propertyPath: m_SizeDelta.y
@@ -3760,9 +3768,17 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6150215145923550238, guid: 182bbaca20e196a41bf55289dea7e73b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 7595552318080073221, guid: 182bbaca20e196a41bf55289dea7e73b, type: 3}
       propertyPath: m_Name
       value: DPSPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 9076549510567438307, guid: 182bbaca20e196a41bf55289dea7e73b, type: 3}
+      propertyPath: m_fontSize
+      value: 17.9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
