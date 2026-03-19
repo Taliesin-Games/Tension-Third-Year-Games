@@ -7,6 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class Player : Character
 {
+    public static Player Instance;
+
     [SerializeField] GameObject inventoryUI;
     [SerializeField] GameObject equipmentUI;
     [SerializeField] PlayerHUD playerHUD;
@@ -14,6 +16,11 @@ public class Player : Character
     InventoryUIController equipmentUiController;
     bool invToggle;
 
+    protected override void Awake()
+    {
+        Instance = this;
+        base.Awake();
+    }
 
     private void Start()
     {
