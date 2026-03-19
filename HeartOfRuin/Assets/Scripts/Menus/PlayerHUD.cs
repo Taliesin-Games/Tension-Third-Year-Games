@@ -11,9 +11,9 @@ public enum PanelMode
     Advanced,
 }
 
-public class HUD : MonoBehaviour
+public class PlayerHUD : MonoBehaviour
 {
-    public static HUD Instance;
+    public static PlayerHUD Instance;
     [SerializeField] private Player player;
     [SerializeField] private DPSPanelUIController DPSPanel;
     [SerializeField] private StatPanelUIController StatPanel;

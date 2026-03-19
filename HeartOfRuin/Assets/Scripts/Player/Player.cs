@@ -9,7 +9,7 @@ public class Player : Character
 {
     [SerializeField] GameObject inventoryUI;
     [SerializeField] GameObject equipmentUI;
-    [SerializeField] HUD playerHUD;
+    [SerializeField] PlayerHUD playerHUD;
     InventoryUIController inventoryUiController;
     InventoryUIController equipmentUiController;
     bool invToggle;
