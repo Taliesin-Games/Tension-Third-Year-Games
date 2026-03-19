@@ -1,7 +1,6 @@
 using UnityEngine;
 
 
-
 [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
 [RequireComponent(typeof(BMD.PlayerController))] // Ensure that a CharacterController component is attached
 [RequireComponent(typeof(Health))]
@@ -9,9 +8,8 @@ public class Player : Character
 {
     public static Player Instance;
 
-    [SerializeField] GameObject inventoryUI;
-    [SerializeField] GameObject equipmentUI;
     [SerializeField] PlayerHUD playerHUD;
+
     InventoryUIController inventoryUiController;
     InventoryUIController equipmentUiController;
     bool invToggle;
@@ -24,12 +22,12 @@ public class Player : Character
 
     private void Start()
     {
-        initialiseUIControllerVariables();
+        InitialiseUIControllerVariables();
     }
 
     private void Update()
     {
-        if (inventoryUI != null && equipmentUI != null && Input.GetKeyDown(KeyCode.Tab))
+        if (inventoryUiController != null && equipmentUiController != null && Input.GetKeyDown(KeyCode.Tab))
         {
             invToggle = !invToggle; //flip the toggle
             Debug.Log($"toggling inventory to: {invToggle}");
@@ -57,21 +55,25 @@ public class Player : Character
 
     }
 
-    void initialiseUIControllerVariables()
+    void InitialiseUIControllerVariables()
     {
-        if (inventoryUI != null)
-        {
-            inventoryUiController = inventoryUI.GetComponent<InventoryUIController>();
-            inventoryUiController.SetInventory(inventory);
-            //Debug.Log($"Setting main inventory to {inventoryUiController.name}");
-        }
-        if (equipmentUI != null)
-        {
-            equipmentUiController = equipmentUI.GetComponent<InventoryUIController>();
-            equipmentUiController.SetInventory(equipmentSlots);
-            //Debug.Log($"Setting main inventory to {equipmentUiController.name}");
 
+        inventoryUiController = InventoryUIController.Instance;
+        inventoryUiController.SetInventory(inventory);
+
+        var controllers = inventoryUiController.GetComponentsInChildren<InventoryUIController>();
+
+        foreach (var controller in controllers)
+        {
+            if (controller != inventoryUiController)
+            {
+                equipmentUiController = controller;
+                break;
+            }
         }
+
+        if(equipmentUiController != null) equipmentUiController.SetInventory(equipmentSlots);
+
     }
 
 }

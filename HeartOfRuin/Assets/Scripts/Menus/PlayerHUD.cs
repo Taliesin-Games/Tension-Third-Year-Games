@@ -35,10 +35,6 @@ public class PlayerHUD : MonoBehaviour
 
     private void Start()
     {
-        if (player == null)
-        {
-            Debug.LogError("Player reference is not set in the HUD.");
-        }
         if (DPSPanel == null)
         {
             Debug.LogError("DPSPanel reference is not set in the HUD.");
@@ -52,28 +48,6 @@ public class PlayerHUD : MonoBehaviour
         if (SpellPanel == null)
         {
             Debug.LogError("SpellPanel reference is not set in the HUD.");
-        }
-
-        if (health == null)
-        {
-            Debug.LogError("Health reference is not set in the HUD.");
-        }
-
-        if (mana == null)
-        {
-            Debug.LogError("Mana reference is not set in the HUD.");
-        }
-
-        if (player != null)
-        {
-            // Initialize health, mana, and tension displays here if needed
-            DisplayTension();
-        }
-
-        if (player != null)
-        {
-            player.NotifyStatChange += PlayerStatUpdate;
-            PlayerStatUpdate();
         }
 
         if (DPSPanel != null)
@@ -113,6 +87,17 @@ public class PlayerHUD : MonoBehaviour
         if (mana != null)
         {
             mana.OnResourceChanged += UpdateMana;
+        }
+
+        if (player != null)
+        {
+            player.NotifyStatChange += PlayerStatUpdate;
+            PlayerStatUpdate();
+        }
+        if (player != null)
+        {
+            // Initialize health, mana, and tension displays here if needed
+            DisplayTension();
         }
 
     }

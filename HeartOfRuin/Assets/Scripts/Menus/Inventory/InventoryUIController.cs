@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class InventoryUIController : MonoBehaviour
 {
-    [SerializeField] Inventory inventory;
+    public static InventoryUIController Instance;
+
     [SerializeField] GameObject gridUI;
     [SerializeField] GameObject itemSlotUIPrefab;
     [SerializeField] Mouse mouse;
     private List<ItemSlotUI> uiSlots = new List<ItemSlotUI>();
 
+    Inventory inventory;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
-        if (!inventory)
-            Debug.LogWarning("InventoryUIController: Inventory reference missing!");
-
         HideInventory();
     }
 
