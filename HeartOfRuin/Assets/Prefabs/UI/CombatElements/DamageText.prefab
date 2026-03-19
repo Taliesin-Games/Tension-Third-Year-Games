@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8037831557873596981}
   - component: {fileID: 5400073383663592505}
   - component: {fileID: 4406124495684394017}
-  - component: {fileID: 1478892410638554314}
   - component: {fileID: 5549524555695065595}
   m_Layer: 5
   m_Name: DamageText
@@ -86,23 +85,6 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
---- !u!114 &1478892410638554314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2727937956588806166}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &5549524555695065595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,6 +100,8 @@ MonoBehaviour:
   floatSpeed: 1
   lifetime: 1
   floatOffset: {x: 0, y: 1.5, z: 0}
+  damageToEnemies: {fileID: 11400000, guid: 59becdae375877946b9a295b1e9423ee, type: 2}
+  damageToFriendlies: {fileID: 11400000, guid: 75d5ff545fa311d4289e1f225bec727f, type: 2}
   text: {fileID: 7099728587067179670}
 --- !u!1 &7099728587067179670
 GameObject:
