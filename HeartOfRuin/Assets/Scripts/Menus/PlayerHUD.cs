@@ -11,21 +11,22 @@ public enum PanelMode
     Advanced,
 }
 
-public class HUD : MonoBehaviour
+public class PlayerHUD : MonoBehaviour
 {
-    public static HUD Instance;
-    [SerializeField] private Player player;
+    public static PlayerHUD Instance;
     [SerializeField] private DPSPanelUIController DPSPanel;
     [SerializeField] private StatPanelUIController StatPanel;
     [SerializeField] private SpellPanelUIController SpellPanel;
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject ManaBar;
 
-    [SerializeField] private Health health;
-    [SerializeField] private Mana mana;
+    private Player player;
+    private Health health;
+    private Mana mana;
 
     private Image HealthBarImage;
     private Image ManaBarImage;
+
 
     private void Awake()
     {
@@ -34,10 +35,6 @@ public class HUD : MonoBehaviour
 
     private void Start()
     {
-        if (player == null)
-        {
-            Debug.LogError("Player reference is not set in the HUD.");
-        }
         if (DPSPanel == null)
         {
             Debug.LogError("DPSPanel reference is not set in the HUD.");
@@ -51,28 +48,6 @@ public class HUD : MonoBehaviour
         if (SpellPanel == null)
         {
             Debug.LogError("SpellPanel reference is not set in the HUD.");
-        }
-
-        if (health == null)
-        {
-            Debug.LogError("Health reference is not set in the HUD.");
-        }
-
-        if (mana == null)
-        {
-            Debug.LogError("Mana reference is not set in the HUD.");
-        }
-
-        if (player != null)
-        {
-            // Initialize health, mana, and tension displays here if needed
-            DisplayTension();
-        }
-
-        if (player != null)
-        {
-            player.NotifyStatChange += PlayerStatUpdate;
-            PlayerStatUpdate();
         }
 
         if (DPSPanel != null)
@@ -98,7 +73,11 @@ public class HUD : MonoBehaviour
         if (ManaBar != null)
         {
             ManaBarImage = ManaBar.GetComponent<Image>();
-        }
+        }        
+
+        player = Player.Instance;
+        health = player.GetComponent<Health>();
+        mana = player.GetComponent<Mana>();
 
         if (health != null)
         {
@@ -108,6 +87,17 @@ public class HUD : MonoBehaviour
         if (mana != null)
         {
             mana.OnResourceChanged += UpdateMana;
+        }
+
+        if (player != null)
+        {
+            player.NotifyStatChange += PlayerStatUpdate;
+            PlayerStatUpdate();
+        }
+        if (player != null)
+        {
+            // Initialize health, mana, and tension displays here if needed
+            DisplayTension();
         }
 
     }

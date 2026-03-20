@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 9044314073234623756}
   - component: {fileID: 7057362881630815874}
   - component: {fileID: 2204557722989211011}
+  - component: {fileID: 8099816250531779668}
+  - component: {fileID: 2637891470889155599}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -173,6 +175,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backgroundMusic: {fileID: 8300000, guid: 8fc6cddd5845c924fb73d9cd1de8a1d0, type: 3}
+--- !u!114 &8099816250531779668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3390565068289297619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde9b8c7099e9ba4a82fae7103359ac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LootGenerator
+  itemDatabase: {fileID: 11400000, guid: 636e95c65ccf4104ca08ff826a59f515, type: 2}
+--- !u!114 &2637891470889155599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3390565068289297619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b54a558a513002e4f8b83d64dead4539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageUIVisualisationController
+  damageNumberPrefab: {fileID: 2727937956588806166, guid: 0ec123089ae39ff4295be25bd54e7585, type: 3}
+  healthBarPrefab: {fileID: 5811873351532900742, guid: 543e5578798ee5e47abaffa74203a107, type: 3}
+  player: {fileID: 0}
+  showDamageNumbers: 1
+  showEnemyHealthBars: 1
+  healthbarHeightOffset: 2
 --- !u!1001 &3422552397044905043
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -181,21 +214,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5869917817946204845}
     m_Modifications:
-    - target: {fileID: 582039187205477501, guid: ee2bd9211ee7b234eabf36218b61e179, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 582039187205477501, guid: ee2bd9211ee7b234eabf36218b61e179, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3898960710858847234, guid: ee2bd9211ee7b234eabf36218b61e179, type: 3}
       propertyPath: m_Name
       value: MainCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 3898960710858847234, guid: ee2bd9211ee7b234eabf36218b61e179, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5721172098745556142, guid: ee2bd9211ee7b234eabf36218b61e179, type: 3}
       propertyPath: m_Pivot.x
