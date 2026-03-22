@@ -10,14 +10,20 @@ public class DamageUIVisualisationController : MonoBehaviour
 
     [SerializeField] private GameObject damageNumberPrefab;
     [SerializeField] private GameObject healthBarPrefab;
-    [SerializeField] Player player;
     [SerializeField] private bool showDamageNumbers;
     [SerializeField] private bool showEnemyHealthBars;
     [SerializeField] private float healthbarHeightOffset = 2;
 
+
+    Player player;
+
     public void Awake()
     {
         Instance = this;
+    }
+    private void Start()
+    {
+        player = Player.Instance;
     }
 
     public void VisualiseDamage(float damageAmount, GameObject damageTarget, Health targetHealth)
