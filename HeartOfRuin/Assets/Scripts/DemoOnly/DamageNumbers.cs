@@ -34,14 +34,10 @@ public class DamageNumbers : MonoBehaviour
         textMesh.text = Mathf.RoundToInt(damage).ToString();
         transform.position += floatOffset;
 
-        if (isDamageOnFriendly)
-        {
-            textMesh.colorGradientPreset = damageToFriendlies;
-        }
-        else
-        {
-            textMesh.colorGradientPreset = damageToEnemies;
-        }
+
+        textMesh.colorGradientPreset = isDamageOnFriendly ? damageToFriendlies : damageToEnemies;
+
+
     }
 
     void Update()

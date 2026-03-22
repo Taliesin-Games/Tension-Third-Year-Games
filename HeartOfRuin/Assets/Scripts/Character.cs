@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,6 +32,8 @@ public abstract class Character : MonoBehaviour
 
     #region Properties
     public bool WeaponDamageEnabled => weaponDamageEnabled;
+
+    public event Action NotifyStatChange;
     #endregion
 
     protected virtual void Awake()
@@ -79,6 +82,11 @@ public abstract class Character : MonoBehaviour
             inventory.ForceReAddItemInvoke();
             equipmentSlots.ForceReAddItemInvoke();
         }
+    }
+
+    private void Start()
+    {
+        NotifyStatChange?.Invoke();
     }
 
     private void OnEnable()
@@ -163,6 +171,8 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalChance(characterStats.getCriticalChance() + equippedItem.GetBonusCriticalChance());
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() + equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage += equippedItem.GetDamageBonusPercentages();
+
+        NotifyStatChange?.Invoke();
     }
 
     public void OnItemUnequipped(Item item)
@@ -174,6 +184,8 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalChance(characterStats.getCriticalChance() - equippedItem.GetBonusCriticalChance());
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage = characterDamageBonusPercentage - equippedItem.GetDamageBonusPercentages();
+
+        NotifyStatChange?.Invoke();
     }
 
     /// <summary>

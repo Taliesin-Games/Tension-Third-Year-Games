@@ -4,19 +4,32 @@ using UnityEngine;
 
 public class SpellPanelUIController : MonoBehaviour
 {
-
-    [SerializeField] SpellCaster spellCaster;
     [SerializeField] GameObject gridUI;
     [SerializeField] GameObject UIPrefab;
 
 
     private List<IconCooldownNumberController> currentSlots;
 
+    SpellCaster spellCaster;
+    private SpellCaster SpellCaster
+    {
+        get
+        {
+            if (spellCaster == null)
+            {
+                spellCaster = Player.Instance.GetComponent<SpellCaster>();
+            }
+            return spellCaster;
+        }
+        set { spellCaster = value; }
+    }
+
+
     void EnsureCorrectSlotCount()
     {
         currentSlots = gridUI.GetComponentsInChildren<IconCooldownNumberController>(true).ToList();
 
-        int SlotsIntendedTotal = spellCaster.GetSpells().Count();
+        int SlotsIntendedTotal = SpellCaster.GetSpells().Count();
         if (currentSlots.Count > SlotsIntendedTotal)
         {
             for (int i = SlotsIntendedTotal; i < currentSlots.Count; i++)
@@ -34,22 +47,22 @@ public class SpellPanelUIController : MonoBehaviour
 
     }
 
-    public void initialise()
+    public void Initialise()
     {
         EnsureCorrectSlotCount();
     }
 
     public void updateUI() 
     {
-        if (spellCaster == null || gridUI == null) 
+        if (SpellCaster == null || gridUI == null) 
         {
             return;    
         }
 
         EnsureCorrectSlotCount();
 
-        foreach (SpellBase spell in spellCaster.GetSpells()) {
-            int index = spellCaster.GetSpells().IndexOf(spell);
+        foreach (SpellBase spell in SpellCaster.GetSpells()) {
+            int index = SpellCaster.GetSpells().IndexOf(spell);
             //set cooldown to 0 for now, will need to be updated to reflect actual cooldowns
             currentSlots[index].SetValues(0f, spell.ManaCost, spell.Icon);
         }

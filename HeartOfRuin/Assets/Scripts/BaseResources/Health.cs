@@ -39,6 +39,7 @@ public class Health : Resource
 
         DamageUIVisualisationController.Instance.VisualiseDamage(finalDamage, gameObject, this);
         InvokeResourceChanged();
+        
 
         if (GetCurrentResource() <= 0)
         {

@@ -12,9 +12,27 @@ public class HUDOffsetActor : MonoBehaviour
         basePosition = rect.anchoredPosition;
     }
 
-    void Update()
+    void Start()
     {
-        float offset = HUDOffsetController.Instance.CurrentOffset;
+        if (HUDOffsetController.Instance != null)
+        {
+            HUDOffsetController.Instance.OnOffsetChanged += HandleOffsetChanged;
+            
+            // Apply current offset in case it changed prior to Start
+            HandleOffsetChanged(HUDOffsetController.Instance.CurrentOffset);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (HUDOffsetController.Instance != null)
+        {
+            HUDOffsetController.Instance.OnOffsetChanged -= HandleOffsetChanged;
+        }
+    }
+
+    void HandleOffsetChanged(float offset)
+    {
         rect.anchoredPosition = new Vector2(
             basePosition.x - offset,
             basePosition.y

@@ -10,13 +10,38 @@ public class StatPanelUIController : MonoBehaviour
     PanelMode modeLastUpdate = PanelMode.None;
     [SerializeField] GameObject gridUI;
     [SerializeField] GameObject UIPrefab;
-    [SerializeField] Character Character;
     DamageStruct BonusDamageStruct;
-    [SerializeField] CharacterStats Stats;
     private List<LabelledNumberUI> currentSlots = new List<LabelledNumberUI>();
     private List<LabelledNumberUI> basicSlots = new List<LabelledNumberUI>();
     private List<LabelledNumberUI> AdvancedSlots = new List<LabelledNumberUI>();
 
+    Character character;
+    CharacterStats stats;
+    private Character Character
+    {
+        get
+        {
+            if (character == null)
+            {
+                character = Player.Instance.GetComponent<Character>();
+                if(character != null) stats = GetComponent<CharacterStats>();
+            }
+            return character;
+        }
+        set { character = value; }
+    }
+    private CharacterStats Stats
+    {
+        get
+        {
+            if (stats == null)
+            {
+                stats = Character.GetComponent<CharacterStats>();
+            }
+            return stats;
+        }
+        set { stats = value; }
+    }
 
     void EnsureCorrectSlotCount()
     {
@@ -45,7 +70,7 @@ public class StatPanelUIController : MonoBehaviour
     }
 
 
-    public void initialise()
+    public void Initialise()
     {
         EnsureCorrectSlotCount();
     }
