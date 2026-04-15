@@ -17,14 +17,10 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'mixamorig:LeftForeArm' has translation
-      animation that will be discarded.\n\t'mixamorig:RightForeArm' has translation
-      animation that will be discarded.\n\t'mixamorig:LeftLeg' has translation animation
-      that will be discarded.\n\t'mixamorig:RightLeg' has translation animation that
-      will be discarded.\n"
-    animationRetargetingWarnings: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: "\nRetargeting quality report for clip 'Take 001':\n\tLeftHand
+      average position error 0.1 mm and maximum position error 1.5 mm at time 5:21
+      (51.5%) Frame 621\n"
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
@@ -879,7 +875,7 @@ ModelImporter:
     feetSpacing: 0
     globalScale: 1
     rootMotionBoneName: 
-    hasTranslationDoF: 0
+    hasTranslationDoF: 1
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
