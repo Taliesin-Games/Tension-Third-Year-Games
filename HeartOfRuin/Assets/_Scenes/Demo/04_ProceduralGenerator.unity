@@ -392,11 +392,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5289773765489257793, guid: c9a03ed656741394b88daaf0e4249d74, type: 3}
       propertyPath: maxPathLength
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5289773765489257793, guid: c9a03ed656741394b88daaf0e4249d74, type: 3}
       propertyPath: minPathLength
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5289773765489257793, guid: c9a03ed656741394b88daaf0e4249d74, type: 3}
       propertyPath: directionalBiasStrength
@@ -411,9 +411,17 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5289773765489257793, guid: c9a03ed656741394b88daaf0e4249d74, type: 3}
+      propertyPath: pathNodePrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289773765489257793, guid: c9a03ed656741394b88daaf0e4249d74, type: 3}
       propertyPath: 'directionalBias.Array.data[1]'
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 5289773765489257793, guid: c9a03ed656741394b88daaf0e4249d74, type: 3}
+      propertyPath: 'pathNodePrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 9217343230761709196, guid: 108ffd5f035978947860bea236b65f44, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
