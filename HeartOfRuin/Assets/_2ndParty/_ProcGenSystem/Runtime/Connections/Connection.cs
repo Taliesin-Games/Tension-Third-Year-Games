@@ -6,10 +6,13 @@ namespace BMD.ProcGen
     {
         #region Configuration
         [SerializeField] ConnectionDirection direction = ConnectionDirection.Auto;
+        [SerializeField] GameObject editorVisualisation;
+        [SerializeField] bool keepVisualisationOnPlay = false;
         #endregion
 
         #region Cached References
         Connection linked;
+        Breadcrumbs breadcrumbs;
         Node parent;
         #endregion
 
@@ -30,14 +33,43 @@ namespace BMD.ProcGen
                 return;
             }
 
+            RemoveEditorVisualisation();
+            FindBreadcrumbs();
             GetParentOffset();
-
             SetDirection();
-
             originalName = name;
             SetName();
         }
+        void FindBreadcrumbs()
+        {
+            breadcrumbs = GetComponent<Breadcrumbs>();
+        }
+        public void RemoveBreadcrumbs()
+        {
+            if (!breadcrumbs) return;
 
+            Destroy(breadcrumbs.gameObject);
+        }
+        public void KeepBreadcrumbs()
+        {
+            if (!breadcrumbs) return;
+
+            // Attach to the connectors parent
+            breadcrumbs.transform.parent = transform.parent;
+
+            if (transform.parent.TryGetComponent<Node>(out Node node))
+            {
+                node.AddBreadcrumbs(breadcrumbs);
+            }
+        }
+        void RemoveEditorVisualisation()
+        {
+            if (keepVisualisationOnPlay) return;
+
+            if (!editorVisualisation) return;
+
+            Destroy(editorVisualisation.gameObject);
+        }
         void SetName()
         {
             name = $"{direction.ToString()}_{originalName}";
@@ -47,7 +79,6 @@ namespace BMD.ProcGen
             parentOffset = transform.position - parent.transform.position;
             //Debug.Log($"{name}: Connection initialised with parent {parent.name} and offset {parentOffset}");
         }
-
         public void RotateConnection(bool reverse)
         {
             GetParentOffset();
@@ -80,7 +111,6 @@ namespace BMD.ProcGen
             }
             //Debug.Log($"{name}: Auto-set connection direction to {direction}");
         }
-
         public void Initialise(Node parent)
         {
             this.parent = parent;
@@ -94,12 +124,15 @@ namespace BMD.ProcGen
             }
             conA.linked = conB;
             conB.linked = conA;
+
+            conA.KeepBreadcrumbs();
+            conB.KeepBreadcrumbs();
+
             Debug.Log($"Linked {conA.name} ({conA.direction}) to {conB.name} ({conB.direction})");
 
             Vector3 parentBNewPos = conA.transform.position - conB.parentOffset;
 
             conB.parent.transform.position = parentBNewPos;
         }
-        
     }
 }

@@ -1,22 +1,53 @@
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 
 namespace BMD.ProcGen
 {
     public class Node : MonoBehaviour
     {
-        List<Connection> connections = new();
+        private const string UnboundedTerrainTag = "UnboundedTerrain";
+        static List<Type> skippedTypes = new()
+        {
+            typeof(BMD.ProcGen.Connection),
+            typeof(ParticleSystem),
+            typeof(Breadcrumbs)
+        };
 
+        #region Configuration
+        [SerializeField] GameObject editorVisualisation;
+        [SerializeField] bool keepVisualisationOnPlay = false;
+        [Tooltip("This will be used to fit terrain together.\n" +
+            "If left empty it will be detected from geometry.")]
+        [SerializeField] BoxCollider terrainBoundsCollider;
+        [Tooltip("In case of flat area how much should we expand the bounding box upwards.\n" +
+            "This is not used if there is a collider assigned")]
+        [SerializeField] Vector3 headroom = new(0, 1, 0);
+        [Tooltip("Amount to increase the terrain bounds by to force free space around the object.\n" +
+            "This will not affect connector positioning, only overlapping geometry from other rooms/nodes.")]
+        [SerializeField] Vector3 margins = new(0.2f, 0.2f, 0.2f);
+        #endregion
+
+        #region References
+        List<Connection> connections = new();
+        List<Breadcrumbs> breadcrumbs = new();
+        #endregion
+        #region Properties and acessor methods
         public List<Connection> Connections => connections;
         public List<Connection> NorthConnections => connections.Where(c => c.Direction == ConnectionDirection.North).ToList();
         public List<Connection> SouthConnections => connections.Where(c => c.Direction == ConnectionDirection.South).ToList();
-        public List<Connection> Eastonnections => connections.Where(c => c.Direction == ConnectionDirection.East).ToList();
-        public List<Connection> WestConnections => connections.Where(c => c.Direction == ConnectionDirection.West).ToList();
+        public List<Connection> Eastonnections   => connections.Where(c => c.Direction == ConnectionDirection.East).ToList();
+        public List<Connection> WestConnections  => connections.Where(c => c.Direction == ConnectionDirection.West).ToList();
         public List<Connection> GetConnectionsByDirection(ConnectionDirection direction)
         {
             return connections.Where(c => c.Direction == direction).ToList();
         }
+        #endregion
+        #region Runtime Variables
+        Bounds terrainBounds;
+        #endregion
+
         public void Awake()
         {
             connections.AddRange(GetComponentsInChildren<Connection>());
@@ -24,8 +55,72 @@ namespace BMD.ProcGen
             {
                 connection.Initialise(this);
             }
+
+            RemoveEditorVisualisation();
+            GetTerrainBounds();
         }
-        
+        void RemoveEditorVisualisation()
+        {
+            if (keepVisualisationOnPlay) return;
+
+            if (!editorVisualisation) return;
+
+            Destroy(editorVisualisation.gameObject);
+        }
+        void GetTerrainBounds()
+        {
+            if (terrainBounds == null) terrainBounds = new Bounds();
+
+            if (terrainBoundsCollider == null)
+            {
+                CalculateTerrainBounds(); 
+            }
+            else
+            {    
+                terrainBounds.center = terrainBoundsCollider.center;
+                terrainBounds.size = terrainBoundsCollider.size;
+            }
+                
+#if !UNITY_EDITOR
+            Destroy(terrainBoundsCollider);
+#endif
+        }
+        void CalculateTerrainBounds()
+        {
+            terrainBounds = new(); // reset the bounds if calculating.
+
+            // First get a list of all transform children + self
+            List<GameObject> allGameObjects = new();
+            allGameObjects.AddRange(GetComponentsInChildren<Transform>(true).Select(t => t.gameObject));
+
+            HashSet<GameObject> gameObjectsToRemove = new();
+
+            foreach (GameObject obj in allGameObjects)
+            {
+                if (!ShouldSkip(obj)) continue;
+
+                gameObjectsToRemove.UnionWith(obj.GetComponentsInChildren<Transform>(true).Select(t => t.gameObject));
+            }
+            
+            allGameObjects.RemoveAll(go => gameObjectsToRemove.Contains(go));
+
+            foreach (var h in allGameObjects)
+            {
+                if (h.TryGetComponent<Renderer>(out Renderer r)) terrainBounds.Encapsulate(r.bounds);
+                if (h.TryGetComponent<Collider>(out Collider c)) terrainBounds.Encapsulate(c.bounds);
+            }
+
+            // Allow space above any detected meshes to allow space for the player
+            terrainBounds.center += headroom * 0.5f;
+            terrainBounds.size += headroom;
+
+            terrainBounds.size += margins;
+
+        }
+        public void AddBreadcrumbs(Breadcrumbs breadcrumbs)
+        {
+            this.breadcrumbs.Add(breadcrumbs);
+        }
         public void Clear()
         {
             // Clear any state or references here if needed
@@ -41,6 +136,34 @@ namespace BMD.ProcGen
                 connection.RotateConnection(reverse);
             }
         }
+        private void OnValidate()
+        {
+            GetTerrainBounds();
+        }
+        private void OnDrawGizmos()
+        {
+            if (terrainBounds == null) return;
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(terrainBounds.center + transform.position, terrainBounds.size);
+        }
+        private static bool ShouldSkip(GameObject obj)
+        {
+            if (obj.CompareTag(UnboundedTerrainTag)) return true;
+
+            if (skippedTypes == null) return false;
+
+            foreach (Type type in skippedTypes)
+            {
+                if (type == null) continue;
+
+                if (obj.GetComponent(type) != null) return true;
+            }
+
+            return false;
+            
+        }
+
     }
 
 }
