@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3481654104864521623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6042617451663429941}
+  - component: {fileID: 2710531310948657852}
+  m_Layer: 0
+  m_Name: TerrainGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6042617451663429941
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3481654104864521623}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2710531310948657852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3481654104864521623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f3b4bdd3827634e8e586284619770b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minPathLength: 5
+  maxPathLength: 10
+  branchesPerPath: 2
+  minBranchLength: 3
+  maxBranchLength: 5
+  GenerateNodesPerFrame: 2
+  randomSeed: 0
+  allowedBranchDirections: 01000000030000000200000004000000
+  directionalBias: 0100000004000000
+  directionalBiasStrength: 1
+  minBridgeLength: 1
+  maxBridgeLength: 3
+  rootPrefabs:
+  - {fileID: 8760720957738849173, guid: a3f784a3b864bb0459299234defa73dd, type: 3}
+  rootPathPrefabs:
+  - {fileID: 8374267606376300075, guid: 72301eb3b22dbf84f9f3f9e59a4f953f, type: 3}
+  pathNodePrefabs:
+  - {fileID: 804659510537200370, guid: 8675171743ae5d140a9d96375bd8afe0, type: 3}
+  - {fileID: 804659510537200370, guid: f49dba083e065264bb3fbf79d6bfe34d, type: 3}
+  - {fileID: 804659510537200370, guid: 8675171743ae5d140a9d96375bd8afe0, type: 3}
+  roomNodePrefabs:
+  - {fileID: 9217343230761709196, guid: 8842f49ae7bd87241b47d89380971b14, type: 3}
+  - {fileID: 3987183807468222628, guid: 6e3afa88120b08647bfea8eeb71ff11e, type: 3}
+  - {fileID: 9217343230761709196, guid: d4ec09fa118bfeb468e21776d5a8ad3c, type: 3}
+  endRoomPrefabs:
+  - {fileID: 8760720957738849173, guid: 8ce886624d13d29469e910d74802d957, type: 3}
+  branchEndPrefabs:
+  - {fileID: 8760720957738849173, guid: 8df8c3570aef81a439cab115a1930169, type: 3}
