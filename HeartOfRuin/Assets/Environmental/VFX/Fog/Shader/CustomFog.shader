@@ -27,13 +27,16 @@ Shader "Custom/CustomFog"
 
     SubShader
     {
-        //does not write to depth buffer and is transparent
+        Tags
+        {
+            "RenderType"="Transparent"
+            "Queue"="Transparent"
+            "RenderPipeline"="UniversalPipeline"
+        }
+
         ZWrite Off
         Cull Off
         Blend SrcAlpha OneMinusSrcAlpha
-        Tags { "RenderType"="Transparent" "Queue"="Transparent" "RenderPipeline"="UniversalRenderPipeline" }
-      
-
 
         Pass
         {
@@ -41,9 +44,20 @@ Shader "Custom/CustomFog"
             Tags { "LightMode"="UniversalForward" }
 
             HLSLPROGRAM
+
+            #pragma target 3.0
+
             #pragma vertex vert
             #pragma fragment frag
+
             #pragma shader_feature _DEPTH_OBSCURE
+
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS
+            #pragma multi_compile_instancing
+
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
@@ -51,16 +65,16 @@ Shader "Custom/CustomFog"
             struct Attributes
             {
                 float4 positionOS : POSITION;
-                float3 normalOS   : NORMAL;
+                float3 normalOS : NORMAL;
             };
 
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
                 float3 positionWS : TEXCOORD0;
-                float3 normalWS   : TEXCOORD1;
+                float3 normalWS : TEXCOORD1;
                 float3 positionOS : TEXCOORD2;
-                float4 screenPos  : TEXCOORD3;
+                float4 screenPos : TEXCOORD3;
             };
 
             float4 _BaseColor;
@@ -73,6 +87,7 @@ Shader "Custom/CustomFog"
             float _DistanceFadeEnd;
             float _AlphaThreshold;
             float _DepthFadeDistance;
+
             float _UseRed;
             float _UseGreen;
             float _UseBlue;
@@ -89,23 +104,29 @@ Shader "Custom/CustomFog"
             Varyings vert (Attributes IN)
             {
                 Varyings OUT;
+
                 OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz);
                 OUT.positionOS = IN.positionOS.xyz;
                 OUT.normalWS = normalize(TransformObjectToWorldNormal(IN.normalOS));
+
                 OUT.positionCS = TransformWorldToHClip(OUT.positionWS);
                 OUT.screenPos = ComputeScreenPos(OUT.positionCS);
+
                 return OUT;
             }
 
             half4 frag (Varyings IN) : SV_Target
             {
                 // Depth calculations
+
                 float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
+
                 float sceneDepth = LinearEyeDepth(SampleSceneDepth(screenUV), _ZBufferParams);
                 float fragDepth = LinearEyeDepth(IN.positionCS.z, _ZBufferParams);
+
                 float depthDiff = sceneDepth - fragDepth;
 
-                // Calculate depth fade (soft particles) - always needed. 
+                // Calculate depth fade (soft particles) - always needed.
                 float depthFade = saturate(depthDiff / _DepthFadeDistance);
 
                 // Edge fade (keep fog inside cube)
@@ -115,27 +136,31 @@ Shader "Custom/CustomFog"
                 // Noise lookup
                 float3 noiseUV = IN.positionWS * _NoiseScale * 0.01;
                 noiseUV += float3(_Time.y * _Speed, _Time.y * _Speed * 0.7, _Time.y * _Speed * 0.5);
+
                 float3 noiseSample = SAMPLE_TEXTURE3D(_NoiseTex, sampler_NoiseTex, frac(noiseUV)).rgb;
 
-                float total = _UseRed + _UseGreen + _UseBlue;
-                total = max(total, 1.0);
-                float noiseVal = (noiseSample.r * _UseRed +
-                                  noiseSample.g * _UseGreen +
-                                  noiseSample.b * _UseBlue) / total;
+                float total = max(_UseRed + _UseGreen + _UseBlue, 1.0);
+
+                float noiseVal =
+                    (noiseSample.r * _UseRed +
+                     noiseSample.g * _UseGreen +
+                     noiseSample.b * _UseBlue) / total;
 
                 // Base density with depth fade applied
                 float density = saturate(noiseVal * _Density * edgeFade * depthFade);
 
                 #ifdef _DEPTH_OBSCURE
-                // Add depth-based density increase for distant objects
+                // Add depth-based density increase for distant objects 
                 // Only apply to geometry behind the fog (positive depthDiff)
                 if (depthDiff > 0.0)
                 {
                     // Map scene depth to 0-1 range between min and max with smoothstep for gradual transition
-                    float normalizedDepth = saturate((sceneDepth - _DepthObscureMin) / max(0.01, _DepthObscureMax - _DepthObscureMin));
+                    float normalizedDepth = saturate((sceneDepth - _DepthObscureMin) /
+                        max(0.01, _DepthObscureMax - _DepthObscureMin));
+
                     float depthDensity = smoothstep(0.0, 1.0, normalizedDepth) * _DepthObscureStrength;
-                    
-                    // Add depth density on top of existing density (which already has depthFade applied)
+
+                    // Add depth density on top of existing density (which already has depthFade applied) 
                     // This way soft particles still work, but we add more fog for distant objects
                     density = saturate(density + depthDensity * depthFade);
                 }
@@ -144,15 +169,23 @@ Shader "Custom/CustomFog"
                 // Distance fade
                 float3 camPos = GetCameraPositionWS();
                 float dist = distance(IN.positionWS, camPos);
-                float camFade = saturate(1.0 - smoothstep(_DistanceFadeStart, _DistanceFadeEnd, dist));
+
+                float camFade = saturate(
+                    1.0 - smoothstep(_DistanceFadeStart, _DistanceFadeEnd, dist)
+                );
+
                 density *= camFade;
 
                 // Lighting
                 Light mainLight = GetMainLight();
+
                 float NdotL = saturate(dot(IN.normalWS, mainLight.direction));
-                float3 lightColor = mainLight.color * NdotL * _LightInfluence + 0.2;
+
+                float3 lightColor =
+                    mainLight.color * NdotL * _LightInfluence + 0.2;
 
                 float3 finalColor = _BaseColor.rgb * lightColor;
+
                 float alpha = density * _BaseColor.a;
 
                 // Threshold
@@ -161,6 +194,7 @@ Shader "Custom/CustomFog"
 
                 return half4(finalColor, alpha);
             }
+
             ENDHLSL
         }
     }

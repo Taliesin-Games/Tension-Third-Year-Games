@@ -36,49 +36,36 @@ public class EnemyAI : MonoBehaviour
     #endregion
 
     #region Cached References
+    Enemy enemy;
     EnemyNavigation enemyNavigation;
-    Animator animator;
     #endregion
-
 
     #region Runtime Variables
     Transform currentTarget;
-    [SerializeField] EnemyState currentState = EnemyState.Idle;
-    [SerializeField] TargetKind currentTargetKind = TargetKind.None;
+    EnemyState currentState = EnemyState.Idle;
+    TargetKind currentTargetKind = TargetKind.None;
 
     float chaseRepathTimer = 0f;
     float nextAttackTime = 0f;
 
-    bool IsDead = false;
-
     // Patrol state
     Vector3 patrolOrigin;
     Vector3 patrolDestination;
-    [SerializeField] bool isPatrolling = false;
-    [SerializeField] float patrolWaitTimer = 0f;
+   float patrolWaitTimer = 0f;
 
     // Detection runtime
     float loseTargetTimer = 0f;
     #endregion
 
-    /*
-     * Wasnt sure if the pooling system would use something similar to this so commented out for now
-    private void OnEnable()
-    {
-        count++;
-        Tower.enemies.Add(this);
-    }
-    private void OnDisable()
-    {
-        Tower.enemies.Remove(this);
-    }
-    */
+    #region Properties
+    bool IsDead => currentState == EnemyState.Dead;
+    #endregion
 
     void Awake()
     {
         // Cache references
+        enemy = GetComponent<Enemy>();
         enemyNavigation = GetComponent<EnemyNavigation>();
-        animator = GetComponent<Animator>();
 
         //Set initial origin for patrols
         patrolOrigin = transform.position; // patrol around spawn
@@ -112,16 +99,30 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Attacking:
                 TickAttacking(); // In attack range of target
                 break;
+            case EnemyState.Hit:
+                TickHit();
+                break;
+
+            case EnemyState.Returning:
+                TickReturning();
+                break;
         }
 
         // Debug drawing
         if (drawDebug)
         {
-            DebugDrawCircle(patrolOrigin, patrolRadius, Color.cyan); // Patrol area
-            DebugDrawCircle(transform.position + Vector3.up * 0.05f, detectionRadius, Color.yellow); // Detection radius
+            Helpers.DebugDrawCircle(patrolOrigin, patrolRadius, Color.cyan); // Patrol area
+            Helpers.DebugDrawCircle(transform.position + Vector3.up * 0.05f, detectionRadius, Color.yellow); // Detection radius
         }
     }
-
+    private void TickReturning()
+    {
+        throw new NotImplementedException();
+    }
+    private void TickHit()
+    {
+        throw new NotImplementedException();
+    }
     void TickIdle()
     {
         // First, try to detect something to attack
@@ -141,7 +142,6 @@ public class EnemyAI : MonoBehaviour
             // Start moving to it if possible
             if (enemyNavigation.MoveTo(patrolDestination))
             {
-                isPatrolling = true;
                 currentTarget = null;
                 currentTargetKind = TargetKind.None;
                 currentState = EnemyState.Walking;
@@ -155,37 +155,35 @@ public class EnemyAI : MonoBehaviour
     }
     void TickWalking()
     {
-        // While patrolling, keep scanning for targets
-        if (isPatrolling)
-        {
-            if (TryDetectAndSetTarget())
-                return;
-
-            if (enemyNavigation.HasReachedDestination())
-            {
-                isPatrolling = false;
-                patrolWaitTimer = Random.Range(patrolPauseRange.x, patrolPauseRange.y);
-                currentState = EnemyState.Idle;
-                return;
-            }
-            return;
-        }
-
-        // Walking towards a non-patrol target (e.g., tower)
+        // If walking without a target we are patrolling
         if (currentTarget == null)
         {
-            ResetTarget();
+            if (enemyNavigation.HasReachedDestination())
+            {
+                patrolWaitTimer = Random.Range(patrolPauseRange.x, patrolPauseRange.y);
+                currentState = EnemyState.Idle;
+            }
+
+            // while patrolling still scan for enemies
+            TryDetectAndSetTarget();
+
             return;
         }
 
-        // If we reached the target, start attacking
+        // Walking toward a target, If we reached the target, start attacking
         if (IsWithinAttackRange(currentTarget.position))
         {
             currentState = EnemyState.Attacking;
             return;
         }
-    }
 
+        // if target disappeared
+        if (currentTarget == null)
+        {
+            ResetTarget();
+            return;
+        }
+    }
     void TickChasing()
     {
         // If target vanished (destroyed), reset state machine
@@ -268,16 +266,17 @@ public class EnemyAI : MonoBehaviour
         }
 
         // In range and have a target: attack (actual damage application is driven by animation events)
-        if (Time.time > nextAttackTime)
+        if (Time.time >= nextAttackTime)
         {
             nextAttackTime = Time.time + attackCooldown;
-            animator.SetTrigger("Attack");
+            enemy.EnemyAIAttack();
+            
         }
 
         // Debug drawing for attacks
         if (drawDebug)
         {
-            DebugDrawCircle(transform.position, attackRange, Color.red);
+            Helpers.DebugDrawCircle(transform.position, attackRange, Color.red);
         }
     }
     void BeginPursuit(Transform target, TargetKind kind, EnemyState state)
@@ -286,7 +285,6 @@ public class EnemyAI : MonoBehaviour
         currentTargetKind = kind;
         currentState = state;
         chaseRepathTimer = 0f;
-        isPatrolling = false;
         if (state == EnemyState.Chasing)
         {
             loseTargetTimer = loseTargetAfter;
@@ -297,7 +295,6 @@ public class EnemyAI : MonoBehaviour
         // Clear target and return to idle, effectively restarting the state machine
         currentTarget = null;
         currentTargetKind = TargetKind.None;
-        isPatrolling = false;
         currentState = EnemyState.Idle;
         loseTargetTimer = 0f;
     }
@@ -436,79 +433,23 @@ public class EnemyAI : MonoBehaviour
 
         return true;
     }
-
-    // Overload that searches from a specific origin (kept for future use). LEGACY CODE - currently not used.
-    bool TryFindNearestAttackable(out GameObject target, out TargetKind kind, Vector3 origin)
-    {
-        target = null;
-        kind = TargetKind.None;
-
-        GameObject[] candidates;
-        try
-        {
-            candidates = GameObject.FindGameObjectsWithTag("Attackable");
-        }
-        catch
-        {
-            return false;
-        }
-
-        float minDistSqr = float.MaxValue;
-        foreach (var obj in candidates)
-        {
-            if (obj == null || obj == gameObject) continue;
-
-            float distSqr = (obj.transform.position - origin).sqrMagnitude;
-            if (distSqr < minDistSqr)
-            {
-                minDistSqr = distSqr;
-                target = obj;
-            }
-        }
-
-        if (target == null) return false;
-
-        var likelyAgent = target.GetComponentInParent<CharacterController>();
-        if (likelyAgent != null && likelyAgent.gameObject != gameObject)
-        {
-            kind = TargetKind.Player;
-        }
-        else
-        {
-            if (target.name.IndexOf("player", StringComparison.OrdinalIgnoreCase) >= 0)
-                kind = TargetKind.Player;
-            else
-                kind = TargetKind.Tower;
-        }
-        return true;
-    }
-
-    // Default origin = enemy position. LEGACY CODE - currently not used.
-    bool TryFindNearestAttackable(out GameObject target, out TargetKind kind)
-    {
-        return TryFindNearestAttackable(out target, out kind, transform.position);
-    }
-
     public void Die()
     {
         if (IsDead) return;
-        IsDead = true;
+        currentState = EnemyState.Dead;
+
         // enemyNavigation.Die(); removed due to switching to properties
         Debug.Log($"{gameObject.name} (Enemy) is handling death logic.");
         Enemy.Decrement();
-        if (animator != null)
-        {
-            animator.SetFloat("DeathType", Random.Range(0, 1));
-            animator.SetTrigger("Died");
-        }
+
+        enemy.EnemyAIDie();
+
         Destroy(gameObject, 1f);
     }
-
     private void OnDestroy()
     {
         //GameManager.Instance.CheckWinGame();
     }
-
     // Apply damage to current target if cooldown elapsed
     public void TryDealDamageToCurrentTarget()
     {
@@ -526,18 +467,5 @@ public class EnemyAI : MonoBehaviour
         */
     }
 
-    // Small helper to visualize ranges when debugging
-    void DebugDrawCircle(Vector3 center, float radius, Color color, int segments = 24)
-    {
-        if (!drawDebug) return;
-        Vector3 prev = center + new Vector3(radius, 0, 0);
-        for (int i = 1; i <= segments; i++)
-        {
-            float ang = (i / (float)segments) * Mathf.PI * 2f;
-            Vector3 next = center + new Vector3(Mathf.Cos(ang) * radius, 0, Mathf.Sin(ang) * radius);
-            Debug.DrawLine(prev, next, color);
-            prev = next;
-        }
-    }
 
 }

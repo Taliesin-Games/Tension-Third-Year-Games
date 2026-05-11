@@ -134,12 +134,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   characterName: Glorp Gleep
+  activeEffects: []
   equipmentSlots: {fileID: 0}
   inventory: {fileID: 6067370429347374955}
   characterStats: {fileID: 4534902623971036681}
+  characterDamageBonusPercentage:
+    None: 0
+    Physical: 0
+    Magical: 0
+    True: 0
+    Fire: 0
+    Lightning: 0
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
+  castComponent: {fileID: 0}
   inventoryUI: {fileID: 4715681814175385191}
   equipmentUI: {fileID: 8575852514983891432}
-  castComponent: {fileID: 0}
 --- !u!114 &4534902623971036681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,14 +230,6 @@ MonoBehaviour:
   swimSpeed: 4
   swingSpeed: 8
   flySpeed: 12
-  lookSensitivity: 0.2
-  verticalClamp: 80
-  followDistance: 4
-  followHeight: 2
-  horizontalOffset: 0
-  isThirdPerson: 1
-  smoothSpeed: 10
-  cameraFollowDamping: 0.05
 --- !u!114 &593065472506653107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +283,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blendTreeTransitionRate: 0.1
+  attackLayerTransitionInTime: 0.05
+  attackLayerTransitionOutTime: 0.2
 --- !u!1 &8474210923223187996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1260,8 +1266,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
+      propertyPath: m_Size
+      value: 0.9999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 7915188827679347397, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9199831194438809938, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1269,6 +1279,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9199831194438809938, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9199831194438809938, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

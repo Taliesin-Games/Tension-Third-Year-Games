@@ -44,6 +44,12 @@ public class SkyboxColourManager : MonoBehaviour
     private Color _lastBlended3;
     private bool _colorsInitialized;
 
+    public void SetBlend(float value)
+    {
+        blend = Mathf.Clamp01(value);
+    }
+
+
     private void OnEnable()
     {
         _colorsInitialized = false;

@@ -20,7 +20,7 @@ public class LootComponent : MonoBehaviour
         lootGenerator = UnityEngine.Object.FindFirstObjectByType<LootGenerator>();
         if (lootGenerator == null)
         {
-            Debug.LogError("LootComponent: No LootGenerator found in scene. Please add one.");
+            Debug.LogWarning("LootComponent: No LootGenerator found in scene. Please add one.");
             return;
         }
         lootGenerator.GenerateLoot(this);

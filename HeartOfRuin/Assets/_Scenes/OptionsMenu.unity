@@ -248,7 +248,6 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
     m_Quality: 3
     m_FrameInfluence: 0.1
@@ -256,6 +255,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1001 &815356532
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -421,6 +421,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 698225773580500097, guid: e813b03a27321b74dadcb4ff4a2c494e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 942777216}
+    - target: {fileID: 698225773580500097, guid: e813b03a27321b74dadcb4ff4a2c494e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ReturnToStart
+      objectReference: {fileID: 0}
     - target: {fileID: 1223102247172917110, guid: e813b03a27321b74dadcb4ff4a2c494e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -482,6 +490,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e813b03a27321b74dadcb4ff4a2c494e, type: 3}
+--- !u!114 &942777216 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7161829444039031556, guid: e813b03a27321b74dadcb4ff4a2c494e, type: 3}
+  m_PrefabInstance: {fileID: 942777215}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b27b11eac112fd64b9dae4c27f19900d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1925009651
 GameObject:
   m_ObjectHideFlags: 0
