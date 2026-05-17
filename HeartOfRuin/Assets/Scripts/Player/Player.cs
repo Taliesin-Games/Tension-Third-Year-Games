@@ -24,8 +24,9 @@ public class Player : Character
     InputAction dropItemAction;
 
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         playerControls.Enable();
         inventoryTogglePlayer.performed += ctx => ToggleInventory();
         inventoryToggleUI.performed += ctx => ToggleInventory();
@@ -34,8 +35,9 @@ public class Player : Character
 
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         playerControls.Disable();
         inventoryTogglePlayer.performed -= ctx => ToggleInventory();
         inventoryToggleUI.performed -= ctx => ToggleInventory();
