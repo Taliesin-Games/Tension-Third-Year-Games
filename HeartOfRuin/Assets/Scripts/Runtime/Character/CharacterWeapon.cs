@@ -12,7 +12,7 @@ public class CharacterWeapon : MonoBehaviour
     private void Start()
     {
         character = GetComponentInParent<Character>();
-        if (!character) Debug.LogError($"Character not found for {name}");
+        if (!character) Debug.LogError($"Character not found for {name}, at {transform.position} on parent {transform.parent.name}");
 
         damageComponent = GetComponent<DamageComponent>();
 
