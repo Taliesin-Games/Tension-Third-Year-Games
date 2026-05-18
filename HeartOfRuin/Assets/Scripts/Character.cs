@@ -98,13 +98,13 @@ public abstract class Character : MonoBehaviour
     {
         NotifyStatChange?.Invoke();
     }
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         controller.OnEnableDamageFromWeapon += HangleEnableWeaponDamage;
         controller.OnDisableDamageFromWeapon += HandleDisableWeaponDamage;
         controller.OnCastSpell += HandleCastSpell;
     }
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         controller.OnEnableDamageFromWeapon -= HangleEnableWeaponDamage;
         controller.OnDisableDamageFromWeapon -= HandleDisableWeaponDamage;

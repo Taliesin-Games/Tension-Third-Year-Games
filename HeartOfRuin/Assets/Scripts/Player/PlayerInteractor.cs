@@ -49,42 +49,15 @@ public class PlayerInteractor : CharacterModule
         }
     }
 
-    void Update()
+    public void SetCurrentTarget(IInteractableObject target)
     {
-        HandleRaycast();
+        if (target == null)
+        {
+            return;
+        }
+        currentTarget = target;
+
     }
 
-    private void HandleRaycast()
-    {
-        Vector3 pos = gameObject.transform.position;
-        Vector3 dir = gameObject.transform.forward;
-        Ray ray = new Ray(pos, dir);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactMask))
-        {
-            Debug.DrawRay(pos, dir * hit.distance, Color.green);
-            if (hit.collider.TryGetComponent(out IInteractableObject interactable))
-            {
-                if (interactable != currentTarget)
-                {
-                    currentTarget?.OnLoseFocus();
-                    currentTarget = interactable;
-                    currentTarget.OnFocus();
-                }
-                return;
-            }
-        }
-        else
-        {
-            Debug.DrawRay(pos, dir * interactDistance, Color.red);
-        }
-
-        // No hit or no interactable, clear focus
-        if (currentTarget != null)
-        {
-            currentTarget.OnLoseFocus();
-            currentTarget = null;
-        }
-    }
 }
 

@@ -192,6 +192,15 @@ namespace BMD
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""InventoryToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""320a987e-0737-4445-ba72-af9afc57f320"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -766,6 +775,28 @@ namespace BMD
                     ""action"": ""Zoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d87c1e42-be87-4eda-a22a-220864a2f715"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b15b1645-acbd-4a38-b1e4-08ec0180a1ff"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -859,6 +890,24 @@ namespace BMD
                     ""type"": ""PassThrough"",
                     ""id"": ""1d19a881-6c74-4e79-996a-7255d14b5b3b"",
                     ""expectedControlType"": ""Quaternion"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""InventoryToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""fd0c92ea-37ec-4cfa-8385-94f92a89c48a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DropItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""c9e8f307-a888-4555-9ee8-3d2cbeca3bbc"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -1282,6 +1331,50 @@ namespace BMD
                     ""action"": ""TrackedDeviceOrientation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b84d5e6e-7e19-486d-9991-0c5b116c580c"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""04a4d9e9-7b62-46e1-951b-6dea26998a95"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InventoryToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""28dbcf56-e838-4ff0-94e2-d5e27d6f94ae"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DropItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""940d802e-52ee-488e-aa05-1e5594baaa9a"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DropItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1362,6 +1455,7 @@ namespace BMD
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_SpecialAttack = m_Player.FindAction("SpecialAttack", throwIfNotFound: true);
             m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
+            m_Player_InventoryToggle = m_Player.FindAction("InventoryToggle", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1374,6 +1468,8 @@ namespace BMD
             m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
             m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
             m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+            m_UI_InventoryToggle = m_UI.FindAction("InventoryToggle", throwIfNotFound: true);
+            m_UI_DropItem = m_UI.FindAction("DropItem", throwIfNotFound: true);
         }
 
         ~@PlayerControls()
@@ -1466,6 +1562,7 @@ namespace BMD
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_SpecialAttack;
         private readonly InputAction m_Player_Zoom;
+        private readonly InputAction m_Player_InventoryToggle;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1521,6 +1618,10 @@ namespace BMD
             /// Provides access to the underlying input action "Player/Zoom".
             /// </summary>
             public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/InventoryToggle".
+            /// </summary>
+            public InputAction @InventoryToggle => m_Wrapper.m_Player_InventoryToggle;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1580,6 +1681,9 @@ namespace BMD
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
+                @InventoryToggle.started += instance.OnInventoryToggle;
+                @InventoryToggle.performed += instance.OnInventoryToggle;
+                @InventoryToggle.canceled += instance.OnInventoryToggle;
             }
 
             /// <summary>
@@ -1624,6 +1728,9 @@ namespace BMD
                 @Zoom.started -= instance.OnZoom;
                 @Zoom.performed -= instance.OnZoom;
                 @Zoom.canceled -= instance.OnZoom;
+                @InventoryToggle.started -= instance.OnInventoryToggle;
+                @InventoryToggle.performed -= instance.OnInventoryToggle;
+                @InventoryToggle.canceled -= instance.OnInventoryToggle;
             }
 
             /// <summary>
@@ -1671,6 +1778,8 @@ namespace BMD
         private readonly InputAction m_UI_RightClick;
         private readonly InputAction m_UI_TrackedDevicePosition;
         private readonly InputAction m_UI_TrackedDeviceOrientation;
+        private readonly InputAction m_UI_InventoryToggle;
+        private readonly InputAction m_UI_DropItem;
         /// <summary>
         /// Provides access to input actions defined in input action map "UI".
         /// </summary>
@@ -1722,6 +1831,14 @@ namespace BMD
             /// Provides access to the underlying input action "UI/TrackedDeviceOrientation".
             /// </summary>
             public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
+            /// <summary>
+            /// Provides access to the underlying input action "UI/InventoryToggle".
+            /// </summary>
+            public InputAction @InventoryToggle => m_Wrapper.m_UI_InventoryToggle;
+            /// <summary>
+            /// Provides access to the underlying input action "UI/DropItem".
+            /// </summary>
+            public InputAction @DropItem => m_Wrapper.m_UI_DropItem;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1778,6 +1895,12 @@ namespace BMD
                 @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
+                @InventoryToggle.started += instance.OnInventoryToggle;
+                @InventoryToggle.performed += instance.OnInventoryToggle;
+                @InventoryToggle.canceled += instance.OnInventoryToggle;
+                @DropItem.started += instance.OnDropItem;
+                @DropItem.performed += instance.OnDropItem;
+                @DropItem.canceled += instance.OnDropItem;
             }
 
             /// <summary>
@@ -1819,6 +1942,12 @@ namespace BMD
                 @TrackedDeviceOrientation.started -= instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.performed -= instance.OnTrackedDeviceOrientation;
                 @TrackedDeviceOrientation.canceled -= instance.OnTrackedDeviceOrientation;
+                @InventoryToggle.started -= instance.OnInventoryToggle;
+                @InventoryToggle.performed -= instance.OnInventoryToggle;
+                @InventoryToggle.canceled -= instance.OnInventoryToggle;
+                @DropItem.started -= instance.OnDropItem;
+                @DropItem.performed -= instance.OnDropItem;
+                @DropItem.canceled -= instance.OnDropItem;
             }
 
             /// <summary>
@@ -2001,6 +2130,13 @@ namespace BMD
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnZoom(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "InventoryToggle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnInventoryToggle(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
@@ -2079,6 +2215,20 @@ namespace BMD
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "InventoryToggle" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnInventoryToggle(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "DropItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnDropItem(InputAction.CallbackContext context);
         }
     }
 }
