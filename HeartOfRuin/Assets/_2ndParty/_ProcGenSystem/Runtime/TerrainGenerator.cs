@@ -1,124 +1,16 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 namespace BMD.ProcGen
 {
 
-    public class TerrainGenerator : MonoBehaviour
+    public partial class TerrainGenerator : MonoBehaviour
     {
-        public static TerrainGenerator Instance { get; private set; }
-
-        #region Configuration
-        [Header("Generation settings"), Tooltip("Length is in number of rooms, not total nodes, connecting paths will be added automatically.")]
-        [SerializeField, Min(1)] int minPathLength = 5;
-        [SerializeField, Min(2)] int maxPathLength = 10;
-        [SerializeField] int branchesPerPath = 2;
-        [SerializeField, Min(1)] int minBranchLength = 3;
-        [SerializeField, Min(2)] int maxBranchLength = 5;
-        [SerializeField] int GenerateNodesPerFrame = 2;     // Limit how many nodes are generated each frame to avoid performance spikes
-        [SerializeField] int randomSeed = 0;                // Seed for random number generation, set to 0 for a random seed based on current time
-
-        [Tooltip("Directions the map can generate in.\n\n If no valid directions are selected, or the selected ones are not available, then any valid connection will be selected.")]
-        [SerializeField] List<ConnectionDirection> allowedBranchDirections = new() { ConnectionDirection.North, ConnectionDirection.East, ConnectionDirection.South, ConnectionDirection.West };
-        [Tooltip("Directions the generator will prefer when creating connections. This is not a hard requirement, just a bias.\n\n If no valid directions are selected, or the selected ones are not available, then any valid connection will be selected.")]
-        [SerializeField] List<ConnectionDirection> directionalBias = new() { ConnectionDirection.North, ConnectionDirection.West };
-        [Range(0,1), Tooltip("Value between 0 and 1 that determines how strong the directional bias is when selecting connections.\n\n 0 means no bias.\n1 means only select from the biased directions")]
-        [SerializeField] float directionalBiasStrength = 0.5f; // Value between 0 and 1 that determines how strong the directional bias is when selecting connections. 0 means no bias, 1 means only select from the biased directions
-        [Range(0,50)]
-        [SerializeField] int minBridgeLength = 1;       
-        [Range(0,50)]
-        [SerializeField] int maxBridgeLength = 3;
-
-        [Header("Node prefabs")]
-        [Tooltip("The starting node of the game path. This is where the player will spawn")]
-        [SerializeField] GameObject[] rootPrefabs;
-        [Tooltip("Path variants used just to exit the root.\n\n If this is empty a normal path piece will be used.")]
-        [SerializeField] GameObject[] rootPathPrefabs;
-        [Tooltip("Path pieces used to connect each room node")]
-        [SerializeField] GameObject[] pathNodePrefabs;
-        [Tooltip("Room nodes used to build the level")]
-        [SerializeField] GameObject[] roomNodePrefabs;
-        [Tooltip("The final node of the main path. This is where the boss will be located")]
-        [SerializeField] GameObject[] endRoomPrefabs;
-        [Tooltip("Branch end nodes. These are used to end the branches that come out of the main path.\n\n If this is empty a normal end room will be used.")]
-        [SerializeField] GameObject[] branchEndPrefabs;
-        #endregion
-
-        #region References
-        // Key: (x, y) coordinates of the node, x = branch index, y = depth level in the path
-        Dictionary<(int, int), PathMapNode> generatedNodes = new();
-        Dictionary<int, int> branchLengths = new();
-        PathMapNode currentPlayerNode;   // Location of the player.
-        PathMapNode currentBossNode;     // Location of the boss.
-        #endregion
-
-        #region Runtime variables
-        System.Random rng;
-        Coroutine generationCoroutine;
-        bool isGenerating = false;
-        bool generationComplete = false;
-        int generationStepsThisFrame; // Counter to track how many nodes have been generated in the current frame
-        #endregion
-        #region Properties
-        public bool TerrainReady => !isGenerating && generationComplete;
-        private bool PauseGeneration {
-            get
-            {
-                generationStepsThisFrame++;
-                if(generationStepsThisFrame >= GenerateNodesPerFrame)
-                {
-                    generationStepsThisFrame = 0; // Reset the counter for the next frame
-                    return true; // Pause generation to wait for the next frame
-                }
-                return false; // Continue generation in the current frame
-            } 
-        }
-        #endregion
-        private void Awake()
+        void Update()
         {
-            CreateInstance();
-            SetRandomSeed();
-            SanityChecks();
-        }
-        private void CreateInstance()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-
-        }
-        private void SetRandomSeed()
-        {
-            if(randomSeed == 0)
-            {
-                randomSeed = System.Environment.TickCount; // Use current time as seed if 0 is specified
-                Debug.Log($"Random seed set to {randomSeed} based on current time.");
-            }
-            rng = new System.Random();
-        }
-        private void SanityChecks()
-        {
-            if (rootPrefabs.Length == 0) Debug.LogError("No root prefabs assigned. The generator needs at least one prefab to create the starting node.");
-            if (pathNodePrefabs.Length == 0) Debug.LogError("No path node prefabs assigned. The generator needs at least one prefab to create the paths between rooms.");
-            if (roomNodePrefabs.Length == 0) Debug.LogError("No room node prefabs assigned. The generator needs at least one prefab to create the rooms in the level.");
-            if (endRoomPrefabs.Length == 0) Debug.LogError("No end room prefabs assigned. The generator needs at least one prefab to create the final room of the main path.");
-
-            if (allowedBranchDirections.Count == 0)
-            {
-                Debug.LogWarning("No allowed branch directions selected. The generator will not be able to create branches.");
-                allowedBranchDirections.AddRange(new[] { ConnectionDirection.North, ConnectionDirection.East, ConnectionDirection.South, ConnectionDirection.West });
-            }
-        }
-        private void Start()
-        {
-            generationCoroutine = StartCoroutine(GenerateLevel());
+            // For manual step through, sometimes two throttles are called on the same frame This protects against that.
+            debugStepDoneThisFrame = false;
         }
         IEnumerator GenerateLevel()
         {
@@ -129,26 +21,39 @@ namespace BMD.ProcGen
             }
 
             isGenerating = true;
-            
+            growthLog = "Starting terrain generation.\n";
+            generationStepUIOutput = "Starting Generation";
+            yield return slowTextUpdate;
             ClearOldTerrain();
 
-
             // Generate the main path
-            int numnerOfRooms = Random.Range(minPathLength, maxPathLength + 1);
-            yield return GenerateMainPath(numnerOfRooms);
+            int numberOfRooms = rng.Next(roomsOnMainPath.Min, roomsOnMainPath.Max + 1);
+            generationStepUIOutput = "Generating Main Branch";
+            yield return GenerateBranch(numberOfRooms);
 
+            // TODO add generating branches from route
             //// Generate branches
-            //for (int branchIndex = 0; branchIndex < branchesPerPath; branchIndex++)
-            //{
-            //    int branchLength = Random.Range(minBranchLength, maxBranchLength + 1);
-            //    GenerateBranch(branchIndex, branchLength);
-            //}
+            generationStepUIOutput = "Generating Side Branches";
+            yield return slowTextUpdate;
 
-            //yield return ConnectPaths();
+            // TODO add navmesh links
+            generationStepUIOutput = "Linking NavMesh";
+            yield return slowTextUpdate;
+
+            generationStepUIOutput = "Scattering breadcrumbs";
+            yield return LeaveBreadcrumbs();
+            yield return slowTextUpdate;
+
+            // TODO trigger boss
+            generationStepUIOutput = "Annoying boss...";
+            yield return slowTextUpdate;
 
             isGenerating = false;
             generationComplete = true;
- 
+            generationStepUIOutput = "Generation Complete";
+            Debug.Log($"Finished terrain generation with {generatedNodes.Count} nodes. Main path length: {branchLengths[0]}");
+            Debug.Log($"Growth log:\n{growthLog}"); // Print the growth log after generation is complete
+
         }
         private void ClearOldTerrain()
         {
@@ -160,189 +65,170 @@ namespace BMD.ProcGen
 
             branchLengths.Clear();
         }
-        IEnumerator GenerateMainPath(int length)
+        IEnumerator GenerateBranch(int length, PathMapNode growFrom = null)
         {
-            int totalPathLength = 0;
-            GenerateStartRoom();
-            totalPathLength++;
+            // Creates the seed point of the tree if growFrom is null and performs additional validity checks.
+            if (!CheckGrowFromIsValid(growFrom)) yield break;
 
-            if (PauseGeneration) yield return null;         // Wait a frame to allow the root node to initialize before we start adding more nodes
-            
-            GeneratePathConnection(ref totalPathLength);
-            if (PauseGeneration) yield return null;         // Wait a frame to allow the node to initialize before we start adding more nodes
+            int totalPathLength = 0;
+
+            if (SetThrottleYield()) yield return Throttle;
 
             for (int i = 0; i <= length; i++)               // Iterates based on the number of rooms
-            {          
-                // TODO, need to replace this with a grow branch method
-                // Grow branch will create the new room first.
-                // Then choose a minimum branch connection distance
-                // Then connect them
-                // It then checks for bounding box overlap
-                // If there is an overlap attaempt to regenerate recursive call)
-                // With successive attempts add a straight length to spread out areas.
-                GenerateRoom(ref totalPathLength);
-                if (PauseGeneration) yield return null;     // Wait a frame after placing each node to allow it to initialize before placing the next one
+            {
+                GrowthParameters gp = new(i);
 
-                GeneratePathConnection(ref totalPathLength);
-                if (PauseGeneration) yield return null;     // Wait a frame after placing each node to allow it to initialize before placing the next one
+                if(i == length) gp.roomType = RoomType.Boss;   // Set the last room to be the boss room
+
+                yield return GrowBud(gp);
+                if (!gp.success) Debug.Log("Failed to grow bud for main path, skipping. This may cause issues with future growth.");
+                else totalPathLength += gp.growth;
+
+                if (SetThrottleYield()) yield return Throttle;
             }
 
-            // Add the end room at the end of the main path
-            generatedNodes[(0, totalPathLength)] = CreateNode(endRoomPrefabs, generatedNodes[(0, totalPathLength - 1)], $"0:{totalPathLength}");
-            ConnectNodePair(generatedNodes[(0, totalPathLength - 1)], generatedNodes[(0, totalPathLength)]);
-            totalPathLength++;
+            branchLengths[0] = totalPathLength + 1;
 
-            branchLengths[0] = totalPathLength;
-            yield return null; // Wait a frame to allow the end room to initialize, always wait on the last node
+            if (SetThrottleYield()) yield return Throttle;
 
         }
-
-        void GenerateStartRoom()
+        IEnumerator GrowBud(GrowthParameters parameters, int retries = 0)
         {
-            // Create the root node
-            generatedNodes[(0, 0)] = CreateNode(rootPrefabs, null, "0:0");
-            branchLengths[0] = 1;   // Store the length of the main path in the branch lengths dictionary with branch index 0 representing the main path. Add one for start and one for end
+
+            parameters.growth = 0;    // Reset growth for this attempt
+
+            // This fails if retries is too high
+            if (!TryCreateGrowthAttempt(parameters, retries, out GrowthAttempt attempt)) yield break;
+            if (SetThrottleYield()) yield return Throttle;
+
+            yield return TryBuildGrowthSegments(attempt);
+            if (!attempt.BuildSucceeded) yield break;
+            if (SetThrottleYield()) yield return Throttle;
+
+            // Next we need to lay out the nodes.
+            if(!TryConnectGrowth(attempt))
+            {
+                if (SetThrottleYield()) yield return Throttle;
+                CleanupAttempt(attempt);
+                yield return GrowBud(parameters, retries + 1);
+                yield break;
+            }
+            if (SetThrottleYield()) yield return Throttle;
+
+            // Next check for any overlapping nodes
+            yield return IsGrowthValid(attempt, retries);
+            if (!attempt.OverlapsValid)
+            {
+                if (SetThrottleYield()) yield return Throttle;
+                CleanupAttempt(attempt);
+                yield return GrowBud(parameters, retries + 1);
+                yield break;
+            }
+            if (SetThrottleYield()) yield return Throttle;
+
+            // Now we have tested the geometry finalise the connection links
+            if (!FinaliseConnections(attempt))
+            {
+                Debug.LogError($"Failed to finalise connections for branch {attempt.BranchID}, source node {attempt.SourceNodeID}");
+                yield break;
+            }
+            if (SetThrottleYield()) yield return Throttle;
+
+            yield return FinaliseGrowth(attempt);            
+            if (SetThrottleYield(true)) yield return Throttle;
+
+
+            parameters.growth = attempt.TotalGrowth;    // Update growth with the total growth from the attempt.
+            parameters.success = true;
+
+            growthLog += $"####\n" +
+                $"Finished growth attempt from {attempt.BranchID}:{attempt.SourceNodeID}:\n" +
+                $"{attempt.GenerationLog}\n";
+
+            if (SetThrottleYield()) yield return Throttle;
+        }
+        bool CheckGrowFromIsValid(PathMapNode growFrom)
+        {
+            if (growFrom == null && generatedNodes.Count > 0)
+            {
+                Debug.LogError($"A terrain origin has already been seeded, you  must specify a node to growFrom. Randomly selecting a node to grow from is not yet supported.");
+                return false;
+            }
+
+            if (growFrom == null) growFrom = SeedOriginPoint();
             
+            if (growFrom != null)
+            {
+                // Check if growFrom has type "Node"
+                if (growFrom.self is not RoomNode)
+                {
+                    Debug.Log($"growFrom specified but contained object of {growFrom.self.name} is not a RoomNode. Growing from other node types is not yet supported.");
+                    return false;
+                }
+            }
+
+            return true;
         }
-
-        void GeneratePathConnection(ref int totalPathLength)
+        PathMapNode SeedOriginPoint()
         {
-            GameObject[] prefabList = pathNodePrefabs;
-            if (totalPathLength == 1) prefabList = rootPathPrefabs.Length > 0 ? rootPathPrefabs : pathNodePrefabs;    // Only on first path use root paths
-
-            // Add the first path node right after the root. This ensures we have a clear exit from the starting area.
-            generatedNodes[(0, totalPathLength)] = CreateNode(prefabList, generatedNodes[(0, totalPathLength - 1)], $"0:{totalPathLength}");
-            
-            ConnectNodePair(generatedNodes[(0, totalPathLength - 1)], generatedNodes[(0, totalPathLength)]);
-            totalPathLength++;
-        }
-
-        void GenerateRoom(ref int totalPathLength)
-        {
-            // Add the first path node right after the root. This ensures we have a clear exit from the starting area.
-            generatedNodes[(0, totalPathLength)] = CreateNode(roomNodePrefabs, generatedNodes[(0, totalPathLength - 1)], $"0:{totalPathLength}");
-
-            ConnectNodePair(generatedNodes[(0, totalPathLength - 1)], generatedNodes[(0, totalPathLength)]);
-            totalPathLength++;
-        }
-
-        PathMapNode CreateNode(GameObject[] nodes, PathMapNode parent = null, string prefix = "x:x")
-        {
-            GameObject prefab = nodes[Random.Range(0, nodes.Length)];
+            GameObject prefab = rootPrefabs[rng.Next(0, rootPrefabs.Length)];
             PathMapNode pathNode = new PathMapNode
             {
-                self = Instantiate(prefab, transform).GetComponent<Node>()
+                self = Instantiate(prefab, transform).GetComponent<Node>(),
+                PrefabName = prefab.gameObject.name
 
             };
-            pathNode.self.name = $"{prefix}_{pathNode.self.name}";
-            parent?.AddChild(pathNode);
 
-            return pathNode;
+            pathNode.self.name = $"0:0:0_{pathNode.self.name}";
+
+            // Create the root node
+            generatedNodes[new(0, 0)] = pathNode;
+            branchLengths[0] = 1;   // Store the length of the main path in the branch lengths dictionary with branch index 0 representing the main path. Add one for start and one for end
+
+            return generatedNodes[new(0, 0)];
         }
-        IEnumerator ConnectPaths()
+        bool TryCreateTestConnection(PathMapNode firstNode, PathMapNode secondNode)
         {
-            foreach(int key in branchLengths.Keys)
-            {
-           
-                for (int i = 0; i < branchLengths[key] - 1; i++)
-                {
-                    Debug.Log(i);
-                    PathMapNode currentNode = generatedNodes[(key, i)]; // Get the child nodes of the current node as possible connections
-                    PathMapNode nextNode = generatedNodes[(key,i + 1)];
+            // These are preallocated and cleared.
+            // This is faster since we create and remove these many times during terrain generation
+            allowedDirections.Clear();
+            biasDirections.Clear();
 
-                    ConnectNodePair(currentNode, nextNode); 
+            allowedDirections.AddRange(allowedBranchDirections);
+            biasDirections.AddRange(directionalBias);
 
-                    if (PauseGeneration) yield return null; // Wait if we have done enough steps this frame to avoid performance spikes
-                }
-                if (PauseGeneration) yield return null; // Wait if we have done enough steps this frame to avoid performance spikes
-            }
-
-            yield return null;
-        }
-        void ConnectNodePair(PathMapNode firstNode, PathMapNode secondNode)
-        {
-            float biasRoll = (float)rng.NextDouble();
-            List<ConnectionDirection> allowedDirections = new List<ConnectionDirection>(allowedBranchDirections);
-            List<ConnectionDirection> biasDirections = new List<ConnectionDirection>(directionalBias);
-
-            List<ConnectionDirection> selectedDirectionList;
             ConnectionDirection selectedDirection;
-            ConnectionDirection reverseDirection = ConnectionDirection.North;
+            ConnectionDirection reverseDirection;
 
             while (allowedDirections.Count + biasDirections.Count > 0)
             {
-  
-                // If either direction list is empty use the other (can never both be empty
-                // If both have items then select based on bias strength
-                if (biasDirections.Count == 0)         selectedDirectionList = allowedDirections;
-                else if (allowedDirections.Count == 0) selectedDirectionList = biasDirections;
-                else selectedDirectionList = biasRoll <= directionalBiasStrength ? biasDirections : allowedDirections;
+                selectedDirectionList = SelectDirectionPool();
 
                 selectedDirection = selectedDirectionList[rng.Next(selectedDirectionList.Count)];
-                reverseDirection = selectedDirection switch
-                {
-                    ConnectionDirection.South => ConnectionDirection.North,
-                    ConnectionDirection.North => ConnectionDirection.South,
-                    ConnectionDirection.East => ConnectionDirection.West,
-                    _ => ConnectionDirection.East,
-                };
+                reverseDirection = Reverse(selectedDirection);
 
-                List<Connection> firstNodeConnections = new(firstNode.self.GetConnectionsByDirection(selectedDirection));
+                Connection firstConnection = GetRandomConnection(firstNode.self, selectedDirection);
+
+                if (firstConnection == null)
+                {
+                    selectedDirectionList.Remove(selectedDirection);
+                    continue;
+                }
+
+                Connection secondConnection = FindConnectionWithRotation(secondNode.self, reverseDirection);
+
+                if (secondConnection == null)
+                {
+                    selectedDirectionList.Remove(selectedDirection);
+                    continue;
+                }
+
+                Connection.TestLink(firstConnection, secondConnection);
                 
-
-                // Select a random connection from the list of available connections
-                // If there are none remove the direction from the list and repeat selection
-                if (firstNodeConnections.Count == 0) continue;
-                Connection firstNodeConnection = firstNodeConnections[rng.Next(firstNodeConnections.Count)];
-                if (firstNodeConnection == null)
-                {
-                    selectedDirectionList.Remove(selectedDirection);
-                    continue;
-                }
-
-                List<Connection> secondNodeConnections = new();
-                Connection secondNodeConnection = null;
-                int rotationCount = 0;
-                while (secondNodeConnection == null && rotationCount < 4)
-                {
-                    rotationCount++;
-                    // Attempt to get second connection from second node.
-                    // If we fail we rotate and attempt to get it again.
-                    // If we fail 4 times we decide that the connecton is impossible and remove the connection direction
-                    secondNodeConnections.Clear();
-                    secondNodeConnections = new(secondNode.self.GetConnectionsByDirection(reverseDirection));
-
-                    if (secondNodeConnections.Count > 0) 
-                        secondNodeConnection = secondNodeConnections[rng.Next(secondNodeConnections.Count)];
-                    if (secondNodeConnection == null)
-                    {
-                        secondNode.self.Rotate();
-                        
-                    }
-                    else break;
-                } 
-                if (rotationCount >= 4)
-                {
-                    selectedDirectionList.Remove(selectedDirection);
-                    continue;
-                }
-
-                Connection.Link(firstNodeConnection, secondNodeConnection);
-                break;
+                return true;
             }
 
-
-        }
-        Connection GetValidConnection(PathMapNode node, ConnectionDirection direction, List<Connection> connections)
-        {
-            foreach (Connection connection in connections) 
-            {
-                if (direction != connection.Direction) connections.Remove(connection);
-            }
-
-            if (connections.Count == 0) return null;
-
-            return connections[rng.Next(connections.Count)];
+            return false;
         }
         public void SetPlayerLocation(PathMapNode node)
         {
@@ -352,5 +238,7 @@ namespace BMD.ProcGen
         {
             currentBossNode = node;
         }
+        
+        
     }
 }

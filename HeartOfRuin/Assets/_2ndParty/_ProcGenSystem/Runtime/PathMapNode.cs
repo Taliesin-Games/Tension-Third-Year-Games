@@ -6,6 +6,7 @@ namespace BMD.ProcGen
     public class PathMapNode
     {
         public Node self;
+        public string PrefabName;
 
         public PathMapNode Parent;                 // optional, useful for backtracking
         public PathMapNode GoldenChild;            // marks the child which represents the main path
