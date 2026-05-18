@@ -1,3 +1,5 @@
+using Codice.Client.BaseCommands;
+using System.Collections.Generic;
 using UnityEngine;
 namespace BMD.ProcGen
 {
@@ -19,10 +21,13 @@ namespace BMD.ProcGen
         #region Runtime Variables
         Vector3 parentOffset;
         string originalName;
+        ConnectionDirection defaultDirection;
+        (Connection, Connection) lastTestedConnections;
         #endregion
 
         #region Properties
         public ConnectionDirection Direction => direction;
+        public ConnectionDirection DefaultDirection => defaultDirection;
         #endregion
 
         private void Awake()
@@ -37,16 +42,20 @@ namespace BMD.ProcGen
             FindBreadcrumbs();
             GetParentOffset();
             SetDirection();
+            defaultDirection = direction;
             originalName = name;
             SetName();
         }
         void FindBreadcrumbs()
         {
-            breadcrumbs = GetComponent<Breadcrumbs>();
+            breadcrumbs = GetComponentInChildren<Breadcrumbs>();
         }
         public void RemoveBreadcrumbs()
         {
             if (!breadcrumbs) return;
+
+            // If breadcrumbs parenting has been changed we keep them
+            if (breadcrumbs.transform.parent != transform) return;
 
             Destroy(breadcrumbs.gameObject);
         }
@@ -96,6 +105,21 @@ namespace BMD.ProcGen
             };
             SetName();
         }
+        public void ResetConnectionRotation()
+        {
+            direction = defaultDirection;
+        }
+        public void FullReset()
+        {
+            ResetConnectionRotation();
+            if (breadcrumbs) breadcrumbs.transform.parent = transform;
+
+            if (lastTestedConnections.Item2 == null)
+            {
+                linked = null;
+                lastTestedConnections = new();
+            }
+        }
         private void SetDirection()
         {
             if (direction != ConnectionDirection.Auto) return;
@@ -115,12 +139,55 @@ namespace BMD.ProcGen
         {
             this.parent = parent;
         }
-        public static void Link(Connection conA, Connection conB)
+        /// <summary>
+        /// Moves objects without creating links. Should usually be followed up with Link or CompleteTestLinks
+        /// </summary>
+        /// <param name="conA"></param>
+        /// <param name="conB"></param>
+        public static void TestLink(Connection conA, Connection conB)
         {
+            Vector3 parentBNewPos = conA.transform.position - conB.parentOffset;
+
+            conB.parent.transform.position = parentBNewPos;
+            
+            conA.lastTestedConnections = (conA, conB);            
+        }
+        public static bool CompleteTestLinks(List<Connection> list)
+        {
+            bool success = false;
+            foreach (Connection con in list)
+            {
+                if (con.lastTestedConnections.Item1 == null) continue;
+
+                // This is to check that at least one link has been made
+                success = success || Link(con.lastTestedConnections.Item1, con.lastTestedConnections.Item2);
+            }
+
+            return success;
+        }
+        public static bool Link(Connection conA, Connection conB)
+        {
+            if(conA == null || conB == null)
+            {
+                string conAMsg = 
+                    conA == null 
+                    ? "null" 
+                    : $"Connection A: {conA.name}, Parent of A: {conA.transform.parent.name}\n";
+                string conBMsg = 
+                    conB == null
+                    ? "null"
+                    : $"Connection B: {conB.name}, Parent of B: {conB.transform.parent.name}\n";
+                
+                Debug.LogError($"Attemnpting to link connections where one or more is null: \n" +
+                    $"{conAMsg}" +
+                    $"{conBMsg}");
+                return false;
+            }
+
             if (conA.linked != null || conB.linked != null)
             {
                 Debug.LogError($"Cannot link {conA.name} and {conB.name} because one of them is already linked.");
-                return;
+                return false;
             }
             conA.linked = conB;
             conB.linked = conA;
@@ -128,11 +195,13 @@ namespace BMD.ProcGen
             conA.KeepBreadcrumbs();
             conB.KeepBreadcrumbs();
 
-            Debug.Log($"Linked {conA.name} ({conA.direction}) to {conB.name} ({conB.direction})");
+            //Debug.Log($"Linked {conA.name} ({conA.direction}) to {conB.name} ({conB.direction})");
 
             Vector3 parentBNewPos = conA.transform.position - conB.parentOffset;
 
             conB.parent.transform.position = parentBNewPos;
+
+            return true;
         }
     }
 }

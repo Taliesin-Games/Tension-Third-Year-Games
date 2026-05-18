@@ -7,7 +7,7 @@ namespace BMD.ProcGen
     /// </summary>
     public class PathNode : Node
     {
-        [Range(0, 10)] 
+        [Range(0, 10)]
         [SerializeField] int length = 1;
         [SerializeField] PathNodeDirection direction = PathNodeDirection.Straight;
 
