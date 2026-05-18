@@ -12,6 +12,7 @@ Shader "Custom/CustomFog"
         _DistanceFadeStart ("Distance Fade Start", Range(0, 200)) = 10.0 // Distance from camera where fog starts to fade
         _DistanceFadeEnd ("Distance Fade End", Range(1, 500)) = 50.0 // Distance from camera where fog is fully faded
         _AlphaThreshold ("Alpha Cutoff Threshold", Range(0, 1)) = 0.1 // Minimum alpha for rendering
+        _AlphaSmoothness ("Alpha Cutoff Smoothness", Range(0, 1)) = 0.05 // How smooth the alpha threshold transition is
         _DepthFadeDistance ("Depth Fade Distance", Range(0, 10)) = 2.0 // Distance over which to fade based on depth difference, hides individual layers quite well.
 
         [Header(Depth Obscure)]
@@ -86,6 +87,7 @@ Shader "Custom/CustomFog"
             float _DistanceFadeStart;
             float _DistanceFadeEnd;
             float _AlphaThreshold;
+            float _AlphaSmoothness;
             float _DepthFadeDistance;
 
             float _UseRed;
@@ -188,9 +190,10 @@ Shader "Custom/CustomFog"
 
                 float alpha = density * _BaseColor.a;
 
-                // Threshold
-                if (alpha < _AlphaThreshold)
-                    alpha = 0;
+                // Smooth Alpha Threshold
+                // We use smoothstep to smoothly multiply alpha down to 0 matching our given threshold.
+                // max() handles the case where _AlphaSmoothness is 0 to avoid a division by zero in smoothstep.
+                alpha *= smoothstep(_AlphaThreshold, _AlphaThreshold + max(0.0001, _AlphaSmoothness), alpha);
 
                 return half4(finalColor, alpha);
             }
