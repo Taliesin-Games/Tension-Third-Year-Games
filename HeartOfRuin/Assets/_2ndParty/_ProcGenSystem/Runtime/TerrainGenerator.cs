@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 
@@ -38,6 +39,7 @@ namespace BMD.ProcGen
 
             // TODO add navmesh links
             generationStepUIOutput = "Linking NavMesh";
+            yield return LinkNavMesh();
             yield return slowTextUpdate;
 
             generationStepUIOutput = "Scattering breadcrumbs";
@@ -54,6 +56,12 @@ namespace BMD.ProcGen
             Debug.Log($"Finished terrain generation with {generatedNodes.Count} nodes. Main path length: {branchLengths[0]}");
             Debug.Log($"Growth log:\n{growthLog}"); // Print the growth log after generation is complete
 
+            // If slow generation reactivate main camera and destroy terrain gen cam
+            if (slowGeneration)
+            {
+                if (mainCamera != null) mainCamera.enabled = true;
+                if (terrainGenCam != null) Destroy(terrainGenCam.gameObject);
+            }
         }
         private void ClearOldTerrain()
         {
@@ -144,6 +152,15 @@ namespace BMD.ProcGen
             growthLog += $"####\n" +
                 $"Finished growth attempt from {attempt.BranchID}:{attempt.SourceNodeID}:\n" +
                 $"{attempt.GenerationLog}\n";
+
+            // Move camera to show new bud if slow generation
+            if (slowGeneration)
+            {
+                terrainGenCam.transform.position = new Vector3(
+                    attempt.NewBud.self.transform.position.x,
+                    terrainCamHeight,
+                    attempt.NewBud.self.transform.position.z);
+            }
 
             if (SetThrottleYield()) yield return Throttle;
         }
@@ -239,6 +256,23 @@ namespace BMD.ProcGen
             currentBossNode = node;
         }
         
-        
+        IEnumerator LinkNavMesh()
+        {
+            foreach (var node in generatedNodes)
+            {
+                Node currentNode = node.Value.self;
+                if (!currentNode.TryGetComponent(out NavMeshSurface surface))
+                {
+                    growthLog += $"Node {node.Key} does not have a NavMeshSurface component, skipping navmesh link generation for this node.\n";
+                    Debug.LogError($"Node {node.Key} does not have a NavMeshSurface component. All configured nodes must have a NavMeshSurface component.");
+                    yield break;
+                }
+                currentNode.Connections.ForEach(c => Connection.LinkNavmesh(c));
+         
+
+                if (SetThrottleYield()) yield return Throttle;
+            }
+            
+        }
     }
 }

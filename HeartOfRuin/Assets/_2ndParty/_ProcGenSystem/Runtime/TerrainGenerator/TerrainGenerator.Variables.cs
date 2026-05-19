@@ -8,6 +8,7 @@ namespace BMD.ProcGen
         public static TerrainGenerator Instance { get; private set; }
         const int LOOP_PROTECTION_LIMIT = 100;
         const int MAX_GROWTH_RETRIES = 5;
+        readonly Vector3 TERRAIN_CAM_ROTATION = new(80, 0, 0);
 
         #region References
         // Key: (x, y) coordinates of the node, x = branch index, y = depth level in the path
@@ -15,6 +16,8 @@ namespace BMD.ProcGen
         Dictionary<int, int> branchLengths = new();
         PathMapNode currentPlayerNode;   // Location of the player.
         PathMapNode currentBossNode;     // Location of the boss.
+        Camera mainCamera;
+        Camera terrainGenCam;
         #endregion
 
         #region Runtime variables
