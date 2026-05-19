@@ -907,8 +907,9 @@ GameObject:
   - component: {fileID: 8813354075246156222}
   - component: {fileID: 5467322207254065290}
   - component: {fileID: 1414862288430478882}
+  - component: {fileID: 5953313199052761558}
   m_Layer: 8
-  m_Name: Ice_4_TerraNode
+  m_Name: Ice Bridge Island
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1035,7 +1036,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6740745065368731368}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 664d6954251d7d842a9a6d9e164a60f6, type: 3}
   m_Name: 
@@ -1046,6 +1047,26 @@ MonoBehaviour:
   headroom: {x: 0, y: 1, z: 0}
   margins: {x: 0.2, y: 0.2, z: 0.2}
   validRotations: 000000005a000000b40000000e010000
+--- !u!114 &5953313199052761558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6740745065368731368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89dd2c538a748c84798091a0000c7928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BMD.ProcGen.Runtime::BMD.ProcGen.PathNode
+  editorVisualisation: {fileID: 0}
+  keepVisualisationOnPlay: 0
+  terrainBoundsCollider: {fileID: 0}
+  headroom: {x: 0, y: 1, z: 0}
+  margins: {x: 0.2, y: 0.2, z: 0.2}
+  validRotations: 000000005a000000b40000000e010000
+  length: 1
+  direction: 0
 --- !u!1 &6850892647788436610
 GameObject:
   m_ObjectHideFlags: 0

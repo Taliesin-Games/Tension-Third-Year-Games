@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 4396434352565486134}
   - component: {fileID: 5891580925546844642}
   m_Layer: 0
-  m_Name: WW_20_Path 2
+  m_Name: Ice_20_Path  2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -295,6 +295,7 @@ MonoBehaviour:
   terrainBoundsCollider: {fileID: 0}
   headroom: {x: 0, y: 1, z: 0}
   margins: {x: 0.2, y: 0.2, z: 0.2}
+  validRotations: 000000005a000000b40000000e010000
   length: 1
   direction: 0
 --- !u!1 &1062664130417324700
@@ -408,7 +409,7 @@ Transform:
   m_GameObject: {fileID: 2248665870293027545}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.23539, y: -0.5, z: 0.54546}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 20, y: 0.5, z: 6.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2181,6 +2182,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DecalPebble1
       objectReference: {fileID: 0}
+    - target: {fileID: 5607322783884259720, guid: 0047e0355605a49478611adc85f223ef, type: 3}
+      propertyPath: m_TagString
+      value: UnboundedTerrain
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2819,7 +2824,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalScale.x
-      value: 22.563667
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalScale.y
@@ -2831,7 +2836,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.11
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3746,7 +3751,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalScale.x
-      value: 22.793089
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalScale.y
@@ -3758,7 +3763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.34
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3626189915968589201, guid: 898f7112bb6404f47aded78f695a4f57, type: 3}
       propertyPath: m_LocalPosition.y
