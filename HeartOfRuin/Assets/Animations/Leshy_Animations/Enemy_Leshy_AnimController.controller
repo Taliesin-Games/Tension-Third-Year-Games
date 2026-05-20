@@ -783,7 +783,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Enemy_Leshy_AnimController_TEST
+  m_Name: Enemy_Leshy_AnimController
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: IsGrounded
@@ -823,6 +823,12 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
   - m_Name: IsAttacking
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: IsDead
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -918,6 +924,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: DeathTrigger
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: IdleStyle
     m_Type: 1
     m_DefaultFloat: 0
@@ -937,6 +949,12 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
   - m_Name: Attack3Style
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: DeathStyle
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -1509,12 +1527,12 @@ AnimatorStateMachine:
   - first: {fileID: -6502261393981489687}
     second:
     - {fileID: -519081654292960028}
-  - first: {fileID: -4977112032147330963}
-    second:
-    - {fileID: -450346488005266651}
   - first: {fileID: -1963847454396042107}
     second:
     - {fileID: 6574579232907064145}
+  - first: {fileID: -4977112032147330963}
+    second:
+    - {fileID: -450346488005266651}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
