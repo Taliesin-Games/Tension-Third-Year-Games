@@ -4,19 +4,31 @@ using Utils;
 using Random = UnityEngine.Random;
 using Unity.Services.Matchmaker.Models;
 using NUnit.Framework.Constraints;
+using BMD.ProcGen;
+using UnityEngine.AI;
+using Unity.AI.Navigation;
+using System.Collections;
+using BMD.DataTypes;
 
 [RequireComponent(typeof(EnemyNavigation))]
 public class EnemyController : BMD.CharacterController
 {
     #region Confguration
     [Header("Enemy Configuration")]
-    [SerializeField] float attackRange = 1.75f;            // how close we need to be to start attacking
+    [SerializeField] float stateUpdateInterval = 0.25f;     // how often to update the state machine (can be lower than frame rate for performance)           
     [SerializeField] float chaseRepathInterval = 0.2f;      // how often to re-issue paths while chasing
     [SerializeField] bool drawDebug = false;
 
     [Header("Combat")]
-    [SerializeField] int attackDamage = 10;                 // damage per hit
-    [SerializeField] float attackCooldown = 2.5f;          // attack cadence
+    [SerializeField] float meleeAttackCooldown = 2.5f;          // attack cadence
+    [SerializeField] bool meleeAttacker = true;
+    [SerializeField] FloatRange meleeAttackRange = new FloatRange(0.5f, 1.5f);
+    [SerializeField] float rangedAttackCooldown = 2.5f;
+    [SerializeField] bool rangedAttacker = false;
+    [SerializeField] FloatRange rangedAttackRange = new FloatRange(3f, 7f);
+    [SerializeField] float spellAttackCooldown = 3f;
+    [SerializeField] bool spellAttacker = true;
+    [SerializeField] FloatRange spellAttackRange = new FloatRange(4f, 8f);
 
     [Header("Patrol Config")] // Patrol config (AI decides when to patrol; navigation provides points)
     [SerializeField] float patrolRadius = 6f;
@@ -42,10 +54,14 @@ public class EnemyController : BMD.CharacterController
     #endregion
 
     #region Runtime Variables
+    Node currentPathNode;
+    NavMeshSurface currentNavMesh;
+
     Transform currentTarget;
     [Header("Serialised for debugging")]
     [SerializeField] EnemyState enemyState = EnemyState.Idle;
     [SerializeField] TargetKind currentTargetKind = TargetKind.None;
+    Coroutine stateUpdateCoroutine;
 
     float chaseRepathTimer = 0f;
     float nextAttackTime = 0f;
@@ -63,8 +79,15 @@ public class EnemyController : BMD.CharacterController
     #region Properties and Helpers
     bool IsDead {  get { return enemy.IsDead; } set { enemy.IsDead = value; } }
     bool NoTarget => currentTarget == null;
-    bool IsWithinAttackRange(Vector3 targetPos) => (targetPos - transform.position).sqrMagnitude <= (attackRange * attackRange);
-    
+    bool IsWithinAttackRange => NoTarget ? false : DistanceToTarget <= MaxAttackRange;
+    float DistanceToTarget => NoTarget ? float.MaxValue : (currentTarget.position - transform.position).magnitude;
+    Vector3 DirectionToTarget => NoTarget ? Vector3.zero : (currentTarget.position - transform.position).normalized;
+
+    bool IsInMeleeRange => meleeAttacker ? DistanceToTarget <= meleeAttackRange.Max : false;
+    bool IsInRangedAttackRange => rangedAttacker ? DistanceToTarget <= rangedAttackRange.Max : false;
+    bool IsInSpellAttackRange => spellAttacker ? DistanceToTarget <= spellAttackRange.Max : false;
+    float MinAttackRange => Mathf.Min(meleeAttacker ? meleeAttackRange.Min : float.MaxValue, rangedAttacker ? rangedAttackRange.Min : float.MaxValue, spellAttacker ? spellAttackRange.Min : float.MaxValue);
+    float MaxAttackRange => Mathf.Max(meleeAttacker ? meleeAttackRange.Max : float.MinValue, rangedAttacker ? rangedAttackRange.Max : float.MinValue, spellAttacker ? spellAttackRange.Max : float.MinValue);
     #endregion
 
 
@@ -76,32 +99,130 @@ public class EnemyController : BMD.CharacterController
         //Set initial origin for patrols
         patrolOrigin = transform.position; // patrol around spawn
     }
+    protected override void Start()
+    {
+        base.Start();
+        ResetState(); // Start the state machine loop   
+        
+
+    }
+    public void ResetState() {         // Stop any ongoing state machine loop and start a new one
+        if (stateUpdateCoroutine != null)
+        {
+            StopCoroutine(stateUpdateCoroutine);
+        }
+        stateUpdateCoroutine = StartCoroutine(StateUpdateLoop());
+    }
+    IEnumerator StateUpdateLoop()
+    {
+        while (!IsDead)
+        {
+            SetEnemyState();
+            yield return new WaitForSeconds(stateUpdateInterval);
+        }
+    }
+
+    void SetEnemyState()
+    {
+        switch (enemyState)
+        {
+            case EnemyState.Idle:
+            case EnemyState.Patrolling:
+                SetStateFromIdleOrPatrolling();
+                break;
+            case EnemyState.Chasing:
+                SetStateFromChasing();
+                break;
+
+        }
+    }
+    void SetStateFromIdleOrPatrolling() 
+    {
+        if (IsPlayerInRange()) currentTarget = Player.Instance.transform;
+        enemyState = EnemyState.Chasing;
+    }
+    void SetStateFromPatrolling()
+    {
+
+    }
+    void SetStateFromChasing()
+    {
+
+    }
+
+    bool IsPlayerInRange()
+    {
+        if (Player.Instance == null) return false;
+
+        Vector3 toPlayer = Player.Instance.transform.position - transform.position;
+
+        // 1. Check range
+        if (toPlayer.sqrMagnitude > detectionRadius * detectionRadius) return false;
+
+        // 2. Check line of sight
+        Vector3 direction = toPlayer.normalized;
+        float distance = toPlayer.magnitude;
+
+        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, distance, losObstructionMask))
+        {
+            // Something blocked the view
+            return false;
+        }
+
+        loseTargetTimer = Time.time;
+        return true;
+    }
+    protected override void FixedUpdate()
+    {
+        // We use fixed update for enemy inputs. No need to calcualte inputs every frame if they are applied on FixedUpdate.
+        switch (enemyState)
+        {
+            case EnemyState.Chasing:
+                Chase();
+                break;
+
+        }
+
+        base.FixedUpdate();
+    }
+
+    void Chase() 
+    {
+        moveDirection = DirectionToTarget;
+
+        if (DistanceToTarget >= detectionRadius && Time.time > loseTargetTimer)
+        {
+            currentTarget = null;
+        }
+    }
+    public void Initialise(Node node)
+    {
+        if (node == null) return;
+        currentPathNode = node;
+        currentNavMesh = node.GetComponent<NavMeshSurface>();
+    }
     private void FindReferences()
     {
         // Cache references
         enemy = GetComponent<Enemy>();
         enemyNavigation = GetComponent<EnemyNavigation>();
+        
     }
-    protected override void Update()
-    {
-        if (IsDead) return;  // Dead enemies do nothing
+    //protected override void Update()
+    //{
+    //    if (IsDead) return;  // Dead enemies do nothing
 
 
-        SetMoveDirection();
+    //    SetMoveDirection();
 
-        SwitchEnemyState();
+    //    SwitchEnemyState();
 
-        DrawDebug();
+    //    DrawDebug();
 
 
-        base.Update();
-    }
+    //    base.Update();
+    //}
 
-    protected override void FixedUpdate()
-    {
-        //SetMoveDirection();
-        base.FixedUpdate();
-    }
 
     private void SetMoveDirection()
     {
@@ -155,7 +276,7 @@ public class EnemyController : BMD.CharacterController
         }
 
         // Ensure we are in range; if not, resume appropriate movement.
-        if (!IsWithinAttackRange(currentTarget.position))
+        if (!IsWithinAttackRange)
         {
             if (currentTargetKind == TargetKind.Player)
             {
@@ -182,12 +303,12 @@ public class EnemyController : BMD.CharacterController
         // In range and have a target: attack (actual damage application is driven by animation events)
         if (Time.time > nextAttackTime)
         {
-            nextAttackTime = Time.time + attackCooldown;
+            nextAttackTime = Time.time + meleeAttackCooldown;
             RequestAttack();
         }
 
         // Debug drawing for attacks
-        if (drawDebug) Helpers.DebugDrawCircle(transform.position, attackRange, Color.red);
+        if (drawDebug) Helpers.DebugDrawCircle(transform.position, meleeAttackRange.Max, Color.red);
     }
     void TickChasing()
     {
@@ -222,7 +343,7 @@ public class EnemyController : BMD.CharacterController
         }
 
         // If within attack range, start attacking
-        if (IsWithinAttackRange(currentTarget.position))
+        if (IsWithinAttackRange)
         {
             enemyState = EnemyState.Attacking;
             return;
@@ -253,7 +374,7 @@ public class EnemyController : BMD.CharacterController
         }
 
         // If we reached the target, start attacking
-        if (IsWithinAttackRange(currentTarget.position))
+        if (IsWithinAttackRange)
         {
             enemyState = EnemyState.Attacking;
             return;
@@ -398,7 +519,7 @@ public class EnemyController : BMD.CharacterController
             float ang = Vector3.Angle(transform.forward, dir);
             if (ang > detectionFOVDegrees * 0.5f) return;
         }
-
+        
         // LOS check
         if (losObstructionMask.value != 0)
         {

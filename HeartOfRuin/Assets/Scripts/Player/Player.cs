@@ -34,7 +34,6 @@ public class Player : Character
 
 
     }
-
     protected override void OnDisable()
     {
         base.OnDisable();
@@ -43,8 +42,6 @@ public class Player : Character
         inventoryToggleUI.performed -= ctx => ToggleInventory();
         dropItemAction.performed -= ctx => DropItem();
     }
-
-
     protected override void Awake()
     {
         Instance = this;
@@ -62,12 +59,10 @@ public class Player : Character
         uiActionMap.Disable(); // start with UI action map disabled
 
     }
-
     private void Start()
     {
         InitialiseUIControllerVariables();
     }
-
     private void Update()
     {
 
@@ -87,8 +82,6 @@ public class Player : Character
         }
 
     }
-
-
     void DropItem()
     {
         if (inventoryUiController != null)
@@ -97,8 +90,6 @@ public class Player : Character
             Debug.Log("drop key pressed");
         }
     }
-
-
     void ToggleInventory()
     {
 
@@ -135,7 +126,6 @@ public class Player : Character
             HUDOffsetController.Instance.SetOffsetEnabled(false);
         }
     }
-
     void InitialiseUIControllerVariables()
     {
 
