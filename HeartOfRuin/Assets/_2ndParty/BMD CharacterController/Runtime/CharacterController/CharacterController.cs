@@ -39,7 +39,7 @@ namespace BMD
 
         public event Action OnAttackRequested;
         public event Action OnAttackPerformed;
-        public event Action OnDisableDamageFromWeapon;
+        public event Action OnAttackEnded;
 
         public event Action OnSpecialAttackRequested;
         public event Action OnSpecialAttackPerformed;
@@ -49,7 +49,10 @@ namespace BMD
         public event Action OnFireWeaponPerformed;
         public event Action OnFireWeaponEnded;
 
+        public event Action OnDisableDamageFromWeapon;
         public event Action OnEnableDamageFromWeapon;
+
+        public event Action OnDealDamageFromWeapon;
         public event Action OnCastSpell;
 
         #endregion
@@ -75,13 +78,13 @@ namespace BMD
         protected Vector3 gravity = UnityEngine.Physics.gravity; // Gravity vector for the character
         protected UnityEngine.CharacterController unityController; // Reference to the CharacterController component    
         protected Animator animator;
-        
         #endregion
 
         #region Runtime variables
         protected Vector3 moveDirection = Vector3.zero; // Current movement direction of the character
 
         protected Vector2 lookInput = Vector2.zero;
+        protected Vector3 aimDirection = Vector2.zero;
 
         protected CharacterState currentState = CharacterState.Idle;
         private Coroutine idleLoopCoroutine;    // Coroutine for handling idle loop animations
@@ -99,6 +102,7 @@ namespace BMD
 
         #region Properties
         public Vector3 MoveDirection => moveDirection;
+        public Vector3 AimDirection => aimDirection;
         public Vector2 LookInput => lookInput;
         public CharacterState CurrentState 
         {
@@ -187,7 +191,7 @@ namespace BMD
         public void RequestFireWeapon() => _RequestFireWeapon();
         public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
         public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
-        public void NotifyDealDamageFromWeapon() => OnEnableDamageFromWeapon?.Invoke();
+        public void NotifyDealDamageFromWeapon() { OnDealDamageFromWeapon?.Invoke(); OnEnableDamageFromWeapon?.Invoke(); }
         public void NotifyCastSpell() => OnCastSpell?.Invoke();
 
         protected void NotifySprintTriggered(bool triggered) 
@@ -230,6 +234,7 @@ namespace BMD
         private void _NotifyAttackEnded()
         {
             OnDisableDamageFromWeapon?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
 

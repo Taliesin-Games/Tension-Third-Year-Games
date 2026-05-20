@@ -121,9 +121,13 @@ MonoBehaviour:
   sprintSpeed: 10
   movementAcceleration: 10
   minMoveInputMagnitude: 0.05
+  moveWhileAttacking: 0
+  maxAttackMoveSpeed: 3
   rotationEnabled: 1
   rotationSpeed: 10
   rotationType: 0
+  rotateTowardsAim: 0
+  attackTurnSpeedMultiplier: 2.5
   instantTurnThreshold: 0.05
   canJump: 1
   jumpForce: 5
@@ -658,7 +662,7 @@ PrefabInstance:
     - target: {fileID: 3853268898807207900, guid: 0ab84631c96c8cb4ea9a18a18fa97781, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 9d15ddc5da8f5c44496f5ad65dcc9833, type: 2}
+      objectReference: {fileID: 2100000, guid: 9b4eee476a82a2a48beb84005ab38919, type: 2}
     - target: {fileID: 4747904710347621765, guid: 0ab84631c96c8cb4ea9a18a18fa97781, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 34.462555
@@ -734,7 +738,7 @@ PrefabInstance:
     - target: {fileID: 6148737315974723067, guid: 0ab84631c96c8cb4ea9a18a18fa97781, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 0ee7e23996acbe845ae0452fdb9d0eee, type: 2}
+      objectReference: {fileID: 2100000, guid: 1d1b7e221afe72649b376831568990e5, type: 2}
     - target: {fileID: 6341119541397085964, guid: 0ab84631c96c8cb4ea9a18a18fa97781, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 35.992783
