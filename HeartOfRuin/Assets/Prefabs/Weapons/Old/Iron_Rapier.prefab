@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3515794279534059810}
   - component: {fileID: 592921498653583033}
   - component: {fileID: 5673690103010194578}
+  - component: {fileID: 9025437691279150353}
+  - component: {fileID: 2335542677875022391}
   m_Layer: 0
   m_Name: Iron_Rapier
   m_TagString: Untagged
@@ -89,6 +91,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!136 &5673690103010194578
 CapsuleCollider:
@@ -105,7 +108,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -113,3 +116,38 @@ CapsuleCollider:
   m_Height: 1.9382567
   m_Direction: 1
   m_Center: {x: 0, y: 0.73602664, z: -0.000000014901161}
+--- !u!114 &9025437691279150353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763710965197221259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090fb96d13786254c8c54fe647d8862d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageComponent
+  damageScaling:
+    None: 0
+    Physical: 0
+    Magical: 0
+    True: 0
+    Fire: 0
+    Lightning: 0
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
+--- !u!114 &2335542677875022391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7763710965197221259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 178d6345ff25f8c488329e295080b252, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterWeapon
