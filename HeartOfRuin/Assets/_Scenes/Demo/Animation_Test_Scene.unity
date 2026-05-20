@@ -295,21 +295,76 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'R_knee_jnt'\n\tTransform 'L_knee_jnt'\n\tTransform
-    'R_elbow_jnt'\n\tTransform 'C_head_jnt'\n\tTransform 'L_elbow_jnt'\n\tTransform
-    'C_hips_jnt'\n\tTransform 'C_neckA_jnt'\n\tTransform 'L_clavicle_jnt'\n\tTransform
-    'R_knee_jnt'\n\tTransform 'L_ankle_jnt'\n\tand more ...\n\tFrom animation clip
-    'Leshy_Idle'\n\tFrom animation clip 'Leshy_Walk'\n\tFrom animation clip 'Leshy_Walk'\n\tFrom
-    animation clip 'Leshy_Walk'\n\tFrom animation clip 'Leshy_Extended_Idle'\n\tFrom
-    animation clip 'Leshy_1H_Attack'\n\tFrom animation clip 'Leshy_2H_Attack'\n\tFrom
-    animation clip 'Leshy_Door_Attack'\n\tFrom animation clip 'Leshy_Door_Attack2'\n\tFrom
-    animation clip 'Leshy_Door_Attack3'\n\tand more ..."
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1001 &923767387
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1408.635
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 171.04
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 469.52
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_Name
+      value: MoleTrader_Rig
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: f1c07a38d7fb67549a9b3a3bb32feaa5, type: 3}
+    - target: {fileID: 7989973865616744047, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1dc5d0c05ddb13a478b088f1dbe69bd9, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e0bb46b11cbcb5048b8ba4cff94e8b76, type: 3}
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,7 +512,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1409.62
+      value: 1410.83
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -667,3 +722,4 @@ SceneRoots:
   - {fileID: 1801166645}
   - {fileID: 977525796}
   - {fileID: 1564798732}
+  - {fileID: 923767387}
