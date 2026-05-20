@@ -1,6 +1,7 @@
 using BMD;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 
 [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
@@ -41,6 +42,7 @@ public class Player : Character
         inventoryTogglePlayer.performed -= ctx => ToggleInventory();
         inventoryToggleUI.performed -= ctx => ToggleInventory();
         dropItemAction.performed -= ctx => DropItem();
+        
     }
     protected override void Awake()
     {
@@ -63,9 +65,11 @@ public class Player : Character
     {
         InitialiseUIControllerVariables();
     }
+
+    
     private void Update()
     {
-
+        if(!inventoryUiController || !equipmentUiController) return;
 
         if (invToggle)
         {        
@@ -128,6 +132,7 @@ public class Player : Character
     }
     void InitialiseUIControllerVariables()
     {
+        if (InventoryUIController.Instance == null) return;
 
         inventoryUiController = InventoryUIController.Instance;
         inventoryUiController.SetInventory(inventory);

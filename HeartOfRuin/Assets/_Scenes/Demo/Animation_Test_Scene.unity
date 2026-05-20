@@ -119,75 +119,33 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &74217274
-PrefabInstance:
+--- !u!1 &17087548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
+  m_PrefabInstance: {fileID: 1801166645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &17087550
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1405.3223
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 169.927
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 465.03506
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_Name
-      value: Stumpfolk
-      objectReference: {fileID: 0}
-    - target: {fileID: 1630794972795428178, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: c64fd615e4dd5534c8ae8ebcc634a21e, type: 2}
-    - target: {fileID: 3505068965197213699, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 7bc5111c4da304e48984ceca766fc702, type: 2}
-    - target: {fileID: 5866666021909216657, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: c83e6efac43af674d960f52fc2eba22f, type: 2}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17087548}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 8f95303032f5dd846843d6d9f741ccf8, type: 3}
+  m_Controller: {fileID: 9100000, guid: 36f68e38d6548b84d8665ab5f153c5b5, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &203844586
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,6 +273,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &810068897 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
+  m_PrefabInstance: {fileID: 977525796}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &810068900
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810068897}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
+  m_Controller: {fileID: 9100000, guid: b63e9db748ce9ca479043c6a3760d15a, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'R_knee_jnt'\n\tTransform 'L_knee_jnt'\n\tTransform
+    'R_elbow_jnt'\n\tTransform 'C_head_jnt'\n\tTransform 'L_elbow_jnt'\n\tTransform
+    'C_hips_jnt'\n\tTransform 'C_neckA_jnt'\n\tTransform 'L_clavicle_jnt'\n\tTransform
+    'R_knee_jnt'\n\tTransform 'L_ankle_jnt'\n\tand more ...\n\tFrom animation clip
+    'Leshy_Idle'\n\tFrom animation clip 'Leshy_Walk'\n\tFrom animation clip 'Leshy_Walk'\n\tFrom
+    animation clip 'Leshy_Walk'\n\tFrom animation clip 'Leshy_Extended_Idle'\n\tFrom
+    animation clip 'Leshy_1H_Attack'\n\tFrom animation clip 'Leshy_2H_Attack'\n\tFrom
+    animation clip 'Leshy_Door_Attack'\n\tFrom animation clip 'Leshy_Door_Attack2'\n\tFrom
+    animation clip 'Leshy_Door_Attack3'\n\tand more ..."
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,7 +457,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1410.621
+      value: 1409.62
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -508,10 +503,27 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: b63e9db748ce9ca479043c6a3760d15a, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'R_knee_jnt'\n\tTransform 'L_knee_jnt'\n\tTransform
+        'R_elbow_jnt'\n\tTransform 'C_head_jnt'\n\tTransform 'L_elbow_jnt'\n\tTransform
+        'C_hips_jnt'\n\tTransform 'C_neckA_jnt'\n\tTransform 'L_clavicle_jnt'\n\tTransform
+        'R_knee_jnt'\n\tTransform 'L_ankle_jnt'\n\tand more ...\n\tFrom animation
+        clip 'Leshy_Idle'\n\tFrom animation clip 'Leshy_Walk'\n\tFrom animation clip
+        'Leshy_Walk'\n\tFrom animation clip 'Leshy_Walk'\n\tFrom animation clip 'Leshy_Extended_Idle'\n\tFrom
+        animation clip 'Leshy_2H_Attack'\n\tFrom animation clip 'Leshy_Door_Attack'\n\tFrom
+        animation clip 'Leshy_Door_Attack2'\n\tFrom animation clip 'Leshy_Door_Attack3'\n\tFrom
+        animation clip 'Leshy_Sweep_Attack'\n\tand more ..."
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 810068900}
   m_SourcePrefab: {fileID: 100100000, guid: 7d6f19a631cee4b4796734bf416bbcd5, type: 3}
 --- !u!1001 &1564798732
 PrefabInstance:
@@ -523,7 +535,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 2b7b113fde4df9a489514174a806db9a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1403.765
+      value: 1404.995
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2b7b113fde4df9a489514174a806db9a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -584,7 +596,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1407.952
+      value: 1407.071
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -641,7 +653,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 17087550}
   m_SourcePrefab: {fileID: 100100000, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -652,4 +667,3 @@ SceneRoots:
   - {fileID: 1801166645}
   - {fileID: 977525796}
   - {fileID: 1564798732}
-  - {fileID: 74217274}
