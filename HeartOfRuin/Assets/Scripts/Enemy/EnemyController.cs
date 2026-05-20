@@ -1,11 +1,7 @@
 using UnityEngine;
-using BMD;
+using BMD.ProcGen;
 using Utils;
 using Random = UnityEngine.Random;
-using Unity.Services.Matchmaker.Models;
-using NUnit.Framework.Constraints;
-using BMD.ProcGen;
-using UnityEngine.AI;
 using Unity.AI.Navigation;
 using System.Collections;
 using BMD.DataTypes;
@@ -18,6 +14,8 @@ public class EnemyController : BMD.CharacterController
     [SerializeField] float stateUpdateInterval = 0.25f;     // how often to update the state machine (can be lower than frame rate for performance)           
     [SerializeField] float chaseRepathInterval = 0.2f;      // how often to re-issue paths while chasing
     [SerializeField] bool drawDebug = false;
+    [Tooltip("The range the enemy will start to decelerate.")]
+    [SerializeField] float softStopRange = 1.0f;
 
     [Header("Combat")]
     [SerializeField] float meleeAttackCooldown = 2.5f;          // attack cadence
@@ -33,8 +31,9 @@ public class EnemyController : BMD.CharacterController
     [Header("Patrol Config")] // Patrol config (AI decides when to patrol; navigation provides points)
     [SerializeField] float patrolRadius = 6f;
     [SerializeField] Vector2 patrolPauseRange = new Vector2(0.5f, 1.5f);
-    [SerializeField] float patrolSampleMaxDistance = 2f;
+    [SerializeField] float navMeshSampleRadius = 2f;
     [SerializeField] int patrolSampleMaxTries = 6;
+    [SerializeField] float patrolIdleTime = 5f; // Time to stay idle before starting to patrol (if no targets found)
 
     // Detection
     [Header("Detection")]
@@ -54,20 +53,19 @@ public class EnemyController : BMD.CharacterController
     #endregion
 
     #region Runtime Variables
-    Node currentPathNode;
-    NavMeshSurface currentNavMesh;
 
     Transform currentTarget;
     [Header("Serialised for debugging")]
     [SerializeField] EnemyState enemyState = EnemyState.Idle;
     [SerializeField] TargetKind currentTargetKind = TargetKind.None;
     Coroutine stateUpdateCoroutine;
+    Coroutine patrolIdleCoroutine;
 
     float chaseRepathTimer = 0f;
     float nextAttackTime = 0f;
 
     // Patrol state
-    Vector3 patrolOrigin;
+    Vector3 homePosition;
     Vector3 patrolDestination;
     [SerializeField] bool isPatrolling = false;
     [SerializeField] float patrolWaitTimer = 0f;
@@ -76,12 +74,25 @@ public class EnemyController : BMD.CharacterController
     float loseTargetTimer = 0f;
     #endregion
 
+    #region Preallocations
+
+    #endregion
     #region Properties and Helpers
     bool IsDead {  get { return enemy.IsDead; } set { enemy.IsDead = value; } }
     bool NoTarget => currentTarget == null;
     bool IsWithinAttackRange => NoTarget ? false : DistanceToTarget <= MaxAttackRange;
-    float DistanceToTarget => NoTarget ? float.MaxValue : (currentTarget.position - transform.position).magnitude;
-    Vector3 DirectionToTarget => NoTarget ? Vector3.zero : (currentTarget.position - transform.position).normalized;
+    float DistanceToTarget => NoTarget ? float.MaxValue : FlatDistance(transform.position, currentTarget.position);
+
+    Vector3 DirectionToTarget => NoTarget ? Vector3.zero : FlatDirection(transform.position, currentTarget.position);
+
+    float DistanceToHome => FlatDistance(transform.position, homePosition);
+
+    Vector3 DirectionToHome => FlatDirection(transform.position, homePosition);
+
+    float DistanceToPatrolPoint => FlatDistance(transform.position, patrolDestination);
+
+    Vector3 DirectionToPatrolPoint => FlatDirection(transform.position, patrolDestination);
+    bool ReachedPatrolPoint => DistanceToPatrolPoint < softStopRange;
 
     bool IsInMeleeRange => meleeAttacker ? DistanceToTarget <= meleeAttackRange.Max : false;
     bool IsInRangedAttackRange => rangedAttacker ? DistanceToTarget <= rangedAttackRange.Max : false;
@@ -90,6 +101,7 @@ public class EnemyController : BMD.CharacterController
     float MaxAttackRange => Mathf.Max(meleeAttacker ? meleeAttackRange.Max : float.MinValue, rangedAttacker ? rangedAttackRange.Max : float.MinValue, spellAttacker ? spellAttackRange.Max : float.MinValue);
     #endregion
 
+    
 
     protected override void Awake()
     {
@@ -97,16 +109,23 @@ public class EnemyController : BMD.CharacterController
         FindReferences();
 
         //Set initial origin for patrols
-        patrolOrigin = transform.position; // patrol around spawn
+        homePosition = transform.position; // patrol around spawn
+    }
+    private void FindReferences()
+    {
+        // Cache references
+        enemy = GetComponent<Enemy>();
+        enemyNavigation = GetComponent<EnemyNavigation>();
+
     }
     protected override void Start()
     {
         base.Start();
         ResetState(); // Start the state machine loop   
-        
-
     }
-    public void ResetState() {         // Stop any ongoing state machine loop and start a new one
+    public void ResetState() 
+    {         
+        // Stop any ongoing state machine loop and start a new one
         if (stateUpdateCoroutine != null)
         {
             StopCoroutine(stateUpdateCoroutine);
@@ -127,8 +146,10 @@ public class EnemyController : BMD.CharacterController
         switch (enemyState)
         {
             case EnemyState.Idle:
+                SetStateFromIdle();
+                break;
             case EnemyState.Patrolling:
-                SetStateFromIdleOrPatrolling();
+                SetStateFromPatrolling();
                 break;
             case EnemyState.Chasing:
                 SetStateFromChasing();
@@ -136,20 +157,71 @@ public class EnemyController : BMD.CharacterController
 
         }
     }
-    void SetStateFromIdleOrPatrolling() 
+    void SetStateFromIdle() 
     {
-        if (IsPlayerInRange()) currentTarget = Player.Instance.transform;
-        enemyState = EnemyState.Chasing;
+        if (IsPlayerInRange())
+        {
+            StartChase();
+            if(patrolIdleCoroutine != null)
+            {
+                StopCoroutine(patrolIdleCoroutine);
+                patrolIdleCoroutine = null;
+            }
+            return;
+        }
+
+        // Stay in idle if we are far from home, to avoid weird navigation issues of trying to patrol back to a point we can't reach
+        if (DistanceToHome > softStopRange) return;
+
+        // Only restart if not already running, to avoid resetting the timer every frame
+        patrolIdleCoroutine ??= StartCoroutine(PatrolIdleTimer());
+    }
+    IEnumerator PatrolIdleTimer()
+    {
+        patrolDestination = homePosition;
+        yield return new WaitForSeconds(patrolIdleTime);
+        SetNewPatrol();
+        enemyState = EnemyState.Patrolling;
     }
     void SetStateFromPatrolling()
     {
+        if (IsPlayerInRange())
+        {
+            StartChase();
+            return;
+        }
+        SetNewPatrol();
+    }
+    void SetNewPatrol()
+    {
+        if (DistanceToPatrolPoint > softStopRange) return;
 
+        if (!enemyNavigation.TryGetPatrolPoint(homePosition, patrolRadius, navMeshSampleRadius, patrolSampleMaxTries, out patrolDestination))
+        {
+            enemyState = EnemyState.Idle;
+        }
+    }
+    void StartChase()
+    {
+        currentTarget = Player.Instance.transform;
+        enemyState = EnemyState.Chasing;
+        loseTargetTimer = Time.time;
+        currentTarget = Player.Instance.transform;
     }
     void SetStateFromChasing()
     {
+        // REturning to idle is handled in the Chase() method, which checks distance and timers every frame, so we only need to check for attack range here.
+        if (DistanceToTarget > MaxAttackRange) return;  // Cant attack yet, keep chasing
 
+        DecideAttack();
     }
 
+    bool DecideAttack()
+    {
+        // Change to return false to keep chasing.
+        
+        return false;
+    }
     bool IsPlayerInRange()
     {
         if (Player.Instance == null) return false;
@@ -177,6 +249,12 @@ public class EnemyController : BMD.CharacterController
         // We use fixed update for enemy inputs. No need to calcualte inputs every frame if they are applied on FixedUpdate.
         switch (enemyState)
         {
+            case EnemyState.Idle:
+                WalkHome();
+                break;
+            case EnemyState.Patrolling:
+                WalkPatrol();
+                break;
             case EnemyState.Chasing:
                 Chase();
                 break;
@@ -185,43 +263,88 @@ public class EnemyController : BMD.CharacterController
 
         base.FixedUpdate();
     }
+    bool HasReachedDestination()
+    {
+        bool result = enemyNavigation.HasReachedDestination();
+        if (result)
+        {
+            enemyState = EnemyState.Idle;
+            moveDirection = Vector3.zero;
+        }
+        return result;
+    }
+    void WalkHome()
+    {
+        if (HasReachedDestination()) return;
+        moveDirection = DirectionToHome;
 
+        // Walk back slightly slower
+        moveDirection *= 0.8f;
+
+        SoftStop(ref moveDirection, DistanceToHome);
+
+    }
+    void WalkPatrol()
+    {
+        if (HasReachedDestination()) return;
+        moveDirection = DirectionToPatrolPoint;
+
+        // Walk back slightly slower
+        moveDirection *= 0.8f;
+
+        SoftStop(ref moveDirection, DistanceToPatrolPoint);
+    }
     void Chase() 
     {
+        
         moveDirection = DirectionToTarget;
+
+        SoftStop(ref moveDirection, DistanceToTarget);
 
         if (DistanceToTarget >= detectionRadius && Time.time > loseTargetTimer)
         {
             currentTarget = null;
+            enemyState = EnemyState.Idle;
+        }
+        else
+        {
+            loseTargetTimer = Time.time;
         }
     }
-    public void Initialise(Node node)
+    /// <summary>
+    /// When Distance is less than softStopRange scale move direction by remaining distance
+    /// </summary>
+    /// <param name="moveDirection"></param>
+    /// <param name="distance"></param>
+    bool SoftStop(ref Vector3 moveDirection, float distance)
     {
-        if (node == null) return;
-        currentPathNode = node;
-        currentNavMesh = node.GetComponent<NavMeshSurface>();
+        if (distance > softStopRange) return false;
+        // Nomaliser remaining distance to soft stop range
+        float normalisedDistance = distance / softStopRange;
+        moveDirection *= normalisedDistance;
+
+        if (moveDirection.magnitude < 0.01f)
+        {
+            moveDirection = Vector3.zero;
+            
+        }
+
+        return true;
     }
-    private void FindReferences()
+    protected override void Update()
     {
-        // Cache references
-        enemy = GetComponent<Enemy>();
-        enemyNavigation = GetComponent<EnemyNavigation>();
-        
+        if (IsDead) { base.Update(); return; }  // Dead enemies do nothing
+
+
+        //SetMoveDirection();
+
+        //SwitchEnemyState();
+
+        DrawDebug();
+
+
+        base.Update();
     }
-    //protected override void Update()
-    //{
-    //    if (IsDead) return;  // Dead enemies do nothing
-
-
-    //    SetMoveDirection();
-
-    //    SwitchEnemyState();
-
-    //    DrawDebug();
-
-
-    //    base.Update();
-    //}
 
 
     private void SetMoveDirection()
@@ -393,7 +516,7 @@ public class EnemyController : BMD.CharacterController
         }
 
         // Try to get a patrol point
-        if (enemyNavigation.TryGetPatrolPoint(patrolOrigin, patrolRadius, patrolSampleMaxDistance, patrolSampleMaxTries, out patrolDestination))
+        if (enemyNavigation.TryGetPatrolPoint(homePosition, patrolRadius, navMeshSampleRadius, patrolSampleMaxTries, out patrolDestination))
         {
             // Start moving to it if possible
             if (enemyNavigation.MoveTo(patrolDestination))
@@ -408,7 +531,7 @@ public class EnemyController : BMD.CharacterController
 
         // No valid point this frame; try shortly again
         patrolWaitTimer = patrolWaitTimeMax;
-        patrolOrigin = transform.position;
+        homePosition = transform.position;
     }
     void ResetTarget()
     {
@@ -542,8 +665,10 @@ public class EnemyController : BMD.CharacterController
     {
         // Debug drawing
         if (!drawDebug) return;
-        
-        Helpers.DebugDrawCircle(patrolOrigin, patrolRadius, Color.cyan); // Patrol area
+
+        Helpers.DebugDrawSphere(homePosition, 2, Color.green, 24);          // Home Destination
+        Helpers.DebugDrawCircle(homePosition, patrolRadius, Color.cyan);    // Patrol area
+        Helpers.DebugDrawSphere(patrolDestination, 2, Color.blue, 24);      // Patrol Destination
         Helpers.DebugDrawCircle(transform.position + Vector3.up * 0.05f, detectionRadius, Color.yellow); // Detection radius
         
     }
@@ -588,5 +713,20 @@ public class EnemyController : BMD.CharacterController
         }
 
         return true;
+    }
+
+    float FlatDistance(Vector3 a, Vector3 b)
+    {
+        Vector2 delta = new Vector2(a.x - b.x, a.z - b.z);
+        return delta.magnitude;
+    }
+
+    Vector3 FlatDirection(Vector3 from, Vector3 to)
+    {
+        return new Vector3(
+            to.x - from.x,
+            0f,
+            to.z - from.z
+        ).normalized;
     }
 }

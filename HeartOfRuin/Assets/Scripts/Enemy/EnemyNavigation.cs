@@ -26,7 +26,7 @@ public class EnemyNavigation : MonoBehaviour
         agent.updateUpAxis = true; // keep this true for normal humanoids
 
         // Auto-align agent to navmesh height
-        if (NavMesh.SamplePosition(transform.position, out var hit, 2f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
         {
             // Adjust baseOffset so the agent pivot lines up with navmesh floor
             agent.baseOffset = hit.position.y - transform.position.y;
@@ -223,11 +223,9 @@ public class EnemyNavigation : MonoBehaviour
     /// </summary>
     public bool HasReachedDestination()
     {
-        if (IsDead)
-            return true;
+        if (IsDead) return true;
 
-        if (agent.pathPending)
-            return false;
+        if (agent.pathPending) return false;
 
         // remainingDistance is valid even when updatePosition=false (it uses internal nextPosition)
         return agent.hasPath && agent.remainingDistance <= agent.stoppingDistance;
