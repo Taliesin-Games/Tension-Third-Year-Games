@@ -77,6 +77,10 @@ public class Health : Resource
             if (GameManager.Instance is GameManager gm) gm.GameOver();
             else Debugger.LogError("Player has died - No Game manager found to trigger game over.");
         }
+        else if (characterController != null && characterController.GetType() == typeof(EnemyController))
+        {
+            characterController.RequestDie();
+        }
 
 
         //Debugger.Log($"{gameObject.name} has died");

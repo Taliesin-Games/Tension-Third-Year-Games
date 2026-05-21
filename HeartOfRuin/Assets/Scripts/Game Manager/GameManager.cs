@@ -112,7 +112,8 @@ public class GameManager : MonoBehaviour
             (EnemySpawner.EnemyCount <= 0 && EnemySpawner.IsSpawningComplete)
             )
         {
-            WinGame();
+            Debug.Log("meow meow, all enemies defeated");
+            //WinGame();
         }
     }
 
