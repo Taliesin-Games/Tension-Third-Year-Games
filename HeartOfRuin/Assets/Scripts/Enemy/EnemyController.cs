@@ -14,7 +14,6 @@ public class EnemyController : BMD.CharacterController
     #region Confguration
     [Header("Enemy Configuration")]
     [SerializeField] float stateUpdateInterval = 0.25f;     // how often to update the state machine (can be lower than frame rate for performance)           
-    [SerializeField] float chaseRepathInterval = 0.2f;      // how often to re-issue paths while chasing
     [SerializeField] bool drawDebug = false;
     [Tooltip("The range the enemy will start to decelerate.")]
     [SerializeField] float softStopRange = 1.0f;
@@ -32,7 +31,6 @@ public class EnemyController : BMD.CharacterController
 
     [Header("Patrol Config")] // Patrol config (AI decides when to patrol; navigation provides points)
     [SerializeField] float patrolRadius = 6f;
-    [SerializeField] Vector2 patrolPauseRange = new Vector2(0.5f, 1.5f);
     [SerializeField] float navMeshSampleRadius = 2f;
     [SerializeField] int patrolSampleMaxTries = 6;
     [SerializeField] float patrolIdleTime = 5f; // Time to stay idle before starting to patrol (if no targets found)
@@ -40,13 +38,9 @@ public class EnemyController : BMD.CharacterController
     // Detection
     [Header("Detection")]
     [SerializeField] float detectionRadius = 10f;
-    [SerializeField] float detectionFOVDegrees = 160f; // 180 = omnidirectional
-    [SerializeField] float eyeHeight = 1.6f;
-    [SerializeField] LayerMask detectionLayerMask;     // Set to layers containing Player/Attackable. If 0, uses all layers.
     [SerializeField] LayerMask losObstructionMask;     // Set to environment/obstacles that block vision.
     [SerializeField] float loseTargetAfter = 2f;       // seconds to keep chasing after losing sight
 
-    [SerializeField] float patrolWaitTimeMax = 0.25f; // max wait time before trying to find a patrol point, used for failed patrol attempts
     #endregion
 
     #region Cached References
@@ -64,15 +58,10 @@ public class EnemyController : BMD.CharacterController
     Coroutine stateUpdateCoroutine;
     Coroutine patrolIdleCoroutine;
 
-    float chaseRepathTimer = 0f;
-    float nextAttackTime = 0f;
-
     // Patrol state
     Vector3 homePosition;
     Vector3 patrolDestination;
     Vector3 fleeDestination;
-    [SerializeField] bool isPatrolling = false;
-    [SerializeField] float patrolWaitTimer = 0f;
 
     // Detection runtime
     float loseTargetTimer = 0f;
@@ -85,7 +74,6 @@ public class EnemyController : BMD.CharacterController
     #region Properties and Helpers
     bool IsDead {  get { return enemy.IsDead; } set { enemy.IsDead = value; } }
     bool NoTarget => currentTarget == null;
-    bool IsWithinAttackRange => NoTarget ? false : DistanceToTarget <= MaxAttackRange;
     float DistanceToTarget => NoTarget ? float.MaxValue : FlatDistance(transform.position, currentTarget.position);
 
     Vector3 DirectionToTarget => NoTarget ? Vector3.zero : FlatDirection(transform.position, currentTarget.position);
@@ -97,8 +85,7 @@ public class EnemyController : BMD.CharacterController
     float DistanceToPatrolPoint => FlatDistance(transform.position, patrolDestination);
 
     Vector3 DirectionToPatrolPoint => FlatDirection(transform.position, patrolDestination);
-    bool ReachedPatrolPoint => DistanceToPatrolPoint < softStopRange;
-
+    
     bool IsInMeleeRange => meleeAttacker ? DistanceToTarget <= meleeAttackRange.Max : false;
     bool IsInRangedAttackRange => rangedAttacker ? DistanceToTarget <= rangedAttackRange.Max : false;
     bool IsInSpellAttackRange => spellAttacker ? DistanceToTarget <= spellAttackRange.Max : false;
