@@ -25,7 +25,8 @@ public abstract class Character : MonoBehaviour
     protected BMD.CharacterController controller;
     CharacterStats baseStats;
     DamageStruct baseDamageBonusPercentage;
-
+    GameObject currentWeaponMesh;
+    EquippableItem currentVisualWeaponItem;
     #endregion
 
     #region Runtime Variables
@@ -171,6 +172,85 @@ public abstract class Character : MonoBehaviour
     {
         return characterDamageBonusPercentage;
     }
+
+    private void CheckAndRemoveExistingWeaponMesh()
+    {
+        foreach (Transform childTransform in weaponAttachPoint.transform)
+        {
+            Debug.Log("Checking for weapon mesh to destroy");
+
+            CharacterWeapon temp = childTransform.GetComponent<CharacterWeapon>();
+
+            if (temp != null)
+            {
+                Debug.Log("Destroying old weapon mesh");
+                Destroy(childTransform.gameObject);
+            }
+        }
+        currentWeaponMesh = null;
+        currentVisualWeaponItem = null;
+    }
+
+    private void InstanciateNewWeaponMesh(EquippableItem equippedItem)
+    {
+        GameObject weapon = Instantiate(equippedItem.GetItemMesh(), weaponAttachPoint.transform);
+        DamageComponent tempDamageComp = weapon.GetComponent<DamageComponent>();
+        Weapon tempWeapon = equippedItem as Weapon;
+        CharacterWeapon tempCharWeapon = weapon.GetComponent<CharacterWeapon>();
+        if (tempDamageComp != null)
+        {
+            tempDamageComp.SetDamageScaling(tempWeapon.GetWeaponDamageScalings());
+        }
+        if (tempCharWeapon != null)
+        {
+            tempCharWeapon.SetParentCharacter(this);
+        }
+        weapon.transform.localPosition = Vector3.zero;
+        weapon.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+        weapon.layer = gameObject.layer;
+
+        currentWeaponMesh = weapon;
+    }
+
+    private void EvaluateWeaponMesh()
+    {
+        if (equipmentSlots == null) return;
+
+        EquippableItem fallbackWeapon = null;
+        bool isCurrentStillEquipped = false;
+
+        foreach (ItemSlot slot in equipmentSlots.GetInventorySlots())
+        {
+            EquippableItem item = slot.GetItem() as EquippableItem;
+            if (item != null && item.GetItemMesh() != null && 
+               (item.GetEquipSlotType() == EquipSlotType.OneHand || item.GetEquipSlotType() == EquipSlotType.TwoHanded))
+            {
+                if (item == currentVisualWeaponItem)
+                {
+                    isCurrentStillEquipped = true;
+                }
+                else if (fallbackWeapon == null)
+                {
+                    fallbackWeapon = item;
+                }
+            }
+        }
+
+        if (isCurrentStillEquipped)
+        {
+            return;
+        }
+
+        CheckAndRemoveExistingWeaponMesh();
+
+        if (fallbackWeapon != null)
+        {
+            InstanciateNewWeaponMesh(fallbackWeapon);
+            currentVisualWeaponItem = fallbackWeapon;
+        }
+    }
+
     public void OnItemEquipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
@@ -181,42 +261,7 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() + equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage += equippedItem.GetDamageBonusPercentages();
 
-        if (equippedItem.GetItemMesh() != null && (equippedItem.GetEquipSlotType() == EquipSlotType.OneHand || equippedItem.GetEquipSlotType() == EquipSlotType.TwoHanded))
-        {
-            Debug.Log("Equipping weapon mesh");
-
-            // Fix: Iterate over child transforms instead of GetComponentsInChildren<GameObject>()
-            foreach (Transform childTransform in weaponAttachPoint.transform)
-            {
-                Debug.Log("Checking for weapon mesh to destroy");
-
-                CharacterWeapon temp = childTransform.GetComponent<CharacterWeapon>();
-
-                if (temp != null)
-                {
-                    Debug.Log("Destroying old weapon mesh");
-                    Destroy(childTransform.gameObject);
-                }
-            }
-
-            GameObject weapon = Instantiate(equippedItem.GetItemMesh(), weaponAttachPoint.transform);
-            DamageComponent tempDamageComp = weapon.GetComponent<DamageComponent>();
-            Weapon tempWeapon = equippedItem as Weapon;
-            CharacterWeapon tempCharWeapon = weapon.GetComponent<CharacterWeapon>();
-            if (tempDamageComp != null)
-            {
-                tempDamageComp.SetDamageScaling(tempWeapon.GetWeaponDamageScalings());
-            }
-            if (tempCharWeapon != null)
-            {
-                tempCharWeapon.SetParentCharacter(this);
-            }
-            weapon.transform.localPosition = Vector3.zero;
-            weapon.transform.localRotation = Quaternion.identity;
-            weapon.layer = gameObject.layer;
-
-            
-        }
+        EvaluateWeaponMesh();
 
         NotifyStatChange?.Invoke();
     }
@@ -231,16 +276,7 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage = characterDamageBonusPercentage - equippedItem.GetDamageBonusPercentages();
 
-        // Fix: Iterate over child transforms instead of GetComponentsInChildren<GameObject>()
-        foreach (Transform childTransform in weaponAttachPoint.transform)
-        {
-            CharacterWeapon temp = childTransform.GetComponent<CharacterWeapon>();
-
-            if (temp != null)
-            {
-                Destroy(childTransform.gameObject);
-            }
-        }
+        EvaluateWeaponMesh();
 
         NotifyStatChange?.Invoke();
     }
@@ -273,3 +309,4 @@ public abstract class Character : MonoBehaviour
     /// </summary>
     /// <param name="newState"></param>
 }
+        
