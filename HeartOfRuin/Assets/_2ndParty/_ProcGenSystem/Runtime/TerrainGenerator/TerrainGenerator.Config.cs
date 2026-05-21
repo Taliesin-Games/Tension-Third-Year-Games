@@ -1,5 +1,4 @@
 using BMD.DataTypes;
-using PlasticGui.WorkspaceWindow.Locks;
 using System.Collections.Generic;
 using UnityEngine;
 
