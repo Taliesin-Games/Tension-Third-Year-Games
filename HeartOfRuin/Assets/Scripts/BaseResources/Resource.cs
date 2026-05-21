@@ -1,16 +1,18 @@
 using System;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public struct ResourceChangeEventArgs
 {
     public float Percent;
     public float CurrentValue;
+    public float OldValue;
     public float MaxValue;
-    public ResourceChangeEventArgs(float percent, float currentValue, float maxValue)
+    readonly public float Delta => CurrentValue - OldValue;
+    public ResourceChangeEventArgs(float percent, float currentValue, float oldValue, float maxValue)
     {
         Percent = percent;
         CurrentValue = currentValue;
+        OldValue = oldValue;
         MaxValue = maxValue;
     }
 }
@@ -20,6 +22,9 @@ public class Resource : MonoBehaviour
 
     [SerializeField] float maxValue = 100;
     float currentValue;
+    float oldValue;
+
+    public float Normalized => currentValue / maxValue;
 
     public event Action<ResourceChangeEventArgs> OnResourceChanged;
 
@@ -28,11 +33,16 @@ public class Resource : MonoBehaviour
         get { return currentValue; }
         private set
         {
+            oldValue = currentValue;
             currentValue = value;
             InvokeResourceChanged();
         }
     }
 
+    private void Awake()
+    {
+        character = GetComponent<Character>();
+    }
     protected virtual void Start()
     {
         CurrentValue = maxValue;
@@ -48,14 +58,14 @@ public class Resource : MonoBehaviour
         return CurrentValue;
     }
 
-    protected void increaseResource(float amount)
+    protected void IncreaseResource(float amount)
     {
         if (CurrentValue >= maxValue) return;
         if (amount <= 0) return;
         CurrentValue = Mathf.Min(CurrentValue + amount, maxValue);
     }
 
-    protected void decreaseResource(float amount)
+    protected void DecreaseResource(float amount)
     {
         if (CurrentValue <= 0) return;
         if (amount <= 0) return;
@@ -67,6 +77,6 @@ public class Resource : MonoBehaviour
     protected void InvokeResourceChanged()
     {
         float percent = currentValue/ maxValue;
-        OnResourceChanged?.Invoke(new ResourceChangeEventArgs(percent, currentValue, maxValue));
+        OnResourceChanged?.Invoke(new ResourceChangeEventArgs(percent, currentValue, oldValue, maxValue));
     }
 }

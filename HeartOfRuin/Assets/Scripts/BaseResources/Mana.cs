@@ -19,7 +19,7 @@ public class Mana : Resource
     {
         if (GetCurrentResource() >= amount)
         {
-            decreaseResource(amount);
+            DecreaseResource(amount);
             return true;
         }
         return false;
@@ -28,7 +28,7 @@ public class Mana : Resource
 
     public void restoreMana(float amount)
     {
-        increaseResource(amount);
+        IncreaseResource(amount);
         //Debugger.Log($"{transform.root.name} has restored {amount} mana");
     }
 }
