@@ -32,11 +32,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaThreshold: 0
+    - _AlphaSmoothness: 0.033
+    - _AlphaThreshold: 0.057
     - _DebugDepthScale: 5
     - _DebugDepthView: 0
     - _Density: 0.26
-    - _DepthFadeDistance: 2
+    - _DepthFadeDistance: 1.97
     - _DepthFadeMax: 100
     - _DepthFadeRange: 0.1
     - _DepthFadeStrength: 0.279
@@ -47,6 +48,7 @@ Material:
     - _DistanceFadeStart: 26.5
     - _EnableDepthFade: 0
     - _Falloff: 2
+    - _FalloffSmoothness: 0.2
     - _LightInfluence: 0.504
     - _NoiseChannel: 1.585
     - _NoiseScale: 6

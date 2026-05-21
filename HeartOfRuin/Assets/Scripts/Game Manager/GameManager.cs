@@ -150,7 +150,11 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         OnGameOver?.Invoke();
-        playCanvas.SetActive(false);
+        if (playCanvas)
+        {
+            playCanvas.SetActive(false);
+        }
+
         
         LevelManager.LoadGameOver();
     }

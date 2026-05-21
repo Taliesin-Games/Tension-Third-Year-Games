@@ -38,7 +38,7 @@ public class Player : Character
     }
     protected override void OnDeath()
     {
-        
+        Debug.Log("Player has died. Triggering Game Over sequence.");
         base.OnDeath();
         GameManager.Instance.GameOver();
     }
@@ -161,4 +161,8 @@ public class Player : Character
 
     }
 
+    private void OnDestroy()
+    {
+        Debug.Log("Player OnDestroy called, clearing singleton instance.");
+    }
 }

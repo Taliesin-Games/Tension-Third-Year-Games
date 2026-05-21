@@ -210,6 +210,8 @@ namespace BMD
             // Detach rig root from player
             cameraYawPivot.SetParent(null);
 
+            UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(cameraYawPivot.gameObject, gameObject.scene);
+
 
             cameraYawPivot.position = transform.position;
             cameraPitchPivot.localPosition = new Vector3(0,0,0);
