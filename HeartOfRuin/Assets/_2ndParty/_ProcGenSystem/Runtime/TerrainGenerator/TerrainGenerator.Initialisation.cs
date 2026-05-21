@@ -10,6 +10,7 @@ namespace BMD.ProcGen
             SetRandomSeed();
             SanityChecks();
             debugBeep = CreateDebugBeep();
+            CreateTerrainCam();
         }
         private void Start()
         {
@@ -34,6 +35,21 @@ namespace BMD.ProcGen
                 Debug.Log($"Random seed set to {randomSeed} based on current time.");
             }
             rng = new System.Random(randomSeed);
+        }
+
+        private void CreateTerrainCam()
+        {
+            if (!slowGeneration) return;
+
+            // Create a camera pointing down at 0,20,0
+            terrainGenCam = new GameObject("TerrainGenCam").AddComponent<Camera>();
+            terrainGenCam.transform.position = new Vector3(0, terrainCamHeight, 0);
+            terrainGenCam.transform.rotation = Quaternion.Euler(TERRAIN_CAM_ROTATION);
+
+            // Set as active camera and disable the main camera
+            mainCamera = Camera.main;
+            if (mainCamera != null) mainCamera.enabled = false;
+
         }
     }
 }

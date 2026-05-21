@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 [RequireComponent(typeof(BMD.CharacterController))] // Ensure that a CharacterController component is attached
@@ -17,13 +18,15 @@ public abstract class Character : MonoBehaviour
     [SerializeField] protected CharacterStats characterStats;
     [SerializeField] DamageStruct characterDamageBonusPercentage;
     [SerializeField] SpellCaster castComponent;
+    [SerializeField] GameObject weaponAttachPoint;
     #endregion
 
     #region Cached References
     protected BMD.CharacterController controller;
     CharacterStats baseStats;
     DamageStruct baseDamageBonusPercentage;
-
+    GameObject currentWeaponMesh;
+    EquippableItem currentVisualWeaponItem;
     #endregion
 
     #region Runtime Variables
@@ -49,7 +52,7 @@ public abstract class Character : MonoBehaviour
 
     void SetupSignaling()
     {
-        controller.OnAttackPerformed += OnAttack; 
+        controller.OnAttackPerformed += OnAttack;
     }
     private void SetupInventory()
     {
@@ -103,6 +106,11 @@ public abstract class Character : MonoBehaviour
         controller.OnEnableDamageFromWeapon += HangleEnableWeaponDamage;
         controller.OnDisableDamageFromWeapon += HandleDisableWeaponDamage;
         controller.OnCastSpell += HandleCastSpell;
+        controller.OnDieRequested += OnDeath;
+    }
+    protected virtual void OnDeath()
+    {
+        Destroy(gameObject);
     }
     protected virtual void OnDisable()
     {
@@ -148,7 +156,7 @@ public abstract class Character : MonoBehaviour
     }
     public void AddItemEffects(ItemEffect[] effects)
     {
-        if(effects == null) return;
+        if (effects == null) return;
         foreach (ItemEffect effect in effects)
         {
             activeEffects.Add(effect);
@@ -169,6 +177,85 @@ public abstract class Character : MonoBehaviour
     {
         return characterDamageBonusPercentage;
     }
+
+    private void CheckAndRemoveExistingWeaponMesh()
+    {
+        foreach (Transform childTransform in weaponAttachPoint.transform)
+        {
+            Debug.Log("Checking for weapon mesh to destroy");
+
+            CharacterWeapon temp = childTransform.GetComponent<CharacterWeapon>();
+
+            if (temp != null)
+            {
+                Debug.Log("Destroying old weapon mesh");
+                Destroy(childTransform.gameObject);
+            }
+        }
+        currentWeaponMesh = null;
+        currentVisualWeaponItem = null;
+    }
+
+    private void InstanciateNewWeaponMesh(EquippableItem equippedItem)
+    {
+        GameObject weapon = Instantiate(equippedItem.GetItemMesh(), weaponAttachPoint.transform);
+        DamageComponent tempDamageComp = weapon.GetComponent<DamageComponent>();
+        Weapon tempWeapon = equippedItem as Weapon;
+        CharacterWeapon tempCharWeapon = weapon.GetComponent<CharacterWeapon>();
+        if (tempDamageComp != null)
+        {
+            tempDamageComp.SetDamageScaling(tempWeapon.GetWeaponDamageScalings());
+        }
+        if (tempCharWeapon != null)
+        {
+            tempCharWeapon.SetParentCharacter(this);
+        }
+        weapon.transform.localPosition = Vector3.zero;
+        weapon.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+        weapon.layer = gameObject.layer;
+
+        currentWeaponMesh = weapon;
+    }
+
+    private void EvaluateWeaponMesh()
+    {
+        if (equipmentSlots == null) return;
+
+        EquippableItem fallbackWeapon = null;
+        bool isCurrentStillEquipped = false;
+
+        foreach (ItemSlot slot in equipmentSlots.GetInventorySlots())
+        {
+            EquippableItem item = slot.GetItem() as EquippableItem;
+            if (item != null && item.GetItemMesh() != null && 
+               (item.GetEquipSlotType() == EquipSlotType.OneHand || item.GetEquipSlotType() == EquipSlotType.TwoHanded))
+            {
+                if (item == currentVisualWeaponItem)
+                {
+                    isCurrentStillEquipped = true;
+                }
+                else if (fallbackWeapon == null)
+                {
+                    fallbackWeapon = item;
+                }
+            }
+        }
+
+        if (isCurrentStillEquipped)
+        {
+            return;
+        }
+
+        CheckAndRemoveExistingWeaponMesh();
+
+        if (fallbackWeapon != null)
+        {
+            InstanciateNewWeaponMesh(fallbackWeapon);
+            currentVisualWeaponItem = fallbackWeapon;
+        }
+    }
+
     public void OnItemEquipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
@@ -179,8 +266,11 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() + equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage += equippedItem.GetDamageBonusPercentages();
 
+        EvaluateWeaponMesh();
+
         NotifyStatChange?.Invoke();
     }
+
     public void OnItemUnequipped(Item item)
     {
         EquippableItem equippedItem = (EquippableItem)item;
@@ -191,8 +281,12 @@ public abstract class Character : MonoBehaviour
         characterStats.setCriticalDamage(characterStats.getCriticalDamage() - equippedItem.GetBonusCriticalDamage());
         characterDamageBonusPercentage = characterDamageBonusPercentage - equippedItem.GetDamageBonusPercentages();
 
+        EvaluateWeaponMesh();
+
         NotifyStatChange?.Invoke();
     }
+
+
     public void OnAttack()
     {
         foreach (var effect in activeEffects)
@@ -209,7 +303,7 @@ public abstract class Character : MonoBehaviour
     }
     public void OnHitTarget(Character target)
     {
-        foreach(var effect in activeEffects)
+        foreach (var effect in activeEffects)
         {
             effect.OnAttackHitEffect(this, target);
         }
@@ -219,5 +313,5 @@ public abstract class Character : MonoBehaviour
     /// newState: 0 = no damage, 1 = player weapon damage
     /// </summary>
     /// <param name="newState"></param>
-  
 }
+        

@@ -39,7 +39,7 @@ namespace BMD
 
         public event Action OnAttackRequested;
         public event Action OnAttackPerformed;
-        public event Action OnDisableDamageFromWeapon;
+        public event Action OnAttackEnded;
 
         public event Action OnSpecialAttackRequested;
         public event Action OnSpecialAttackPerformed;
@@ -49,8 +49,13 @@ namespace BMD
         public event Action OnFireWeaponPerformed;
         public event Action OnFireWeaponEnded;
 
+        public event Action OnDisableDamageFromWeapon;
         public event Action OnEnableDamageFromWeapon;
+
+        public event Action OnDealDamageFromWeapon;
         public event Action OnCastSpell;
+
+        public event Action OnTakeDamage;
 
         #endregion
 
@@ -60,6 +65,7 @@ namespace BMD
         #endregion
 
         #region Serialized fields
+        [SerializeField] float yKillValue = -20f; // Y value at which the character will be considered dead (e.g., falling off the map)
         [Header("Depricated: Speed settings for various character rotation")]
         [SerializeField] protected float crouchSpeed = 2.5f;    // Speed of the character when crouching
         [SerializeField] protected float crawlSpeed = 1f;       // Speed of the character when crawling
@@ -75,13 +81,13 @@ namespace BMD
         protected Vector3 gravity = UnityEngine.Physics.gravity; // Gravity vector for the character
         protected UnityEngine.CharacterController unityController; // Reference to the CharacterController component    
         protected Animator animator;
-        
         #endregion
 
         #region Runtime variables
         protected Vector3 moveDirection = Vector3.zero; // Current movement direction of the character
 
         protected Vector2 lookInput = Vector2.zero;
+        protected Vector3 aimDirection = Vector2.zero;
 
         protected CharacterState currentState = CharacterState.Idle;
         private Coroutine idleLoopCoroutine;    // Coroutine for handling idle loop animations
@@ -99,6 +105,7 @@ namespace BMD
 
         #region Properties
         public Vector3 MoveDirection => moveDirection;
+        public Vector3 AimDirection => aimDirection;
         public Vector2 LookInput => lookInput;
         public CharacterState CurrentState 
         {
@@ -187,8 +194,10 @@ namespace BMD
         public void RequestFireWeapon() => _RequestFireWeapon();
         public void NotifyFireWeaponPerformed() => _NotifyFireWeaponPerformed();
         public void NotifyFireWeaponEnded() => _NotifyFireWeaponEnded();
-        public void NotifyDealDamageFromWeapon() => OnEnableDamageFromWeapon?.Invoke();
+        public void NotifyDealDamageFromWeapon() { OnDealDamageFromWeapon?.Invoke(); OnEnableDamageFromWeapon?.Invoke(); }
         public void NotifyCastSpell() => OnCastSpell?.Invoke();
+
+        public void NotifyTakeDamage() => OnTakeDamage?.Invoke();
 
         protected void NotifySprintTriggered(bool triggered) 
         {
@@ -212,7 +221,6 @@ namespace BMD
             OnDieRequested?.Invoke();
             Destroy(gameObject, 2.0f);  // TODO evil magic number, but probably want die config and tracking elsewhere
         }
-
         private void _RequestAttack()
         {
             if (CantAttack) return;
@@ -220,19 +228,17 @@ namespace BMD
             OnAttackRequested?.Invoke();
             NotifyAttackPerformed();
         }
-
         private void _NotifyAttackPerformed()
         {
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnAttackPerformed?.Invoke();
         }
-
         private void _NotifyAttackEnded()
         {
             OnDisableDamageFromWeapon?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
+            OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
-
         private void _RequestSpecialAttack()
         {
             if (CantAttack) return;
@@ -245,13 +251,11 @@ namespace BMD
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnSpecialAttackPerformed?.Invoke();
         }
-
         private void _NotifySpecialAttackEnded()
         {
             OnSpecialAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
-
         private void _RequestFireWeapon()
         {
             if (CantAttack) return;
@@ -259,19 +263,16 @@ namespace BMD
             OnFireWeaponRequested?.Invoke();
             NotifyFireWeaponPerformed();
         }
-
         private void _NotifyFireWeaponPerformed()
         {
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnFireWeaponPerformed?.Invoke();
         }
-
         private void _NotifyFireWeaponEnded()
         {
             OnFireWeaponEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
-
         #endregion
 
         protected virtual void Awake()
@@ -297,6 +298,11 @@ namespace BMD
         }
         protected virtual void Update()
         {
+            if(transform.position.y <= yKillValue)
+            {
+                RequestDie();
+            }
+
             foreach (var (_, module) in modules)
                 module.Tick(Time.deltaTime);
         }
@@ -307,6 +313,7 @@ namespace BMD
                 module.FixedTick(Time.fixedDeltaTime);
 
         }
+        
 
 #if UNITY_EDITOR
         [ContextMenu("Add Default Modules")]

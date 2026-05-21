@@ -6,7 +6,7 @@ namespace BMD
     [RequireComponent(typeof(UnityEngine.CharacterController))]
     public class CharacterMovementModule : CharacterModule
     {
-        [Serializable] private enum RotationType
+        [Serializable] protected enum RotationType
         {
             TowardsMovement = 0,
             TowardsInput = 1,
@@ -29,6 +29,8 @@ namespace BMD
         [Tooltip("Acceleration and deceleration")]
         [SerializeField] float movementAcceleration = 10.0f;
         [SerializeField] float minMoveInputMagnitude = 0.05f; // Minimum input magnitude to consider movement
+        [SerializeField] bool moveWhileAttacking = false;       // Whether movement is allowed while attacking (currently only affects rotation, not movement itself which is always allowed)
+        [SerializeField] float maxAttackMoveSpeed = 3f;              // Maximum speed allowed while attacking, if movement while attacking is disabled this is ignored
 
         [Header("Rotation Settings")]
         [Tooltip("Toggle rotation")]
@@ -37,6 +39,8 @@ namespace BMD
         [SerializeField] float rotationSpeed = 10f;
         [Tooltip("Define if rotation should be based on movement, or input, or dynamic.")]
         [SerializeField] RotationType rotationType = RotationType.TowardsMovement;
+        [SerializeField] bool rotateTowardsAim = false;             // If true, overrides other rotation types and rotates towards aim direction instead (not implemented yet)
+        [SerializeField] float attackTurnSpeedMultiplier = 2.5f;    // Multiplier to rotation speed when attacking, to allow quicker turns towards target
 
         [SerializeField, Tooltip("When moving slower than this speed, rotation snaps instantly")]
         float instantTurnThreshold = 0.05f;
@@ -171,21 +175,27 @@ namespace BMD
             ApplyVerticalMovement(fixedDeltaTime);                      // 1) update verticalVelocity, landing, coyote
             DetermineMovement(out var dir, out var s, fixedDeltaTime);  // 2) decide horizontal direction & speed (idle/walk/run/sprint/dodge/roll)
             ApplyMovement(dir, s, fixedDeltaTime);                      // 3) combine horiz + vertical, move CC, cache horiz vel
-            
-            switch (rotationType)                                       // 4) rotate (instant during dodge/roll)
+
+            if (controller.IsAttacking) RotateCharacterTowardsAim(fixedDeltaTime);    // Override when attacking
+            else
             {
-                default:
-                case RotationType.TowardsMovement:
-                    RotateCharacterTowardsMovement(fixedDeltaTime);
-                    break;
-                case RotationType.TowardsInput:
-                    RotateCharacterTowardsInput(fixedDeltaTime);
-                    break;
-                case RotationType.DynamicType:
-                    Debug.LogError("Dynamic type not yet implemented, please use Towards Movement or Towards Input");
-                    RotateCharacterTowardsMovement(fixedDeltaTime);
-                    break;
+                switch (rotationType)                                       // 4) rotate (instant during dodge/roll)
+                {
+                    default:
+                    case RotationType.TowardsMovement:
+                        RotateCharacterTowardsMovement(fixedDeltaTime);
+                        break;
+                    case RotationType.TowardsInput:
+                        RotateCharacterTowardsInput(fixedDeltaTime);
+                        break;
+                    case RotationType.DynamicType:
+                        Debug.LogError("Dynamic type not yet implemented, please use Towards Movement or Towards Input");
+                        RotateCharacterTowardsMovement(fixedDeltaTime);
+                        break;
+                }
             }
+
+            
             
             UpdateState();                                              // 5) emit state changes
         }
@@ -331,6 +341,7 @@ namespace BMD
 
             // Ternary operator to choose between runSpeed and sprintSpeed, walk speed is not used here and is only for threshholds within this module
             float targetSpeed = isSprinting ? sprintSpeed : runSpeed;
+            if (controller.IsAttacking) targetSpeed = moveWhileAttacking ? Mathf.Min(targetSpeed, maxAttackMoveSpeed) : 0;
 
             // Smooth accel/decel toward target * inputMagnitude
             float currentHorizontalSpeed = currentHorizontalVelocity.magnitude;
@@ -428,7 +439,35 @@ namespace BMD
                 targetRotation,
                 rotationSpeed * dt
             );
-            Debug.Log("Finished turn");
+            //Debug.Log("Finished turn");
+        }
+        private void RotateCharacterTowardsAim(float dt)
+        {
+            if (!rotateTowardsAim) return;
+
+            Vector3 aimDir = controller.AimDirection;
+            aimDir.y = 0f;
+
+            if (aimDir.sqrMagnitude < 0.0001f) return;
+
+            Vector3 targetDir = aimDir.normalized;
+            Vector3 currentDir = unityController.transform.forward;
+
+            TurnAngle = Vector3.SignedAngle(currentDir, targetDir, Vector3.up);
+
+            Quaternion targetRotation = Quaternion.LookRotation(targetDir);
+
+            // Snap if small movement
+
+
+            // Apply attack turn speed multiplier
+            unityController.transform.rotation = Quaternion.Slerp(
+                unityController.transform.rotation,
+                targetRotation,
+                rotationSpeed * attackTurnSpeedMultiplier * dt
+            );
+
+
         }
         private void UpdateState()
         {

@@ -1,6 +1,7 @@
 using BMD;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 
 [RequireComponent(typeof(Animator))] // Ensure that an Animator component is attached
@@ -33,8 +34,14 @@ public class Player : Character
         dropItemAction.performed += ctx => DropItem();
 
 
-    }
 
+    }
+    protected override void OnDeath()
+    {
+        
+        base.OnDeath();
+        GameManager.Instance.GameOver();
+    }
     protected override void OnDisable()
     {
         base.OnDisable();
@@ -42,9 +49,8 @@ public class Player : Character
         inventoryTogglePlayer.performed -= ctx => ToggleInventory();
         inventoryToggleUI.performed -= ctx => ToggleInventory();
         dropItemAction.performed -= ctx => DropItem();
+        
     }
-
-
     protected override void Awake()
     {
         Instance = this;
@@ -62,15 +68,17 @@ public class Player : Character
         uiActionMap.Disable(); // start with UI action map disabled
 
     }
-
     protected override void Start()
     {
         base.Start();
         InitialiseUIControllerVariables();
+        base.Start();
     }
 
+    
     private void Update()
     {
+        if(!inventoryUiController || !equipmentUiController) return;
 
         if (invToggle)
         {   
@@ -87,8 +95,6 @@ public class Player : Character
         }
 
     }
-
-
     void DropItem()
     {
         if (inventoryUiController != null)
@@ -97,8 +103,6 @@ public class Player : Character
             Debug.Log("drop key pressed");
         }
     }
-
-
     void ToggleInventory()
     {
 
@@ -135,9 +139,9 @@ public class Player : Character
             HUDOffsetController.Instance.SetOffsetEnabled(false);
         }
     }
-
     void InitialiseUIControllerVariables()
     {
+        if (InventoryUIController.Instance == null) return;
 
         inventoryUiController = InventoryUIController.Instance;
         inventoryUiController.SetInventory(inventory);

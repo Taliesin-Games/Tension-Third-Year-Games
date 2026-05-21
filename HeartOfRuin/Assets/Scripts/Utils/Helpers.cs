@@ -23,5 +23,62 @@ namespace Utils
                 prev = next;
             }
         }
+        
+        public static void DebugDrawSphere(Vector3 center, float radius, Color colour, int segments = 24, int latitudeDivisionsPerRadi = 10, int longitudeDivisionsPerRadi = 10)
+        {
+            int latDivisions = (int)Mathf.Ceil(latitudeDivisionsPerRadi * radius);
+            int longDivisions = (int)Mathf.Ceil(longitudeDivisionsPerRadi * radius);
+            // Horizontal rings (latitude)
+            for (int lat = 0; lat <= latDivisions; lat++)
+            {
+                float v = lat / (float)latDivisions;
+                float theta = Mathf.Lerp(-Mathf.PI * 0.5f, Mathf.PI * 0.5f, v);
+
+                float y = Mathf.Sin(theta) * radius;
+                float ringRadius = Mathf.Cos(theta) * radius;
+
+                Vector3 prev = center + new Vector3(ringRadius, y, 0);
+
+                for (int i = 1; i <= segments; i++)
+                {
+                    float ang = (i / (float)segments) * Mathf.PI * 2f;
+
+                    Vector3 next = center + new Vector3(
+                        Mathf.Cos(ang) * ringRadius,
+                        y,
+                        Mathf.Sin(ang) * ringRadius
+                    );
+
+                    Debug.DrawLine(prev, next, colour);
+                    prev = next;
+                }
+            }
+
+            // Vertical rings (longitude)
+            for (int lon = 0; lon < longDivisions; lon++)
+            {
+                float phi = (lon / (float)longDivisions) * Mathf.PI * 2f;
+
+                Vector3 prev = center + new Vector3(
+                    Mathf.Cos(phi) * radius,
+                    0,
+                    Mathf.Sin(phi) * radius
+                );
+
+                for (int i = 1; i <= segments; i++)
+                {
+                    float ang = (i / (float)segments) * Mathf.PI * 2f;
+
+                    Vector3 next = center + new Vector3(
+                        Mathf.Cos(phi) * Mathf.Cos(ang) * radius,
+                        Mathf.Sin(ang) * radius,
+                        Mathf.Sin(phi) * Mathf.Cos(ang) * radius
+                    );
+
+                    Debug.DrawLine(prev, next, colour);
+                    prev = next;
+                }
+            }
+        }
     }
 }

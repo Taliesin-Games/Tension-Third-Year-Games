@@ -1,11 +1,14 @@
-using Codice.Client.BaseCommands;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 namespace BMD.ProcGen
 {
 
     public class Connection : MonoBehaviour
     {
+        const float NAVMESHLINK_WIDTH = 1f;
+        const float NAVMESHLINK_LENGTH = 2f;
         #region Configuration
         [SerializeField] ConnectionDirection direction = ConnectionDirection.Auto;
         [SerializeField] GameObject editorVisualisation;
@@ -23,6 +26,7 @@ namespace BMD.ProcGen
         string originalName;
         ConnectionDirection defaultDirection;
         (Connection, Connection) lastTestedConnections;
+        bool navmeshLinked = false;
         #endregion
 
         #region Properties
@@ -202,6 +206,63 @@ namespace BMD.ProcGen
             conB.parent.transform.position = parentBNewPos;
 
             return true;
+        }
+        public static bool LinkNavmesh(Connection conA)
+        {
+            if (conA == null || conA.linked == null) return false;
+
+            // If already linked we assume the navmesh is also linked, this is to avoid doing expensive navmesh checks multiple times for the same connection during generation
+            if (conA.navmeshLinked || conA.linked.navmeshLinked) return true;
+
+            Transform t = conA.transform;
+            Transform tParent = t.parent;
+
+            Vector3 selfDirection = t.position - tParent.position;
+            selfDirection.y = 0; // Ignore vertical component for direction
+            selfDirection.Normalize();
+
+            Vector3 linkedDirection = conA.linked.transform.position - conA.linked.transform.parent.position;
+            linkedDirection.y = 0; // Ignore vertical component for direction
+            linkedDirection.Normalize();
+
+            Vector3 rawStartWorld = t.position - selfDirection * (NAVMESHLINK_LENGTH / 2f);
+            Vector3 rawEndWorld = t.position - linkedDirection * (NAVMESHLINK_LENGTH / 2f);
+
+            if (!TrySnapToNavMesh(rawStartWorld, out Vector3 startWorld)) return false;
+
+            if (!TrySnapToNavMesh(rawEndWorld, out Vector3 endWorld)) return false;
+
+            NavMeshLink link = conA.gameObject.AddComponent<NavMeshLink>();
+
+            link.startPoint = t.InverseTransformPoint(startWorld);
+            link.endPoint = t.InverseTransformPoint(endWorld);
+
+            link.width = NAVMESHLINK_WIDTH;
+            link.bidirectional = true;
+            link.area = 0;      // Walkable by default
+
+            conA.navmeshLinked = true;
+            conA.linked.navmeshLinked = true;
+
+            return true;
+        }
+
+        private static bool TrySnapToNavMesh(Vector3 worldPoint, out Vector3 snappedPoint)
+        {
+            const float maxSnapDistance = 10f;
+
+            if (NavMesh.SamplePosition(
+                worldPoint,
+                out NavMeshHit hit,
+                maxSnapDistance,
+                NavMesh.AllAreas))
+            {
+                snappedPoint = hit.position;
+                return true;
+            }
+
+            snappedPoint = worldPoint;
+            return false;
         }
     }
 }

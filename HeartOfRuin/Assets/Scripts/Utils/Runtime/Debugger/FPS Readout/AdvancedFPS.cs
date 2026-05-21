@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils.DebuggerConfig; // Allows properties to be called as if they belong to this object
@@ -41,6 +42,7 @@ namespace Utils
             frameTimes = new float[FrameSamples];
 
             SetupUI();
+            StartCoroutine(OncePerSecond());
         }
 
         void Update()
@@ -57,10 +59,22 @@ namespace Utils
 
             nextLogTime = Time.time + FPSLogInterval;
 
-            UpdateUIText();
-            OutputToLog();
+            //UpdateUIText();
+            //OutputToLog();
         }
 
+        IEnumerator OncePerSecond()
+        {
+            while (Time.time < startTime + 0.01f) // Add a small amount of time incase we pass the threshold during the frame. This ensures Update always happens first.
+                yield return null; // Wait until load delay has passed
+
+            while (true)
+            {
+                yield return new WaitForSecondsRealtime(1f);
+                UpdateUIText();
+                OutputToLog();
+            }
+        }
         private void CalculateFPS()
         {
             // Remove the old frame time from the total
