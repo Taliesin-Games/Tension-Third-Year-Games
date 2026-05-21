@@ -110,13 +110,14 @@ namespace BMD
         void SetAim()
         {
             Vector2 aimInput = aimAction.ReadValue<Vector2>();
+            Debug.Log($"Aim input: {aimInput}");
             if (Gamepad.current != null && Gamepad.current.rightStick.IsActuated(STICK_DEADZONE))
             {
                 AimWithStick(aimInput);
             }
             else
             {
-                AimWithMouse(lookInput);
+                AimWithMouse(aimInput);
             }
         }
         void AimWithStick(Vector2 aimInput)
@@ -132,17 +133,24 @@ namespace BMD
         {
             Ray ray = Camera.ScreenPointToRay(screenPosition);
 
+            Debug.DrawRay(ray.origin, ray.direction, Color.yellow, 5.0f);
+
             // Infinite horizontal plane through the player
             Plane aimPlane = new Plane(Vector3.up, transform.position);
 
             if (!aimPlane.Raycast(ray, out float enter))  return;
 
             Vector3 worldPoint = ray.GetPoint(enter);
+            Debug.DrawRay(ray.origin, ray.direction * enter, Color.green, 5.0f);
 
             Vector3 direction = worldPoint - transform.position;
             direction.y = 0f;
 
             aimDirection = direction.normalized;
+
+            Debug.DrawRay(transform.position, direction, Color.blue, 5.0f);
+
+            Debug.Log($"Screen Position: {screenPosition}, Aim Direction: {aimDirection}");
 
             
         }
