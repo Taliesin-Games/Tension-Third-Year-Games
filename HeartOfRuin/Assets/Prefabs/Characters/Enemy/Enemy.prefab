@@ -22,8 +22,11 @@ GameObject:
   - component: {fileID: 2083632132247281666}
   - component: {fileID: 1407167254472913541}
   - component: {fileID: 6364022765882385359}
+  - component: {fileID: 7375253652336715246}
+  - component: {fileID: -9100195043480525474}
+  - component: {fileID: 3246230972150234672}
   m_Layer: 7
-  m_Name: Enemy Stump_Folk
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,7 +145,8 @@ MonoBehaviour:
     Earth: 0
     Wind: 0
     Water: 0
-  castComponent: {fileID: 0}
+  castComponent: {fileID: 7375253652336715246}
+  weaponAttachPoint: {fileID: 0}
 --- !u!114 &562441046664065344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,7 +183,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63c6d5cf95566b64db534bd953f09b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyNavigation
-  debugPath: 1
 --- !u!114 &1301100792316087286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,7 +222,7 @@ MonoBehaviour:
   spellAttackRange:
     Min: 4
     Max: 8
-  patrolRadius: 6
+  patrolRadius: 10
   patrolPauseRange: {x: 0.5, y: 1.5}
   navMeshSampleRadius: 2
   patrolSampleMaxTries: 6
@@ -383,6 +386,61 @@ MonoBehaviour:
   inventorySize: 20
   startingItems: []
   itemDropPrefab: {fileID: 3675725128406392298, guid: d75e7c45fd8002c4e8d78e4da88b1104, type: 3}
+--- !u!114 &7375253652336715246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607250186916821478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f661655b20aa5fe4a9253c14ccf6763c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellCaster
+  spells:
+  - {fileID: 11400000, guid: d83b39e00261e1a45b74d2471734eb8d, type: 2}
+  selectedSpell: 0
+  castPosOffset: {x: 0, y: 2, z: 0}
+  mana: {fileID: -9100195043480525474}
+  damageComponent: {fileID: 3246230972150234672}
+--- !u!114 &-9100195043480525474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607250186916821478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77478176ba885154cbe469677530fc5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Mana
+  maxValue: 1000
+  regenRate: 100
+--- !u!114 &3246230972150234672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607250186916821478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090fb96d13786254c8c54fe647d8862d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageComponent
+  damageScaling:
+    None: 0
+    Physical: 0
+    Magical: 1
+    True: 1
+    Fire: 0
+    Lightning: 0
+    Ice: 1
+    Earth: 0
+    Wind: 1
+    Water: 1
 --- !u!1001 &7414834917505524841
 PrefabInstance:
   m_ObjectHideFlags: 0
