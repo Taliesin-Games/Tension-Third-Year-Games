@@ -63,7 +63,7 @@ public class Player : Character
 
     }
 
-    private void Start()
+    protected override void Start()
     {
         base.Start();
         InitialiseUIControllerVariables();
