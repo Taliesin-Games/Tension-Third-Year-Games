@@ -1,10 +1,11 @@
-using UnityEngine;
+using BMD.DataTypes;
 using BMD.ProcGen;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.AI.Navigation;
+using UnityEngine;
 using Utils;
 using Random = UnityEngine.Random;
-using Unity.AI.Navigation;
-using System.Collections;
-using BMD.DataTypes;
 
 [RequireComponent(typeof(EnemyNavigation))]
 public class EnemyController : BMD.CharacterController
@@ -50,6 +51,7 @@ public class EnemyController : BMD.CharacterController
     #region Cached References
     Enemy enemy;
     EnemyNavigation enemyNavigation;
+    Health health;
     #endregion
 
     #region Runtime Variables
@@ -75,7 +77,8 @@ public class EnemyController : BMD.CharacterController
     #endregion
 
     #region Preallocations
-
+    Vector2 inputDirectiuon = Vector2.zero;
+    Dictionary<System.Action, int> attackChoices = new();
     #endregion
     #region Properties and Helpers
     bool IsDead {  get { return enemy.IsDead; } set { enemy.IsDead = value; } }
@@ -101,21 +104,46 @@ public class EnemyController : BMD.CharacterController
     float MaxAttackRange => Mathf.Max(meleeAttacker ? meleeAttackRange.Max : float.MinValue, rangedAttacker ? rangedAttackRange.Max : float.MinValue, spellAttacker ? spellAttackRange.Max : float.MinValue);
     #endregion
 
-    
-
     protected override void Awake()
     {
         base.Awake();
         FindReferences();
-
+        DefineAttackChoices();
         //Set initial origin for patrols
         homePosition = transform.position; // patrol around spawn
+    }
+    private void OnEnable()
+    {
+        if (health != null) health.OnResourceChanged += TakeDamage;
+    }
+    private void OnDisable()
+    {
+        if (health != null) health.OnResourceChanged -= TakeDamage;
+    }
+    private void TakeDamage(ResourceChangeEventArgs healthData)
+    {
+        if (healthData.Delta >= 0) return;
+
+        NotifyTakeDamage();
+
+        enemyState = EnemyState.Chasing;
+        currentTarget = Player.Instance.transform;
+        loseTargetTimer = Time.time;
+    }
+    private void DefineAttackChoices()
+    {
+        // Predefine the dictionary of attack choices
+        attackChoices[Chase] = 0;
+        attackChoices[AttackMelee] = 0;
+        attackChoices[AttackRanged] = 0;
+        attackChoices[AttackSpell] = 0;
     }
     private void FindReferences()
     {
         // Cache references
         enemy = GetComponent<Enemy>();
         enemyNavigation = GetComponent<EnemyNavigation>();
+        health = GetComponent<Health>();
 
     }
     protected override void Start()
@@ -140,7 +168,6 @@ public class EnemyController : BMD.CharacterController
             yield return new WaitForSeconds(stateUpdateInterval);
         }
     }
-
     void SetEnemyState()
     {
         switch (enemyState)
@@ -152,6 +179,7 @@ public class EnemyController : BMD.CharacterController
                 SetStateFromPatrolling();
                 break;
             case EnemyState.Chasing:
+            case EnemyState.Attacking:
                 SetStateFromChasing();
                 break;
 
@@ -196,14 +224,18 @@ public class EnemyController : BMD.CharacterController
     {
         if (DistanceToPatrolPoint > softStopRange) return;
 
-        if (!enemyNavigation.TryGetPatrolPoint(homePosition, patrolRadius, navMeshSampleRadius, patrolSampleMaxTries, out patrolDestination))
+        if (enemyNavigation.TryGetPatrolPoint(homePosition, patrolRadius, navMeshSampleRadius, patrolSampleMaxTries, out patrolDestination))
+        {
+            enemyNavigation.MoveTo(patrolDestination);
+        }
+        else
         {
             enemyState = EnemyState.Idle;
+            enemyNavigation.MoveTo(homePosition);
         }
     }
     void StartChase()
     {
-        currentTarget = Player.Instance.transform;
         enemyState = EnemyState.Chasing;
         loseTargetTimer = Time.time;
         currentTarget = Player.Instance.transform;
@@ -211,16 +243,9 @@ public class EnemyController : BMD.CharacterController
     void SetStateFromChasing()
     {
         // REturning to idle is handled in the Chase() method, which checks distance and timers every frame, so we only need to check for attack range here.
-        if (DistanceToTarget > MaxAttackRange) return;  // Cant attack yet, keep chasing
-
-        DecideAttack();
-    }
-
-    bool DecideAttack()
-    {
-        // Change to return false to keep chasing.
+        if (DistanceToTarget > MaxAttackRange) enemyState = EnemyState.Chasing;     // Cant attack yet, keep chasing
+        else                                   enemyState = EnemyState.Attacking;
         
-        return false;
     }
     bool IsPlayerInRange()
     {
@@ -242,9 +267,16 @@ public class EnemyController : BMD.CharacterController
         }
 
         loseTargetTimer = Time.time;
+        enemyNavigation.MoveTo(Player.Instance.transform.position);
         return true;
     }
     protected override void FixedUpdate()
+    {
+        MoveAndAttack();
+
+        base.FixedUpdate();
+    }
+    private void MoveAndAttack()
     {
         // We use fixed update for enemy inputs. No need to calcualte inputs every frame if they are applied on FixedUpdate.
         switch (enemyState)
@@ -258,10 +290,11 @@ public class EnemyController : BMD.CharacterController
             case EnemyState.Chasing:
                 Chase();
                 break;
+            case EnemyState.Attacking:
+                Attack();
+                break;
 
         }
-
-        base.FixedUpdate();
     }
     bool HasReachedDestination()
     {
@@ -275,8 +308,14 @@ public class EnemyController : BMD.CharacterController
     }
     void WalkHome()
     {
-        if (HasReachedDestination()) return;
-        moveDirection = DirectionToHome;
+        if (HasReachedDestination()) moveDirection = DirectionToHome;
+        else
+        {
+            inputDirectiuon = enemyNavigation.MoveDirection();
+            moveDirection.x = inputDirectiuon.x;
+            moveDirection.z = inputDirectiuon.y;
+            moveDirection.y = 0f;
+        }
 
         // Walk back slightly slower
         moveDirection *= 0.8f;
@@ -286,8 +325,14 @@ public class EnemyController : BMD.CharacterController
     }
     void WalkPatrol()
     {
-        if (HasReachedDestination()) return;
-        moveDirection = DirectionToPatrolPoint;
+        if (HasReachedDestination()) moveDirection = DirectionToPatrolPoint;
+        else
+        {
+            inputDirectiuon = enemyNavigation.MoveDirection();
+            moveDirection.x = inputDirectiuon.x;
+            moveDirection.z = inputDirectiuon.y;
+            moveDirection.y = 0f;
+        }
 
         // Walk back slightly slower
         moveDirection *= 0.8f;
@@ -296,8 +341,11 @@ public class EnemyController : BMD.CharacterController
     }
     void Chase() 
     {
-        
-        moveDirection = DirectionToTarget;
+        enemyNavigation.MoveTo(Player.Instance.transform.position); // Update player position every frame while chasing.
+        inputDirectiuon = enemyNavigation.MoveDirection();
+        moveDirection.x = inputDirectiuon.x;
+        moveDirection.z = inputDirectiuon.y;
+        moveDirection.y = 0f;
 
         SoftStop(ref moveDirection, DistanceToTarget);
 
@@ -305,10 +353,65 @@ public class EnemyController : BMD.CharacterController
         {
             currentTarget = null;
             enemyState = EnemyState.Idle;
+            enemyNavigation.MoveTo(homePosition);
         }
         else
         {
             loseTargetTimer = Time.time;
+            if (DistanceToTarget < MaxAttackRange) enemyState = EnemyState.Attacking;
+        }
+    }
+    void Attack()
+    {
+        // If enemy has moved away, just chase to move closer. We don't switch state for a more responsive attack.
+        if (DistanceToTarget > MaxAttackRange)
+        {
+            Chase();
+            return;
+        }
+        enemyNavigation.MoveTo(Player.Instance.transform.position);
+
+        // Reset the scores
+        foreach(var entry in attackChoices)
+        {
+            attackChoices[entry.Key] = 0;
+        }
+
+
+
+    }
+    void AttackMelee()
+    {
+
+    }
+    void AttackRanged()
+    {
+
+    }
+    void AttackSpell()
+    {
+
+    }
+    void ChooseWeighted(List<(System.Action action, int weight)> options)
+    {
+        int total = 0;
+
+        foreach (var option in options)
+            total += option.weight;
+
+        int roll = Random.Range(0, total);
+
+        int current = 0;
+
+        foreach (var option in options)
+        {
+            current += option.weight;
+
+            if (roll < current)
+            {
+                option.action.Invoke();
+                return;
+            }
         }
     }
     /// <summary>
@@ -345,8 +448,6 @@ public class EnemyController : BMD.CharacterController
 
         base.Update();
     }
-
-
     private void SetMoveDirection()
     {
         Vector2 inputDirectiuon = enemyNavigation.MoveDirection(); // a Vector3 direction
@@ -358,7 +459,6 @@ public class EnemyController : BMD.CharacterController
         moveDirection = worldDirection.normalized * inputMagnitude;
         moveDirection = worldDirection.normalized * inputMagnitude;
     }
-
     private void SwitchEnemyState()
     {
         // State machine tick
@@ -714,13 +814,11 @@ public class EnemyController : BMD.CharacterController
 
         return true;
     }
-
     float FlatDistance(Vector3 a, Vector3 b)
     {
         Vector2 delta = new Vector2(a.x - b.x, a.z - b.z);
         return delta.magnitude;
     }
-
     Vector3 FlatDirection(Vector3 from, Vector3 to)
     {
         return new Vector3(
