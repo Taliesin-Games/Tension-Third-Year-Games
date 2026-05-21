@@ -317,14 +317,6 @@ MonoBehaviour:
   swimSpeed: 4
   swingSpeed: 8
   flySpeed: 12
-  lookSensitivity: 1
-  verticalClamp: 80
-  followDistance: 5
-  followHeight: 2
-  horizontalOffset: 0
-  isThirdPerson: 1
-  smoothSpeed: 10
-  cameraFollowDamping: 0.05
 --- !u!114 &7901440840464277104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,7 +398,6 @@ MonoBehaviour:
     Earth: 0
     Wind: 0
     Water: 0
-  damageNumberPrefab: {fileID: 2727937956588806166, guid: 0ec123089ae39ff4295be25bd54e7585, type: 3}
 --- !u!114 &1455380744001479624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,11 +411,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   characterName: Glorp Gleep
+  activeEffects: []
   equipmentSlots: {fileID: 2419531479544337494}
   inventory: {fileID: 3001075598756378503}
   characterStats: {fileID: 350700010215411650}
-  inventoryUI: {fileID: 8658305198490398721}
-  equipmentUI: {fileID: 5645967438186080142}
+  characterDamageBonusPercentage:
+    None: 0
+    Physical: 0
+    Magical: 0
+    True: 0
+    Fire: 0
+    Lightning: 0
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
+  castComponent: {fileID: 0}
+  playerHUD: {fileID: 0}
 --- !u!114 &5908812385604698862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +441,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BMD.CharacterAnimatorModule
   blendTreeTransitionRate: 0.05
+  attackLayerTransitionInTime: 0.05
+  attackLayerTransitionOutTime: 0.2
 --- !u!114 &4281219259042041299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1168,7 +1173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 865318963600452104, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00000011920929
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1245748949514355488, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
       propertyPath: m_Name
@@ -1331,18 +1336,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
---- !u!1 &5645967438186080142 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4422751163784942600, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
-  m_PrefabInstance: {fileID: 8303025521765659526}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6376539154147154327 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3117688495164336657, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
-  m_PrefabInstance: {fileID: 8303025521765659526}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8658305198490398721 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 797769408279217031, guid: 659ceea0f19a5414abe4c8b5ff16d1be, type: 3}
   m_PrefabInstance: {fileID: 8303025521765659526}
   m_PrefabAsset: {fileID: 0}
