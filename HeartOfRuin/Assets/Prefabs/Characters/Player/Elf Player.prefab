@@ -125,6 +125,7 @@ MonoBehaviour:
     Wind: 0
     Water: 0
   castComponent: {fileID: 1207980942263171655}
+  weaponAttachPoint: {fileID: 8624963137319489105}
   playerHUD: {fileID: 0}
 --- !u!114 &5568387887786979083
 MonoBehaviour:
@@ -196,7 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   inventoryName: 'Starting Equipment / Equipped items '
-  inventorySize: 7
+  inventorySize: 6
   startingItems:
   - item: {fileID: 11400000, guid: e272eeb5a4ba08e449cec92d127d9c3a, type: 2}
     quantity: 1
@@ -213,10 +214,7 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: 2f0cbcf653a3531409985d765491be11, type: 2}
     quantity: 1
     slotType: 4
-  - item: {fileID: 0}
-    quantity: 0
-    slotType: 6
-  - item: {fileID: 11400000, guid: 2c2abe593e0ad0046bfbd20ff96447c6, type: 2}
+  - item: {fileID: 11400000, guid: e684c293a4ae72a4991f9e20d0024da0, type: 2}
     quantity: 1
     slotType: 6
   itemDropPrefab: {fileID: 3675725128406392298, guid: d75e7c45fd8002c4e8d78e4da88b1104, type: 3}
@@ -1027,6 +1025,11 @@ Transform:
 --- !u!4 &6167431725955613883 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
+  m_PrefabInstance: {fileID: 5917069134154326864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8624963137319489105 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2715566404302941441, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
   m_PrefabInstance: {fileID: 5917069134154326864}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7633804015272764388
