@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 [RequireComponent(typeof(BMD.CharacterController))] // Ensure that a CharacterController component is attached
