@@ -65,6 +65,7 @@ namespace BMD
         #endregion
 
         #region Serialized fields
+        [SerializeField] float yKillValue = -20f; // Y value at which the character will be considered dead (e.g., falling off the map)
         [Header("Depricated: Speed settings for various character rotation")]
         [SerializeField] protected float crouchSpeed = 2.5f;    // Speed of the character when crouching
         [SerializeField] protected float crawlSpeed = 1f;       // Speed of the character when crawling
@@ -297,6 +298,11 @@ namespace BMD
         }
         protected virtual void Update()
         {
+            if(transform.position.y <= yKillValue)
+            {
+                RequestDie();
+            }
+
             foreach (var (_, module) in modules)
                 module.Tick(Time.deltaTime);
         }

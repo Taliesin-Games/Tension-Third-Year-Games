@@ -34,6 +34,13 @@ public class Player : Character
         dropItemAction.performed += ctx => DropItem();
 
 
+
+    }
+    protected override void OnDeath()
+    {
+        
+        base.OnDeath();
+        GameManager.Instance.GameOver();
     }
     protected override void OnDisable()
     {
@@ -61,9 +68,10 @@ public class Player : Character
         uiActionMap.Disable(); // start with UI action map disabled
 
     }
-    private void Start()
+    protected override void Start()
     {
         InitialiseUIControllerVariables();
+        base.Start();
     }
 
     

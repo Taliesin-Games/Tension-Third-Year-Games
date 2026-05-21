@@ -106,6 +106,11 @@ public abstract class Character : MonoBehaviour
         controller.OnEnableDamageFromWeapon += HangleEnableWeaponDamage;
         controller.OnDisableDamageFromWeapon += HandleDisableWeaponDamage;
         controller.OnCastSpell += HandleCastSpell;
+        controller.OnDieRequested += OnDeath;
+    }
+    protected virtual void OnDeath()
+    {
+        Destroy(gameObject);
     }
     protected virtual void OnDisable()
     {
