@@ -15,7 +15,7 @@ namespace BMD
             "Only applies to values inside blend trees. Does NOT affect animator transitions.\n" +
             "Smaller is faster.")]
         [Range(0.0f, 1.0f)]
-        [SerializeField] float blendTreeTransitionRate = 0.05f;     // The reat at which float parameters are smoothed
+        [SerializeField] float blendTreeTransitionRate = 0.05f;     // The rate at which float parameters are smoothed
         [SerializeField] float attackLayerTransitionInTime = 0.05f;
         [SerializeField] float attackLayerTransitionOutTime = 0.2f;
 
@@ -31,6 +31,7 @@ namespace BMD
         private static readonly int IsDodgingHash = Animator.StringToHash("IsDodging");
         private static readonly int IsRollingHash = Animator.StringToHash("IsRolling");
         private static readonly int IsAttackingHash = Animator.StringToHash("IsAttacking");
+        private static readonly int IsDeadHash = Animator.StringToHash("IsDead");
         private static readonly int CharacterStateHash = Animator.StringToHash("CharacterState");
         
         // Movement blend parameters
@@ -42,6 +43,8 @@ namespace BMD
         private static readonly int IdleStyleHash = Animator.StringToHash("IdleStyle");
         private static readonly int AttackStyleHash = Animator.StringToHash("AttackStyle");
         private static readonly int Attack2StyleHash = Animator.StringToHash("Attack2Style");
+        private static readonly int Attack3StyleHash = Animator.StringToHash("Attack3Style");
+        private static readonly int DeathStyleHash = Animator.StringToHash("DeathStyle");
 
         // Triggers and other parameters
         private static readonly int SwitchIdleHash = Animator.StringToHash("SwitchIdle");
@@ -55,6 +58,8 @@ namespace BMD
         private static readonly int FireWeaponTriggerHash = Animator.StringToHash("FireWeaponTrigger");
         private static readonly int AttackTriggerHash = Animator.StringToHash("AttackTrigger");
         private static readonly int Attack2TriggerHash = Animator.StringToHash("Attack2Trigger");
+        private static readonly int Attack3TriggerHash = Animator.StringToHash("Attack3Trigger");
+        private static readonly int DeathTriggerHash = Animator.StringToHash("DeathTrigger");
         #endregion
 
         #region Cached References
@@ -133,10 +138,12 @@ namespace BMD
             controller.OnFireWeaponEnded     += HandleFireWeaponEnded;
 
             controller.OnAttackPerformed     += HandleAttackPerformed;
-            controller.OnDisableDamageFromWeapon         += HandleAttackEnded;
+            controller.OnAttackEnded         += HandleAttackEnded;
 
             controller.OnSpecialAttackPerformed += HandleSpecialAttackPerformed;
             controller.OnSpecialAttackEnded  += HandleSpecialAttackEnded;
+
+            controller.OnDieRequested += HandleDeathPerformed;
 
         }
         public override void Tick(float deltaTime)
@@ -226,7 +233,7 @@ namespace BMD
 
         private void HandleAttackPerformed()
         {
-            
+            animator.SetFloat(AttackStyleHash, Random.Range(0f, 1f));
             animator.SetBool(IsAttackingHash, true);
             animator.SetTrigger(AttackTriggerHash);
             SetAttackFade(true);
@@ -243,6 +250,7 @@ namespace BMD
         {
 
             animator.SetBool(IsAttackingHash, true);
+            animator.SetFloat(Attack2StyleHash, Random.Range(0f, 1f));
             animator.SetTrigger(Attack2TriggerHash);
             SetAttackFade(true);
         }
@@ -255,7 +263,9 @@ namespace BMD
         private void HandleFireWeaponPerformed()
         {
             animator.SetBool(IsAttackingHash, true);
-            animator.SetTrigger(FireWeaponTriggerHash);
+            if (Attack3StyleHash != 0) animator.SetFloat(Attack3StyleHash, Random.Range(0f, 1f));
+            if (Attack3TriggerHash != 0) animator.SetTrigger(Attack3TriggerHash);
+            if (FireWeaponTriggerHash != 0) animator.SetTrigger(FireWeaponTriggerHash);
             SetAttackFade(true);
         }
         private void HandleFireWeaponEnded()
@@ -264,15 +274,24 @@ namespace BMD
             animator.SetBool(IsAttackingHash, false);
             SetAttackFade(false);
         }
+        private void HandleDeathPerformed()
+        {
+            
+            animator.SetFloat(DeathStyleHash, Random.Range(0f, 1f));
+            animator.SetTrigger(DeathTriggerHash);
+            animator.SetBool(IsDeadHash, true);
+        }
 
         #endregion
 
         #region Animation Triggers
-        public void AT_DisableWeaponDamage() { controller.NotifyAttackEnded(); }
+        public void AT_AttackEnded() { controller.NotifyAttackEnded(); }
         public void AT_SpecialAttackEnded() { controller.NotifySpecialAttackEnded(); }
         public void AT_FireWeaponEnded() { controller.NotifyFireWeaponEnded(); }
-        public void AT_EnableWeaponDamage() { controller.NotifyDealDamageFromWeapon(); }
+        public void AT_DealDamage() { controller.NotifyDealDamageFromWeapon(); }
         public void AT_CastSpell() { controller.NotifyCastSpell(); }
+        public void AT_DisableWeaponDamage() { controller.NotifyAttackEnded(); }
+        public void AT_EnableWeaponDamage() { controller.NotifyDealDamageFromWeapon(); }
         #endregion
 
         private void SetAttackFade(bool enable = true)
@@ -294,7 +313,7 @@ namespace BMD
             controller.OnDodgeEnded -= HandleDodgeEnded;
 
             controller.OnAttackPerformed -= HandleAttackPerformed;
-            controller.OnDisableDamageFromWeapon -= HandleAttackEnded;
+            controller.OnAttackEnded -= HandleAttackEnded;
 
             controller.OnSpecialAttackPerformed -= HandleSpecialAttackPerformed;
             controller.OnSpecialAttackEnded -= HandleSpecialAttackEnded;
@@ -386,6 +405,7 @@ namespace BMD
             IsParamValid(IsDodgingHash);
             IsParamValid(IsRollingHash);
             IsParamValid(IsAttackingHash);
+            IsParamValid(IsDeadHash);
             IsParamValid(CharacterStateHash);
 
             IsParamValid(VerticalVelocityHash);
@@ -395,6 +415,8 @@ namespace BMD
             IsParamValid(IdleStyleHash);
             IsParamValid(AttackStyleHash);
             IsParamValid(Attack2StyleHash);
+            IsParamValid(Attack3StyleHash);
+            IsParamValid(DeathStyleHash);
 
             IsParamValid(SwitchIdleHash);
             IsParamValid(CrouchTriggerHash);
@@ -407,6 +429,8 @@ namespace BMD
             IsParamValid(FireWeaponTriggerHash);
             IsParamValid(AttackTriggerHash);
             IsParamValid(Attack2TriggerHash);
+            IsParamValid(Attack3TriggerHash);
+            IsParamValid(DeathTriggerHash);
 
             foreach (var warnedHash in warnedParams)
             {
@@ -427,6 +451,8 @@ namespace BMD
             animator.ResetTrigger(FireWeaponTriggerHash);
             animator.ResetTrigger(AttackTriggerHash);
             animator.ResetTrigger(Attack2TriggerHash);
+            animator.ResetTrigger(Attack3TriggerHash);
+            animator.ResetTrigger(DeathTriggerHash);
 
 
             // Booleans and state
@@ -437,6 +463,7 @@ namespace BMD
             animator.SetBool(IsDodgingHash, true);
             animator.SetBool(IsRollingHash, true);
             animator.SetBool(IsAttackingHash, true);
+            animator.SetBool(IsDeadHash, true);
 
             animator.SetInteger(CharacterStateHash, 1);
 
@@ -447,8 +474,10 @@ namespace BMD
 
             // Floats for animation styles
             animator.SetFloat(IdleStyleHash, 1f);
-            animator.SetFloat(AttackStyleHash, 2f);
-            animator.SetFloat(Attack2StyleHash, 3f);
+            animator.SetFloat(AttackStyleHash, 0.2f);
+            animator.SetFloat(Attack2StyleHash, 0.2f);
+            animator.SetFloat(Attack3StyleHash, 0.2f);
+            animator.SetFloat(DeathStyleHash, 0.2f);
 
             // Triggers
             animator.SetTrigger(SwitchIdleHash);
@@ -462,7 +491,9 @@ namespace BMD
             animator.SetTrigger(FireWeaponTriggerHash);
             animator.SetTrigger(AttackTriggerHash);
             animator.SetTrigger(Attack2TriggerHash);
-          
+            animator.SetTrigger(Attack3TriggerHash);
+            animator.SetTrigger(DeathTriggerHash);
+
             Debug.Log("[Animator Test] All parameters set successfully, check logs for any issues!");
         }
 
