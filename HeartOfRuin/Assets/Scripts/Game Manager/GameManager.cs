@@ -1,3 +1,4 @@
+using BMD;
 using System;
 using TMPro;
 using UnityEngine;
@@ -37,6 +38,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Canvase References")]
     [SerializeField] GameObject playCanvas;     // TODO consider how we find and assign these references automatically.
+
+    [SerializeField] bool _isPaused = false;
     #endregion
 
     #region Cached References
@@ -47,16 +50,24 @@ public class GameManager : MonoBehaviour
     // Game State Settings
     bool gameOver = false;
     bool gameWon = false;
+   
 
     // Gamplay Variables
     float currentTension = 0f;
     float tensionRate; // Multiplier for tension increase rate.
     #endregion
 
+
+
     #region Properties
     public bool GameIsOver { get => gameOver; }
     public bool GameWon { get => gameWon; }
     public float TensionCompletionRatio { get => currentTension / tensionLimit; }
+    public bool IsPaused
+    {
+        get => _isPaused;
+        set{_isPaused = value;}
+    }
     #endregion
 
     private void Awake()
@@ -80,6 +91,15 @@ public class GameManager : MonoBehaviour
         FindRefereces();
     }
 
+    public void PauseGame()
+    {
+        if (IsPaused)
+        {
+            Time.timeScale = 0f;
+        }
+        else Time.timeScale = 1f;
+    }
+
     private void FindRefereces()
     {
         enemySpawner = GetComponent<EnemySpawner>();
@@ -92,6 +112,7 @@ public class GameManager : MonoBehaviour
     {
         if(gameOver || gameWon) return;
         ManageTension();
+        PauseGame();
 
     }
     void ManageTension()

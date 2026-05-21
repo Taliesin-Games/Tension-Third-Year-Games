@@ -65,15 +65,15 @@ public class Player : Character
 
     private void Start()
     {
+        base.Start();
         InitialiseUIControllerVariables();
     }
 
     private void Update()
     {
 
-
         if (invToggle)
-        {        
+        {   
             inventoryUiController.ShowInventory();
             equipmentUiController.ShowInventory();
             HUDOffsetController.Instance.SetOffsetEnabled(true);
