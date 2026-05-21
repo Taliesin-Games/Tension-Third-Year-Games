@@ -23,6 +23,8 @@ public class Projectile : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (gameObject.layer == LayerMask.NameToLayer("Projectiles")) return;
+
         Fireball fireball = (Fireball)spell;
         fireball.DealDamage(collision.gameObject);
         Destroy(gameObject);
