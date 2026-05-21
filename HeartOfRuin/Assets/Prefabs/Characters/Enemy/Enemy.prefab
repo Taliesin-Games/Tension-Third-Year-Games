@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2101691146457226209
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 938401417821133513}
+  m_Layer: 0
+  m_Name: WeaponSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &938401417821133513
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101691146457226209}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0057, y: 0.1457, z: 0.0758}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9174788844933847969}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2607250186916821478
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,7 +177,7 @@ MonoBehaviour:
     Wind: 0
     Water: 0
   castComponent: {fileID: 7375253652336715246}
-  weaponAttachPoint: {fileID: 0}
+  weaponAttachPoint: {fileID: 2101691146457226209}
 --- !u!114 &562441046664065344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,7 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10dc0306df5227a4aac8a6917b30b2bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxValue: 100
+  maxValue: 2000
   resistances:
     None: 0
     Physical: 0
@@ -195,6 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe460f10855ee04f91225d9a83b3d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  yKillValue: -20
   crouchSpeed: 2.5
   crawlSpeed: 1
   pushSpeed: 3
@@ -204,7 +236,6 @@ MonoBehaviour:
   swingSpeed: 8
   flySpeed: 12
   stateUpdateInterval: 0.25
-  chaseRepathInterval: 0.2
   drawDebug: 1
   softStopRange: 1
   meleeAttackCooldown: 2.5
@@ -218,30 +249,21 @@ MonoBehaviour:
     Min: 3
     Max: 7
   spellAttackCooldown: 3
-  spellAttacker: 1
+  spellAttacker: 0
   spellAttackRange:
     Min: 4
     Max: 8
-  patrolRadius: 10
-  patrolPauseRange: {x: 0.5, y: 1.5}
+  patrolRadius: 16
   navMeshSampleRadius: 2
   patrolSampleMaxTries: 6
   patrolIdleTime: 5
-  detectionRadius: 10
-  detectionFOVDegrees: 160
-  eyeHeight: 1.6
-  detectionLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
+  detectionRadius: 8
   losObstructionMask:
     serializedVersion: 2
     m_Bits: 0
   loseTargetAfter: 2
-  patrolWaitTimeMax: 0.25
   enemyState: 0
   currentTargetKind: 0
-  isPatrolling: 0
-  patrolWaitTimer: 0
 --- !u!114 &4302046021221254410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,12 +281,12 @@ MonoBehaviour:
   sprintSpeed: 10
   movementAcceleration: 10
   minMoveInputMagnitude: 0.05
-  moveWhileAttacking: 0
-  maxAttackMoveSpeed: 3
+  moveWhileAttacking: 1
+  maxAttackMoveSpeed: 2
   rotationEnabled: 1
   rotationSpeed: 10
   rotationType: 0
-  rotateTowardsAim: 0
+  rotateTowardsAim: 1
   attackTurnSpeedMultiplier: 2.5
   instantTurnThreshold: 0.05
   canJump: 1
@@ -314,7 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   inventoryName: 'Starting Equipment / Equipped items '
-  inventorySize: 7
+  inventorySize: 6
   startingItems:
   - item: {fileID: 11400000, guid: e272eeb5a4ba08e449cec92d127d9c3a, type: 2}
     quantity: 1
@@ -331,10 +353,7 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: 2f0cbcf653a3531409985d765491be11, type: 2}
     quantity: 1
     slotType: 4
-  - item: {fileID: 11400000, guid: e684c293a4ae72a4991f9e20d0024da0, type: 2}
-    quantity: 1
-    slotType: 6
-  - item: {fileID: 11400000, guid: e684c293a4ae72a4991f9e20d0024da0, type: 2}
+  - item: {fileID: 11400000, guid: 2c2abe593e0ad0046bfbd20ff96447c6, type: 2}
     quantity: 1
     slotType: 6
   itemDropPrefab: {fileID: 3675725128406392298, guid: d75e7c45fd8002c4e8d78e4da88b1104, type: 3}
@@ -501,12 +520,13 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 7bc5111c4da304e48984ceca766fc702, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 242799247557601124}
+      addedObject: {fileID: 938401417821133513}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
 --- !u!4 &7020109541486953346 stripped
@@ -518,78 +538,4 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
   m_PrefabInstance: {fileID: 7414834917505524841}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &8034555546124870754
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 9174788844933847969}
-    m_Modifications:
-    - target: {fileID: 1296532287574710090, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_Name
-      value: MeleeWeapon
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2.1486893
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2.1486893
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2.1486893
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.032
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.195
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.076
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
---- !u!4 &242799247557601124 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7844955069703111430, guid: 5388b8c81c80847438ea9368817e563f, type: 3}
-  m_PrefabInstance: {fileID: 8034555546124870754}
   m_PrefabAsset: {fileID: 0}
