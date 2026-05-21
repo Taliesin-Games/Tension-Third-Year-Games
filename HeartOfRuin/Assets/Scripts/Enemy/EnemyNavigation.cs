@@ -11,8 +11,6 @@ public class EnemyNavigation : MonoBehaviour
     private NavMeshAgent agent;
     private Enemy enemy;
 
-    [SerializeField] bool debugPath = true;
-
     bool IsDead => enemy.IsDead;
 
     void Awake()
@@ -28,13 +26,8 @@ public class EnemyNavigation : MonoBehaviour
         // Auto-align agent to navmesh height
         if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
         {
-            // Adjust baseOffset so the agent pivot lines up with navmesh floor
-            agent.baseOffset = hit.position.y - transform.position.y;
-
-            // Warp WITH the corrected baseOffset
-            agent.Warp(transform.position + Vector3.up * agent.baseOffset);
-
-            //Debug.Log($"Corrected baseOffset = {agent.baseOffset}");
+            agent.Warp(hit.position);
+            agent.nextPosition = transform.position;
         }
         else
         {
@@ -42,7 +35,12 @@ public class EnemyNavigation : MonoBehaviour
         }
 
     }
+    void LateUpdate()
+    {
+        if (!agent.isOnNavMesh) return;
 
+        agent.nextPosition = transform.position;
+    }
     /// <summary>
     /// Returns the current desired movement direction as a 2D vector (x,z),
     /// based on the NavMeshAgent's steering target / desired velocity.
@@ -96,55 +94,6 @@ public class EnemyNavigation : MonoBehaviour
     }
 
     /// <summary>
-    /// Synchronously query a path from current position to a target and report if it truly reaches it.
-    /// Does NOT affect the agent's current path; uses NavMesh.CalculatePath.
-    /// </summary>
-    public PathQueryResult QueryPathTo(Vector3 targetPos, float endTolerance = 0.25f)
-    {
-        if (IsDead || !agent.isOnNavMesh)
-        {
-            return new PathQueryResult
-            {
-                Found = false,
-                Status = NavMeshPathStatus.PathInvalid,
-                EndPosition = transform.position,
-                ReachesTarget = false
-            };
-        }
-
-        NavMeshPath path = new NavMeshPath();
-        bool ok = NavMesh.CalculatePath(transform.position, targetPos, NavMesh.AllAreas, path);
-
-        Vector3 end = transform.position;
-        if (path.corners != null && path.corners.Length > 0)
-        {
-            end = path.corners[path.corners.Length - 1];
-        }
-
-        NavMeshPathStatus status = path.status;
-
-        bool reachesTarget = ok &&
-                             status == NavMeshPathStatus.PathComplete &&
-                             (end - targetPos).sqrMagnitude <= (endTolerance * endTolerance);
-
-        if (debugPath && path.corners != null && path.corners.Length > 1)
-        {
-            for (int i = 0; i < path.corners.Length - 1; i++)
-            {
-                Debug.DrawLine(path.corners[i], path.corners[i + 1], reachesTarget ? Color.green : Color.yellow);
-            }
-        }
-
-        return new PathQueryResult
-        {
-            Found = ok,
-            Status = status,
-            EndPosition = end,
-            ReachesTarget = reachesTarget
-        };
-    }
-
-    /// <summary>
     /// Pick a random point projected onto the NavMesh near 'origin' within 'radius'.
     /// Used for patrol.
     /// </summary>
@@ -177,46 +126,6 @@ public class EnemyNavigation : MonoBehaviour
         return false;
     }
 
-    void Update()
-    {
-        if (IsDead)
-        {
-            agent.isStopped = true;
-            return;
-        }
-
-        // Keep the internal NavMeshAgent position in sync with the actual character.
-        // Character movement happens in CharacterMovementModule via CharacterController.
-        if (!AGENT_HANDLES_MOVEMENT)
-        {
-            agent.nextPosition = transform.position;
-        }
-
-        if (!debugPath)
-            return;
-
-        if (!agent.hasPath)
-            return;
-
-        // Debug draw the current agent path
-        NavMeshPath path = agent.path;
-        if (path.corners != null && path.corners.Length > 1)
-        {
-            for (int i = 0; i < path.corners.Length - 1; i++)
-            {
-                Debug.DrawLine(path.corners[i], path.corners[i + 1], Color.red);
-            }
-        }
-
-        if (!agent.isOnNavMesh)
-        {
-            if (NavMesh.SamplePosition(transform.position, out var hit, 2f, NavMesh.AllAreas))
-            {
-                agent.Warp(hit.position);
-            }
-        }
-    }
-
     /// <summary>
     /// True when we've effectively arrived at the agent destination.
     /// This is used by EnemyController for patrol / walk logic.
@@ -230,15 +139,4 @@ public class EnemyNavigation : MonoBehaviour
         // remainingDistance is valid even when updatePosition=false (it uses internal nextPosition)
         return agent.hasPath && agent.remainingDistance <= agent.stoppingDistance;
     }
-}
-
-/// <summary>
-/// Result of a path query (independent of the agent's live path).
-/// </summary>
-public struct PathQueryResult
-{
-    public bool Found;                  // CalculatePath succeeded
-    public NavMeshPathStatus Status;    // Complete / Partial / Invalid
-    public Vector3 EndPosition;         // End of the computed path
-    public bool ReachesTarget;          // True only if the path actually reaches the target
 }

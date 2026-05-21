@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -21,7 +22,7 @@ public class EnemyController : BMD.CharacterController
     [Header("Combat")]
     [SerializeField] float meleeAttackCooldown = 2.5f;          // attack cadence
     [SerializeField] bool meleeAttacker = true;
-    [SerializeField] FloatRange meleeAttackRange = new FloatRange(0.5f, 1.5f);
+    [SerializeField] FloatRange meleeAttackRange = new FloatRange(0.0f, 1.5f);
     [SerializeField] float rangedAttackCooldown = 2.5f;
     [SerializeField] bool rangedAttacker = false;
     [SerializeField] FloatRange rangedAttackRange = new FloatRange(3f, 7f);
@@ -69,6 +70,7 @@ public class EnemyController : BMD.CharacterController
     // Patrol state
     Vector3 homePosition;
     Vector3 patrolDestination;
+    Vector3 fleeDestination;
     [SerializeField] bool isPatrolling = false;
     [SerializeField] float patrolWaitTimer = 0f;
 
@@ -77,7 +79,7 @@ public class EnemyController : BMD.CharacterController
     #endregion
 
     #region Preallocations
-    Vector2 inputDirectiuon = Vector2.zero;
+    Vector2 inputDirection = Vector2.zero;
     Dictionary<System.Action, int> attackChoices = new();
     #endregion
     #region Properties and Helpers
@@ -102,6 +104,9 @@ public class EnemyController : BMD.CharacterController
     bool IsInSpellAttackRange => spellAttacker ? DistanceToTarget <= spellAttackRange.Max : false;
     float MinAttackRange => Mathf.Min(meleeAttacker ? meleeAttackRange.Min : float.MaxValue, rangedAttacker ? rangedAttackRange.Min : float.MaxValue, spellAttacker ? spellAttackRange.Min : float.MaxValue);
     float MaxAttackRange => Mathf.Max(meleeAttacker ? meleeAttackRange.Max : float.MinValue, rangedAttacker ? rangedAttackRange.Max : float.MinValue, spellAttacker ? spellAttackRange.Max : float.MinValue);
+    float MeanAttackRange => ((meleeAttacker ? meleeAttackRange.Mean : 0) + (rangedAttacker ? rangedAttackRange.Mean : 0) + (spellAttacker ? spellAttackRange.Mean : 0))
+                            / ((meleeAttacker ? 1 : 0) + (rangedAttacker ? 1 : 0) + (spellAttacker ? 1 : 0));
+
     #endregion
 
     protected override void Awake()
@@ -126,14 +131,21 @@ public class EnemyController : BMD.CharacterController
 
         NotifyTakeDamage();
 
-        enemyState = EnemyState.Chasing;
-        currentTarget = Player.Instance.transform;
-        loseTargetTimer = Time.time;
+        if (
+            enemyState == EnemyState.Idle || 
+            enemyState == EnemyState.Patrolling ||
+            enemyState == EnemyState.Returning
+            )
+        {
+            StartChase();
+            enemyNavigation.MoveTo(currentTarget.position);
+        }
     }
     private void DefineAttackChoices()
     {
         // Predefine the dictionary of attack choices
         attackChoices[Chase] = 0;
+        attackChoices[Flee] = 0;
         attackChoices[AttackMelee] = 0;
         attackChoices[AttackRanged] = 0;
         attackChoices[AttackSpell] = 0;
@@ -182,6 +194,9 @@ public class EnemyController : BMD.CharacterController
             case EnemyState.Attacking:
                 SetStateFromChasing();
                 break;
+            case EnemyState.Fleeing:
+                SetStateFromFleeing();
+                break;
 
         }
     }
@@ -210,6 +225,7 @@ public class EnemyController : BMD.CharacterController
         yield return new WaitForSeconds(patrolIdleTime);
         SetNewPatrol();
         enemyState = EnemyState.Patrolling;
+        patrolIdleCoroutine = null;
     }
     void SetStateFromPatrolling()
     {
@@ -234,6 +250,18 @@ public class EnemyController : BMD.CharacterController
             enemyNavigation.MoveTo(homePosition);
         }
     }
+    void SetNewFlee() 
+    {
+        if (enemyNavigation.TryGetPatrolPoint(Player.Instance.transform.position, MaxAttackRange, navMeshSampleRadius, patrolSampleMaxTries, out fleeDestination))
+        {
+            enemyNavigation.MoveTo(fleeDestination);
+        }
+        else
+        {
+            enemyState = EnemyState.Idle;
+            enemyNavigation.MoveTo(homePosition);
+        }
+    }
     void StartChase()
     {
         enemyState = EnemyState.Chasing;
@@ -244,8 +272,15 @@ public class EnemyController : BMD.CharacterController
     {
         // REturning to idle is handled in the Chase() method, which checks distance and timers every frame, so we only need to check for attack range here.
         if (DistanceToTarget > MaxAttackRange) enemyState = EnemyState.Chasing;     // Cant attack yet, keep chasing
-        else                                   enemyState = EnemyState.Attacking;
-        
+        else enemyState = EnemyState.Attacking;
+
+    }
+    void SetStateFromFleeing()
+    {
+        // REturning to idle is handled in the Chase() method, which checks distance and timers every frame, so we only need to check for attack range here.
+        if (DistanceToTarget < MinAttackRange) enemyState = EnemyState.Fleeing;     // Cant attack yet, keep chasing
+        else SetStateFromChasing(); // Once we are a safe distance, let Chasing logic decide if we should attack or keep chasing
+
     }
     bool IsPlayerInRange()
     {
@@ -272,6 +307,7 @@ public class EnemyController : BMD.CharacterController
     }
     protected override void FixedUpdate()
     {
+        if (IsDead) { return; }
         MoveAndAttack();
 
         base.FixedUpdate();
@@ -288,7 +324,8 @@ public class EnemyController : BMD.CharacterController
                 WalkPatrol();
                 break;
             case EnemyState.Chasing:
-                Chase();
+            case EnemyState.Fleeing:
+                ChaseOrFlee();
                 break;
             case EnemyState.Attacking:
                 Attack();
@@ -302,6 +339,7 @@ public class EnemyController : BMD.CharacterController
         if (result)
         {
             enemyState = EnemyState.Idle;
+            enemyNavigation.MoveTo(homePosition);
             moveDirection = Vector3.zero;
         }
         return result;
@@ -311,9 +349,9 @@ public class EnemyController : BMD.CharacterController
         if (HasReachedDestination()) moveDirection = DirectionToHome;
         else
         {
-            inputDirectiuon = enemyNavigation.MoveDirection();
-            moveDirection.x = inputDirectiuon.x;
-            moveDirection.z = inputDirectiuon.y;
+            inputDirection = enemyNavigation.MoveDirection();
+            moveDirection.x = inputDirection.x;
+            moveDirection.z = inputDirection.y;
             moveDirection.y = 0f;
         }
 
@@ -328,9 +366,9 @@ public class EnemyController : BMD.CharacterController
         if (HasReachedDestination()) moveDirection = DirectionToPatrolPoint;
         else
         {
-            inputDirectiuon = enemyNavigation.MoveDirection();
-            moveDirection.x = inputDirectiuon.x;
-            moveDirection.z = inputDirectiuon.y;
+            inputDirection = enemyNavigation.MoveDirection();
+            moveDirection.x = inputDirection.x;
+            moveDirection.z = inputDirection.y;
             moveDirection.y = 0f;
         }
 
@@ -339,17 +377,21 @@ public class EnemyController : BMD.CharacterController
 
         SoftStop(ref moveDirection, DistanceToPatrolPoint);
     }
-    void Chase() 
+    void ChaseOrFlee() 
     {
-        enemyNavigation.MoveTo(Player.Instance.transform.position); // Update player position every frame while chasing.
-        inputDirectiuon = enemyNavigation.MoveDirection();
-        moveDirection.x = inputDirectiuon.x;
-        moveDirection.z = inputDirectiuon.y;
+
+        if (enemyState == EnemyState.Fleeing) enemyNavigation.MoveTo(fleeDestination);
+        else                                  enemyNavigation.MoveTo(Player.Instance.transform.position);
+        
+         // Update player position every frame while chasing.
+        inputDirection = enemyNavigation.MoveDirection();
+        moveDirection.x = inputDirection.x;
+        moveDirection.z = inputDirection.y;
         moveDirection.y = 0f;
 
         SoftStop(ref moveDirection, DistanceToTarget);
 
-        if (DistanceToTarget >= detectionRadius && Time.time > loseTargetTimer)
+        if (DistanceToTarget >= detectionRadius && Time.time > loseTargetTimer + loseTargetAfter)
         {
             currentTarget = null;
             enemyState = EnemyState.Idle;
@@ -357,59 +399,104 @@ public class EnemyController : BMD.CharacterController
         }
         else
         {
-            loseTargetTimer = Time.time;
+            
             if (DistanceToTarget < MaxAttackRange) enemyState = EnemyState.Attacking;
+            if (DistanceToTarget < MinAttackRange && enemyState == EnemyState.Fleeing) enemyState = EnemyState.Fleeing; // Keep fleeing
+            if (DistanceToTarget < MinAttackRange && enemyState == EnemyState.Chasing) // Don't update flee destingation every frame, only when switching from chasing.
+            {
+                enemyState = EnemyState.Fleeing; // Optional: if we get too close, try to back off a bit
+
+                SetNewFlee();
+            }
+            
         }
     }
     void Attack()
     {
+        aimDirection = DirectionToTarget;
         // If enemy has moved away, just chase to move closer. We don't switch state for a more responsive attack.
         if (DistanceToTarget > MaxAttackRange)
         {
-            Chase();
+            ChaseOrFlee();
             return;
         }
         enemyNavigation.MoveTo(Player.Instance.transform.position);
 
         // Reset the scores
-        foreach(var entry in attackChoices)
-        {
-            attackChoices[entry.Key] = 0;
-        }
+        attackChoices[Chase] = 0;
+        attackChoices[Flee] = 0;
+        attackChoices[AttackMelee] = 0;
+        attackChoices[AttackRanged] = 0;
+        attackChoices[AttackSpell] = 0;
 
+        // Assign some weighting
+        attackChoices[Chase] = DistanceToTarget < MinAttackRange ? 0 : 10;  // Never chase when less than min attack range
+        attackChoices[Flee] = DistanceToTarget < MeanAttackRange ? 10 : 5;   
+        attackChoices[AttackMelee] = IsInMeleeRange ? 30 : 0;
+        attackChoices[AttackRanged] = IsInRangedAttackRange ? 30 : 0;
+        attackChoices[AttackSpell] = IsInSpellAttackRange ? 30 : 0;
 
+        // Reduce melee attack weight as health gets lower.
+        attackChoices[AttackMelee] = (int)Mathf.Ceil(attackChoices[AttackMelee] * health.Normalized);
 
+        ChooseWeightedAttack();
+    }
+    void Chase()
+    {
+        enemyState = EnemyState.Chasing;
+        ChaseOrFlee();
+    }
+    void Flee()
+    {
+        enemyState = EnemyState.Fleeing;
+        ChaseOrFlee();
     }
     void AttackMelee()
     {
-
+        if (!meleeAttacker)
+        {
+            Debug.LogError($"{name} is attempting a melee attack when they are not a melee attacker");
+            return;
+        }
+        RequestAttack();
     }
     void AttackRanged()
     {
-
+        if(!rangedAttacker)
+        {
+            Debug.LogError($"{name} is attempting a ranged attack when they are not a ranged attacker");
+            return;
+        }
+        RequestFireWeapon();
     }
     void AttackSpell()
     {
-
+        if(!spellAttacker)
+        {
+            Debug.LogError($"{name} is attempting a spell attack when they are not a spell attacker");
+            return;
+        }
+        RequestSpecialAttack();
     }
-    void ChooseWeighted(List<(System.Action action, int weight)> options)
+    void ChooseWeightedAttack()
     {
         int total = 0;
 
-        foreach (var option in options)
-            total += option.weight;
-
+        foreach (var option in attackChoices)
+             total += option.Value;
+        
         int roll = Random.Range(0, total);
 
+        
         int current = 0;
 
-        foreach (var option in options)
+        foreach (var option in attackChoices)
         {
-            current += option.weight;
+            current += option.Value;
 
             if (roll < current)
             {
-                option.action.Invoke();
+                option.Key.Invoke();
                 return;
             }
         }
@@ -448,372 +535,32 @@ public class EnemyController : BMD.CharacterController
 
         base.Update();
     }
-    private void SetMoveDirection()
-    {
-        Vector2 inputDirectiuon = enemyNavigation.MoveDirection(); // a Vector3 direction
-        Vector3 worldDirection = new Vector3(inputDirectiuon.x,0, inputDirectiuon.y);
-
-        float inputMagnitude = Mathf.Clamp01(worldDirection.magnitude);
-        inputMagnitude = Mathf.Pow(inputMagnitude, 1.5f);
-
-        moveDirection = worldDirection.normalized * inputMagnitude;
-        moveDirection = worldDirection.normalized * inputMagnitude;
-    }
-    private void SwitchEnemyState()
-    {
-        // State machine tick
-        switch (enemyState)
-        {
-            case EnemyState.Idle:
-                TickIdle(); // Intermediary state, tries to find targets or start patrols
-                break;
-
-            case EnemyState.Walking:
-                TickWalking(); // Moving to patrol point or static target
-                break;
-
-            case EnemyState.Chasing:
-                TickChasing(); // Pursuing a moving target
-                break;
-
-            case EnemyState.Attacking:
-                TickAttacking(); // In attack range of target
-                break;
-        }
-    }
-    void TickAttacking()
-    {
-        // If target vanished (destroyed), reset and try again.
-        if (NoTarget)
-        {
-            ResetTarget();
-            return;
-        }
-
-        // Face target (optional)
-        Vector3 toTarget = currentTarget.position - transform.position;
-        toTarget.y = 0f;
-        if (toTarget.sqrMagnitude > 0.001f)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(toTarget), 10f * Time.deltaTime);
-        }
-
-        // Ensure we are in range; if not, resume appropriate movement.
-        if (!IsWithinAttackRange)
-        {
-            if (currentTargetKind == TargetKind.Player)
-            {
-                enemyState = EnemyState.Chasing;
-                return;
-            }
-            else
-            {
-                // For static target, walk back into range
-                if (enemyNavigation.MoveTo(currentTarget.position))
-                {
-                    enemyState = EnemyState.Walking;
-                    return;
-                }
-                else
-                {
-                    // If we can no longer path to the static target, reset and try other options
-                    ResetTarget();
-                    return;
-                }
-            }
-        }
-
-        // In range and have a target: attack (actual damage application is driven by animation events)
-        if (Time.time > nextAttackTime)
-        {
-            nextAttackTime = Time.time + meleeAttackCooldown;
-            RequestAttack();
-        }
-
-        // Debug drawing for attacks
-        if (drawDebug) Helpers.DebugDrawCircle(transform.position, meleeAttackRange.Max, Color.red);
-    }
-    void TickChasing()
-    {
-        // If target vanished (destroyed), reset state machine
-        if (NoTarget)
-        {
-            ResetTarget();
-            return;
-        }
-
-        // Maintain pursuit path
-        chaseRepathTimer -= Time.deltaTime;
-        if (chaseRepathTimer <= 0f)
-        {
-            enemyNavigation.MoveTo(currentTarget.position);
-            chaseRepathTimer = chaseRepathInterval;
-        }
-
-        // Visibility check
-        if (HasSightOn(currentTarget))
-        {
-            loseTargetTimer = loseTargetAfter;
-        }
-        else
-        {
-            loseTargetTimer -= Time.deltaTime;
-            if (loseTargetTimer <= 0f)
-            {
-                ResetTarget();
-                return;
-            }
-        }
-
-        // If within attack range, start attacking
-        if (IsWithinAttackRange)
-        {
-            enemyState = EnemyState.Attacking;
-            return;
-        }
-    }
-    void TickWalking()
-    {
-        // While patrolling, keep scanning for targets
-        if (isPatrolling)
-        {
-            if (TryDetectAndSetTarget()) return;
-
-            if (enemyNavigation.HasReachedDestination())
-            {
-                isPatrolling = false;
-                patrolWaitTimer = Random.Range(patrolPauseRange.x, patrolPauseRange.y);
-                enemyState = EnemyState.Idle;
-                return;
-            }
-            return;
-        }
-
-        // Walking towards a non-patrol target (e.g., tower)
-        if (NoTarget)
-        {
-            ResetTarget();
-            return;
-        }
-
-        // If we reached the target, start attacking
-        if (IsWithinAttackRange)
-        {
-            enemyState = EnemyState.Attacking;
-            return;
-        }
-    }
-    void TickIdle()
-    {
-        // First, try to detect something to attack
-        if (TryDetectAndSetTarget()) return;
-
-        // Patrol: wait, then choose a new patrol point via navigation helper
-        if (patrolWaitTimer > 0f)
-        {
-            patrolWaitTimer -= Time.deltaTime;
-            return;
-        }
-
-        // Try to get a patrol point
-        if (enemyNavigation.TryGetPatrolPoint(homePosition, patrolRadius, navMeshSampleRadius, patrolSampleMaxTries, out patrolDestination))
-        {
-            // Start moving to it if possible
-            if (enemyNavigation.MoveTo(patrolDestination))
-            {
-                isPatrolling = true;
-                currentTarget = null;
-                currentTargetKind = TargetKind.None;
-                enemyState = EnemyState.Walking;
-                return;
-            }
-        }
-
-        // No valid point this frame; try shortly again
-        patrolWaitTimer = patrolWaitTimeMax;
-        homePosition = transform.position;
-    }
-    void ResetTarget()
-    {
-        // Clear target and return to idle, effectively restarting the state machine
-        currentTarget = null;
-        currentTargetKind = TargetKind.None;
-        isPatrolling = false;
-        enemyState = EnemyState.Idle;
-        loseTargetTimer = 0f;
-    }
-    bool TryDetectAndSetTarget()
-    {
-        if (TryAcquireTarget(out var t, out var kind))
-        {
-            if (kind == TargetKind.Player)
-            {
-                BeginPursuit(t, kind, EnemyState.Chasing);
-            }
-            else // Tower/static
-            {
-                if (enemyNavigation.MoveTo(t.position))
-                {
-                    BeginPursuit(t, kind, EnemyState.Walking);
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-    void BeginPursuit(Transform target, TargetKind kind, EnemyState state)
-    {
-        currentTarget = target;
-        currentTargetKind = kind;
-        enemyState = state;
-        chaseRepathTimer = 0f;
-        isPatrolling = false;
-        if (state == EnemyState.Chasing)
-        {
-            loseTargetTimer = loseTargetAfter;
-        }
-    }
-    // Scan nearby colliders to find the best target within FOV/LOS
-    bool TryAcquireTarget(out Transform target, out TargetKind kind)
-    {
-        target = null;
-        kind = TargetKind.None;
-
-        int mask = detectionLayerMask.value == 0 ? ~0 : detectionLayerMask.value; // all layers if none specified
-        var hits = Physics.OverlapSphere(transform.position, detectionRadius, mask, QueryTriggerInteraction.Ignore); // get all colliders in radius
-        if (hits == null || hits.Length == 0) return false; // nothing found, return
-
-        float bestDistSqr = float.MaxValue;
-        Transform best = null;
-        TargetKind bestKind = TargetKind.None;
-
-        Vector3 eyes = transform.position + Vector3.up * eyeHeight;
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            TryProcessHit(
-                hits[i], 
-                eyes, 
-                ref bestDistSqr, 
-                ref best, 
-                ref bestKind
-                );
-        }
-
-        // Return best found target
-        if (best != null)
-        {
-            target = best;
-            kind = bestKind;
-            return true;
-        }
-
-        return false;
-    }
-    private void TryProcessHit(Collider h, Vector3 eyes, ref float bestDistSqr, ref Transform best, ref TargetKind bestKind)
-    {
-        if (h == null) return;
-        var tr = h.transform;
-
-        if (tr == transform) return;        // Exclude pathing to self
-
-        // Prefer root or rigidbody transform
-        var rb = tr.GetComponent<Rigidbody>();
-        if (rb != null) tr = rb.transform;
-
-        // Identify candidate by tag and components
-        TargetKind k = TargetKind.None;
-        if (tr.CompareTag("Player") || tr.GetComponentInParent<BMD.PlayerController>() != null) // TODO, getcomponent is heavy, look into throttling
-            k = TargetKind.Player;
-        else if (tr.CompareTag("Attackable"))
-            k = TargetKind.Tower;
-        else
-            return; // not a target
-
-        // Target center
-        Vector3 tgt = tr.position + Vector3.up * eyeHeight;
-        Vector3 dir = tgt - eyes;
-        float distSqr = dir.sqrMagnitude;
-        if (distSqr > detectionRadius * detectionRadius) return;
-
-        // FOV check
-        if (detectionFOVDegrees < 359f)
-        {
-            float ang = Vector3.Angle(transform.forward, dir);
-            if (ang > detectionFOVDegrees * 0.5f) return;
-        }
-        
-        // LOS check
-        if (losObstructionMask.value != 0)
-        {
-            float dist = Mathf.Sqrt(distSqr);
-            if (Physics.Raycast(eyes, dir.normalized, dist, losObstructionMask, QueryTriggerInteraction.Ignore))
-            {
-                return; // blocked
-            }
-        }
-
-        // Better than previous best?
-        if (distSqr < bestDistSqr)
-        {
-            bestDistSqr = distSqr;
-            best = tr;
-            bestKind = k;
-        }
-    }
     private void DrawDebug()
     {
         // Debug drawing
         if (!drawDebug) return;
 
-        Helpers.DebugDrawSphere(homePosition, 2, Color.green, 24);          // Home Destination
-        Helpers.DebugDrawCircle(homePosition, patrolRadius, Color.cyan);    // Patrol area
-        Helpers.DebugDrawSphere(patrolDestination, 2, Color.blue, 24);      // Patrol Destination
+        Helpers.DebugDrawSphere(homePosition, 1.5f, Color.green, 24);           // Home Destination
+        Helpers.DebugDrawCircle(homePosition, patrolRadius, Color.cyan);        // Patrol area
+        Helpers.DebugDrawSphere(patrolDestination, 1.5f, Color.blue, 24);       // Patrol Destination
         Helpers.DebugDrawCircle(transform.position + Vector3.up * 0.05f, detectionRadius, Color.yellow); // Detection radius
         
     }
     public void Die()
     {
-        // TODO die shoudl be handled on character, not character controller.
+        // TODO die should be handled on character, not character controller.
         // Character controllers only consideration is if it needs to stop or interrupt processes
         if (IsDead) return;
 
         IsDead = true;
 
         Enemy.Decrement();
-
+        enemyState = EnemyState.Dead;
+        inputDirection = Vector2.zero;
         RequestDie();               
         
     }
-    // Check current target visibility (for chase persistence)
-    bool HasSightOn(Transform t)
-    {
-        if (t == null) return false;
-
-        Vector3 eyes = transform.position + Vector3.up * eyeHeight;
-        Vector3 tgt = t.position + Vector3.up * eyeHeight;
-        Vector3 dir = tgt - eyes;
-
-        // Distance
-        if (dir.sqrMagnitude > detectionRadius * detectionRadius)
-            return false;
-
-        // FOV
-        if (detectionFOVDegrees < 359f)
-        {
-            float ang = Vector3.Angle(transform.forward, dir);
-            if (ang > detectionFOVDegrees * 0.5f) return false;
-        }
-
-        // LOS
-        if (losObstructionMask.value != 0)
-        {
-            float dist = dir.magnitude;
-            if (Physics.Raycast(eyes, dir.normalized, dist, losObstructionMask, QueryTriggerInteraction.Ignore)) return false;
-        }
-
-        return true;
-    }
+ 
     float FlatDistance(Vector3 a, Vector3 b)
     {
         Vector2 delta = new Vector2(a.x - b.x, a.z - b.z);

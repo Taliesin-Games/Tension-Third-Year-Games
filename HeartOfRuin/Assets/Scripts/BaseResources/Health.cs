@@ -30,7 +30,7 @@ public class Health : Resource
 
     public void TakeDamage(DamageStruct damage)
     {
-        Debug.Log($"Taking damage on {gameObject.name}");
+        
         if (isDead) return; // Ignore damage if already dead
 
         // apply resistances
@@ -41,8 +41,8 @@ public class Health : Resource
         Debugger.Log($"{transform.root.name} has taken {finalDamage} damage");
         Debugger.Log($"Remaining Health: {GetCurrentResource()} / {GetMaxResource()}");
 
-        DamageUIVisualisationController.Instance.VisualiseDamage(finalDamage, gameObject, this);
-        InvokeResourceChanged();
+        DamageUIVisualisationController.Instance?.VisualiseDamage(finalDamage, gameObject, this);
+        //InvokeResourceChanged();
         
 
         if (GetCurrentResource() <= 0)

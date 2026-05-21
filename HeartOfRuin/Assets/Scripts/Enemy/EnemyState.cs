@@ -10,6 +10,6 @@ public enum EnemyState
     Returning,          // Enemy is returning to their spawn point
     AttackingOnCooldown,// Enemy is attacking but waiting for cooldown to finish before they can attack again
     Patrolling,         // Enemy is moving between patrol points or searching its current NavMesh area for targets
-
+    Fleeing,            // Enemy is fleeing from a target, moving away from it to a safe distance
 
 }

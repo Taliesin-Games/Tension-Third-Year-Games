@@ -39,10 +39,6 @@ public class Resource : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        character = GetComponent<Character>();
-    }
     protected virtual void Start()
     {
         CurrentValue = maxValue;
