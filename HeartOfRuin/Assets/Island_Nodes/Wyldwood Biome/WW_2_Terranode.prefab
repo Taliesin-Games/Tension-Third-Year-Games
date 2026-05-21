@@ -1155,8 +1155,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6740745065368731368}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.18532357, z: 0, w: 0.9826776}
-  m_LocalPosition: {x: -0.51, y: 0, z: 0.89}
+  m_LocalRotation: {x: -0, y: 0.20770396, z: -0, w: 0.9781918}
+  m_LocalPosition: {x: -2.8959827, y: 0, z: 2.1354208}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1179,7 +1179,7 @@ Transform:
   - {fileID: 8451185697379702288}
   - {fileID: 3886385423296519083}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 21.36, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 23.976, z: 0}
 --- !u!33 &1020764845000565092
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1326,7 +1326,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 2eab34ed7e3f30f4aa8eea21ff1267d8, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 8229d346ea375234babdf27794ca3516, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &6850892647788436610
 GameObject:
@@ -1943,7 +1943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2787843978857790826, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3313446428276680656, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_LocalScale.x
@@ -4401,7 +4401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163421158178428543, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1976690792467942597, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_LocalScale.x
@@ -4483,7 +4483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2787843978857790826, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3313446428276680656, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_LocalScale.x
@@ -6005,7 +6005,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2787843978857790826, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3313446428276680656, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_LocalScale.x
@@ -6091,7 +6091,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163421158178428543, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1976690792467942597, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_LocalScale.x
@@ -6533,7 +6533,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5607322783884259720, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6256003651023638621, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -6785,7 +6785,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163421158178428543, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1976690792467942597, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_LocalScale.x
@@ -7073,6 +7073,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BreakableCrates
       objectReference: {fileID: 0}
+    - target: {fileID: 2034996714120437887, guid: c44ca917a20b8af4cbf5c5e1ea7a8449, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 2970048530664750166, guid: c44ca917a20b8af4cbf5c5e1ea7a8449, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.143
@@ -7221,7 +7225,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163421158178428543, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1976690792467942597, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_LocalScale.x
@@ -9543,7 +9547,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163421158178428543, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1976690792467942597, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_LocalScale.x
@@ -12187,7 +12191,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2787843978857790826, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3313446428276680656, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_LocalScale.x
@@ -12645,7 +12649,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5607322783884259720, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6256003651023638621, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -12679,7 +12683,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163421158178428543, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1976690792467942597, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_LocalScale.x
@@ -13485,7 +13489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2787843978857790826, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3313446428276680656, guid: 3038107ceae14d7459cd818d2fe83f32, type: 3}
       propertyPath: m_LocalScale.x
@@ -16007,7 +16011,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1163421158178428543, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1976690792467942597, guid: 7aedaff04937f43469d9895af95373e0, type: 3}
       propertyPath: m_LocalScale.x
@@ -19751,7 +19755,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5607322783884259720, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6256003651023638621, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -23039,7 +23043,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5607322783884259720, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: m_TagString
-      value: UnboundedTerrain
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6256003651023638621, guid: 0047e0355605a49478611adc85f223ef, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
