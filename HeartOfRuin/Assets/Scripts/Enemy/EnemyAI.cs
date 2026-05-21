@@ -1,11 +1,9 @@
 using System;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 using Random = UnityEngine.Random;
 
+[Obsolete("Use EnemyController instead")]
 public class EnemyAI : MonoBehaviour
 {
     #region Confguration

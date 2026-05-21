@@ -86,7 +86,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 1.525
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!143 &80798221949874621
@@ -200,15 +200,30 @@ MonoBehaviour:
   swimSpeed: 4
   swingSpeed: 8
   flySpeed: 12
-  attackRange: 1.75
+  stateUpdateInterval: 0.25
   chaseRepathInterval: 0.2
   drawDebug: 1
-  attackDamage: 10
-  attackCooldown: 2.5
+  softStopRange: 1
+  meleeAttackCooldown: 2.5
+  meleeAttacker: 1
+  meleeAttackRange:
+    Min: 0.5
+    Max: 1.5
+  rangedAttackCooldown: 2.5
+  rangedAttacker: 0
+  rangedAttackRange:
+    Min: 3
+    Max: 7
+  spellAttackCooldown: 3
+  spellAttacker: 1
+  spellAttackRange:
+    Min: 4
+    Max: 8
   patrolRadius: 6
   patrolPauseRange: {x: 0.5, y: 1.5}
-  patrolSampleMaxDistance: 2
+  navMeshSampleRadius: 2
   patrolSampleMaxTries: 6
+  patrolIdleTime: 5
   detectionRadius: 10
   detectionFOVDegrees: 160
   eyeHeight: 1.6
@@ -241,9 +256,13 @@ MonoBehaviour:
   sprintSpeed: 10
   movementAcceleration: 10
   minMoveInputMagnitude: 0.05
+  moveWhileAttacking: 0
+  maxAttackMoveSpeed: 3
   rotationEnabled: 1
   rotationSpeed: 10
   rotationType: 0
+  rotateTowardsAim: 0
+  attackTurnSpeedMultiplier: 2.5
   instantTurnThreshold: 0.05
   canJump: 1
   jumpForce: 5

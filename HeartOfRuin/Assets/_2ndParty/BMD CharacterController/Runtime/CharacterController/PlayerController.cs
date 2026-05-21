@@ -110,7 +110,7 @@ namespace BMD
         void SetAim()
         {
             Vector2 aimInput = aimAction.ReadValue<Vector2>();
-            Debug.Log($"Aim input: {aimInput}");
+            
             if (Gamepad.current != null && Gamepad.current.rightStick.IsActuated(STICK_DEADZONE))
             {
                 AimWithStick(aimInput);
@@ -150,7 +150,7 @@ namespace BMD
 
             Debug.DrawRay(transform.position, direction, Color.blue, 5.0f);
 
-            Debug.Log($"Screen Position: {screenPosition}, Aim Direction: {aimDirection}");
+            
 
             
         }

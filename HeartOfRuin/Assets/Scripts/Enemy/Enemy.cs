@@ -22,7 +22,7 @@ public class Enemy : Character
         }
         
         if (EnemySpawner.Instance) EnemySpawner.Instance.RemoveEnemy(gameObject);
-        GameManager.Instance.OnEnemyDefeated(); // TODO need to move this to object pooler, die method or on disable with a flag to prevent multiple calls
+        GameManager.Instance?.OnEnemyDefeated(); // TODO need to move this to object pooler, die method or on disable with a flag to prevent multiple calls
     }
     public void EnemyAIAttack()
     {
