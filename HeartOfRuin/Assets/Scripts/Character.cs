@@ -94,7 +94,7 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         NotifyStatChange?.Invoke();
     }

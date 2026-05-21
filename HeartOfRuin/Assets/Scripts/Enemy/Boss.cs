@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class Boss : Enemy
 {
-    void Start() 
-    {
-        Debug.LogWarning("Boss not implemented, treating it as a normla enemy");
-    }
-    void PhaseTransition()
-    {
+    [SerializeField] private GameObject levelTransitionEffectPrefab;
 
-    }
 
-    void SpecialAttack()
+    public void OnDestroy()
     {
+        Debug.Log("Boss is dying. Checking for level transition effect.");
+        if (levelTransitionEffectPrefab)
+        {
+            Debug.Log("Boss defeated! Instantiating level transition effect.");
+            Instantiate(levelTransitionEffectPrefab, transform.position, Quaternion.identity);
+        }
     }
 }

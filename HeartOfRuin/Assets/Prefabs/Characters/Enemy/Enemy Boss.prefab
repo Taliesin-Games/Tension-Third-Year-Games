@@ -170,17 +170,93 @@ PrefabInstance:
       propertyPath: m_BaseOffset
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5164306904053619644, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5164306904053619644, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1636178413342441309, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3295746306882381226, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3487878589907172268}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2607250186916821478, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2520206544341147588}
   m_SourcePrefab: {fileID: 100100000, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+--- !u!114 &1377720108039776865 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2083632132247281666, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+  m_PrefabInstance: {fileID: 1149589168241756771}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3160112394509792133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: becf0c497326e9840b3c072622d14cf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
 --- !u!4 &2470504273015238601 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3295746306882381226, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
   m_PrefabInstance: {fileID: 1149589168241756771}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3160112394509792133 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2607250186916821478, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+  m_PrefabInstance: {fileID: 1149589168241756771}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2520206544341147588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3160112394509792133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1673a751487dbc142a87163f356c4183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Boss
+  characterName: Boblin
+  activeEffects: []
+  equipmentSlots: {fileID: 3640936931135058822}
+  inventory: {fileID: 6315636284501322156}
+  characterStats: {fileID: 1377720108039776865}
+  characterDamageBonusPercentage:
+    None: 0
+    Physical: 0
+    Magical: 0
+    True: 0
+    Fire: 0
+    Lightning: 0
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
+  castComponent: {fileID: 0}
+  levelTransitionEffectPrefab: {fileID: 4887560300040609272, guid: 9d7a9ccd40523dd4bb199bf5446ef299, type: 3}
+--- !u!114 &3640936931135058822 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4427915400919398885, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+  m_PrefabInstance: {fileID: 1149589168241756771}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3160112394509792133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e962f96b85a53ed438c7213fd8e00d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+--- !u!114 &6315636284501322156 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6364022765882385359, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+  m_PrefabInstance: {fileID: 1149589168241756771}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3160112394509792133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e962f96b85a53ed438c7213fd8e00d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
