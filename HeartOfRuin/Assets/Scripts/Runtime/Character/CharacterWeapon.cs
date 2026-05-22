@@ -25,6 +25,8 @@ public class CharacterWeapon : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Weapon collided with: " + other.gameObject.name);
+
         if (character == null) return;
         
         if(!character.WeaponDamageEnabled) return;
