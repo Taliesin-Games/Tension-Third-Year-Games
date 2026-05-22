@@ -65,6 +65,10 @@ public class DamageNumbers : MonoBehaviour
         // Fade out
         timer -= Time.deltaTime;
         timer = Mathf.Max(timer, 0);
-        textMesh.alpha = timer / lifetime;
+        if (textMesh != null )
+        {
+            textMesh.alpha = timer / lifetime;
+        }
+
     }
 }

@@ -50,6 +50,11 @@ public class DamageUIVisualisationController : MonoBehaviour
 
         }
 
+        if (player == null)
+        {
+            player = Player.Instance;
+        }
+
         GameObject instance = Instantiate(damageNumberPrefab, damageTarget.transform.position, Quaternion.identity);
 
 
