@@ -168,6 +168,12 @@ public abstract class Character : MonoBehaviour
             activeEffects.Remove(effect);
         }
     }
+
+    public List<ItemEffect> GetActiveEffects()
+    {
+        return activeEffects;
+    }
+
     public CharacterStats GetCharacterStats()
     {
         return characterStats;

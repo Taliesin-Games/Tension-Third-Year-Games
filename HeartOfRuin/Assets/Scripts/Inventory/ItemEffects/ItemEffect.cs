@@ -5,10 +5,13 @@ public class ItemEffect : ScriptableObject
 {
     [SerializeField] string effectName;
     [SerializeField][TextArea] string effectDescription;
+    [SerializeField] Sprite effectIcon;
 
     // Expose read-only accessors so other code can show these in the UI if needed.
     public string EffectName => effectName;
     public string EffectDescription => effectDescription;
+
+    public Sprite EffectIcon => effectIcon;
 
     // Optional lifecycle hooks — keep them virtual so specific effects can override.
     public virtual void Init() { }

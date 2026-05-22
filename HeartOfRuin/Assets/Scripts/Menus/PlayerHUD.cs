@@ -17,6 +17,7 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private DPSPanelUIController DPSPanel;
     [SerializeField] private StatPanelUIController StatPanel;
     [SerializeField] private SpellPanelUIController SpellPanel;
+    [SerializeField] private EffectsPanelUIController EffectsPanel;
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject ManaBar;
 
@@ -50,6 +51,11 @@ public class PlayerHUD : MonoBehaviour
             Debug.LogError("SpellPanel reference is not set in the HUD.");
         }
 
+        if (EffectsPanel == null)
+        {
+            Debug.LogError("EffectsPanel reference is not set in the HUD.");
+        }
+
         if (DPSPanel != null)
         {
             DPSPanel.Initialise();
@@ -63,6 +69,11 @@ public class PlayerHUD : MonoBehaviour
         if (SpellPanel != null)
         {
             SpellPanel.Initialise();
+        }
+
+        if (EffectsPanel != null)
+        {
+            EffectsPanel.Initialise();
         }
 
         if (HealthBar != null)
@@ -112,6 +123,11 @@ public class PlayerHUD : MonoBehaviour
         if (SpellPanel != null)
         {
             SpellPanel.updateUI();
+        }
+
+        if (EffectsPanel != null)
+        {
+            EffectsPanel.updateUI();
         }
     }
 
