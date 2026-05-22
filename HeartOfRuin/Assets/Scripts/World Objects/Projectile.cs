@@ -10,7 +10,7 @@ public class Projectile : MonoBehaviour
     SpellBase spell;
 
     public void SetSpell(SpellBase inSpell) { spell = inSpell; }
-
+    [SerializeField] private GameObject onHitEffect;
     void Start()
     {
         Destroy(gameObject, lifeTime);
@@ -24,6 +24,11 @@ public class Projectile : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (gameObject.layer == LayerMask.NameToLayer("Projectiles")) return;
+        if (onHitEffect != null)
+        {
+            Instantiate(onHitEffect, transform.position, Quaternion.identity);
+
+        }
 
         Fireball fireball = (Fireball)spell;
         fireball.DealDamage(collision.gameObject);
