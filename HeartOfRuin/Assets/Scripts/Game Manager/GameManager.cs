@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
 
         while (true)
         {
-            if (TerrainGenerator.Instance == null) continue;
+            if (TerrainGenerator.Instance == null) { yield return null; continue; }
 
             if (!TerrainGenerator.Instance.TerrainReady) 
             {
