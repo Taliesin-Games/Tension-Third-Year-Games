@@ -45,15 +45,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomsOnMainPath:
-    Min: 2
-    Max: 3
+    Min: 3
+    Max: 5
   branchesPerPath: 2
   roomsOnBranches:
     Min: 3
     Max: 5
-  GenerationThrottleAmount: 5
+  GenerationThrottleAmount: 1
   slowGeneration: 1
-  terrainCamHeight: 50
+  terrainCamHeight: 80
   stepThroughGeneration: 0
   randomSeed: 0
   allowedBranchDirections: 01000000030000000200000004000000
@@ -61,7 +61,7 @@ MonoBehaviour:
   directionalBiasStrength: 1
   bridgeLength:
     Min: 2
-    Max: 5
+    Max: 3
   roomMaxOverlap: 0
   pathMaxOverlap: 0.1
   retryLeniency: 0.1
