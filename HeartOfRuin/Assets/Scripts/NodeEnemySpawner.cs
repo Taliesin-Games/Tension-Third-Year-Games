@@ -8,7 +8,7 @@ using UnityEngine.AI;
 public class NodeEnemySpawner : MonoBehaviour
 {
     const float PLAYER_ACTIVATION_RANGE = 30f;
-    const float NAV_MESH_SEARCH_RADIUS = 2f;
+    const float NAV_MESH_SEARCH_RADIUS = 4f;
 
     [SerializeField] Enemy[] commonEnemiesToSpawn;
     [SerializeField] Enemy[] rareEnemiesToSpawn;

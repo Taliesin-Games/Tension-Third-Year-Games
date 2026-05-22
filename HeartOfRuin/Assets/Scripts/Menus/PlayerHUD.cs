@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,6 +36,12 @@ public class PlayerHUD : MonoBehaviour
     }
 
     private void Start()
+    {
+        StartCoroutine(DelayedInitialise());
+
+    }
+
+    void SetupPlayer()
     {
         if (DPSPanel == null)
         {
@@ -84,7 +91,7 @@ public class PlayerHUD : MonoBehaviour
         if (ManaBar != null)
         {
             ManaBarImage = ManaBar.GetComponent<Image>();
-        }        
+        }
 
         player = Player.Instance;
         health = player.GetComponent<Health>();
@@ -110,7 +117,15 @@ public class PlayerHUD : MonoBehaviour
             // Initialize health, mana, and tension displays here if needed
             DisplayTension();
         }
+    }
+    IEnumerator DelayedInitialise()
+    {
+        while (Player.Instance == null)
+        {
+            yield return null;
+        }
 
+        SetupPlayer();
     }
 
     private void Update()

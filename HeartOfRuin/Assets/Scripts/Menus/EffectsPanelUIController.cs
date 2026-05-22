@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class EffectsPanelUIController : MonoBehaviour
     {
         get
         {
-            itemEffects = Player.Instance.GetActiveEffects();
+            itemEffects = Player.Instance?.GetActiveEffects();
             return itemEffects;
         }
         set { itemEffects = value; }
@@ -49,6 +50,16 @@ public class EffectsPanelUIController : MonoBehaviour
 
     public void Initialise()
     {
+        StartCoroutine(DelayedInitialise());
+    }
+
+    IEnumerator DelayedInitialise()
+    {
+        while(Player.Instance == null) 
+        {
+            yield return null;
+        }
+
         EnsureCorrectSlotCount();
     }
 

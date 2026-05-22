@@ -1,3 +1,4 @@
+using Codice.Client.BaseCommands;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ namespace Utils
     {
         #region Constants
         const float LOAD_DELAY = 1f; // Delay before starting FPS calculation to allow for initial spikes to settle
+        const float LOG_PRINT_INTERVAL = 10f; // Minimum interval between log prints (if logging enabled)
         #endregion
 
         #region Cached References
@@ -32,6 +34,9 @@ namespace Utils
         // declared global to prevent reallocation every frame
         float avgFPS;
         float frameTimeUnscaled;
+
+        float logPrintTime = 0f;
+        string logString = "";
         #endregion
 
 
@@ -104,8 +109,18 @@ namespace Utils
         }
         private void OutputToLog()
         {
-            // Could be extended to output to screen or remote log
-            Debug.Log($"FPS - Avg: {avgFPS:F2}, Min: {minFPS:F2}, Max: {maxFPS:F2} ({filled} samples)");
+            if (logPrintTime + LOG_PRINT_INTERVAL > Time.time)
+            {
+                Debug.Log(logString);
+                logString = "";
+                logPrintTime = Time.time;
+            }
+            else
+            {
+                // Could be extended to output to screen or remote log
+                logString += $"FPS - Avg: {avgFPS:F2}, Min: {minFPS:F2}, Max: {maxFPS:F2} ({filled} samples)";
+            }
+            
              
         }
 
