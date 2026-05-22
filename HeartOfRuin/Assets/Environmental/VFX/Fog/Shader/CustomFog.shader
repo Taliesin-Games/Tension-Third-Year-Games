@@ -4,7 +4,8 @@ Shader "Custom/CustomFog"
     {
         _BaseColor ("Base Color", Color) = (0.6, 0.6, 0.7, 1) // Colour of the fog
         _Density ("Density", Range(0, 5)) = 1.0 // Overall density multiplier
-        _Falloff ("Edge Falloff", Range(0, 2)) = 1.0 // How quickly the fog fades out at the edges
+        _Falloff ("Edge Falloff Limit", Range(0, 10)) = 5.0 // Set to 5.0 for a standard Unity Plane
+        _FalloffSmoothness ("Edge Falloff Smoothness", Range(0.01, 5)) = 0.2 // Smoothness of the edge
         _NoiseTex ("3D Noise Texture", 3D) = "" {} // 3D noise texture for volumetric effect
         _NoiseScale ("Noise Scale", Range(0.1, 10)) = 2.0 // Scale of the noise texture
         _Speed ("Noise Scroll Speed", Range(0, 2)) = 0.2 // Speed of noise animation
@@ -81,6 +82,7 @@ Shader "Custom/CustomFog"
             float4 _BaseColor;
             float _Density;
             float _Falloff;
+            float _FalloffSmoothness;
             float _NoiseScale;
             float _Speed;
             float _LightInfluence;
@@ -131,9 +133,10 @@ Shader "Custom/CustomFog"
                 // Calculate depth fade (soft particles) - always needed.
                 float depthFade = saturate(depthDiff / _DepthFadeDistance);
 
-                // Edge fade (keep fog inside cube)
+                // Edge fade (keep fog inside mesh bounds)
                 float3 absPos = abs(IN.positionOS);
-                float edgeFade = 1.0 - smoothstep(0.8, 1.0, max(absPos.x, max(absPos.y, absPos.z)));
+                float maxPos = max(absPos.x, max(absPos.y, absPos.z));
+                float edgeFade = 1.0 - smoothstep(_Falloff - _FalloffSmoothness, _Falloff, maxPos);
 
                 // Noise lookup
                 float3 noiseUV = IN.positionWS * _NoiseScale * 0.01;

@@ -1,4 +1,7 @@
+using BMD;
+using BMD.ProcGen;
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +40,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Canvase References")]
     [SerializeField] GameObject playCanvas;     // TODO consider how we find and assign these references automatically.
+
+    [SerializeField] bool _isPaused = false;
+    [SerializeField] GameObject playerPrefab;
     #endregion
 
     #region Cached References
@@ -47,7 +53,7 @@ public class GameManager : MonoBehaviour
     // Game State Settings
     bool gameOver = false;
     bool gameWon = false;
-
+   
     // Gamplay Variables
     float currentTension = 0f;
     float tensionRate; // Multiplier for tension increase rate.
@@ -57,6 +63,11 @@ public class GameManager : MonoBehaviour
     public bool GameIsOver { get => gameOver; }
     public bool GameWon { get => gameWon; }
     public float TensionCompletionRatio { get => currentTension / tensionLimit; }
+    public bool IsPaused
+    {
+        get => _isPaused;
+        set{_isPaused = value;}
+    }
     #endregion
 
     private void Awake()
@@ -78,6 +89,38 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         FindRefereces();
+        StartCoroutine(SpawnPlayerWhenReady());
+    }
+
+    IEnumerator SpawnPlayerWhenReady() 
+    {
+        if (playerPrefab == null)
+        {
+            Debug.LogError("Player prefab is not assigned in GameManager.");
+            yield break;
+        }
+
+        while (true)
+        {
+            if (TerrainGenerator.Instance == null) { yield return null; continue; }
+
+            if (!TerrainGenerator.Instance.TerrainReady) 
+            {
+                yield return null; // Wait for the next frame and check again
+                continue;
+            }
+
+            Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            yield break; // Exit the coroutine after spawning the player
+        }
+    }
+    public void PauseGame()
+    {
+        if (IsPaused)
+        {
+            Time.timeScale = 0f;
+        }
+        else Time.timeScale = 1f;
     }
 
     private void FindRefereces()
@@ -92,6 +135,7 @@ public class GameManager : MonoBehaviour
     {
         if(gameOver || gameWon) return;
         ManageTension();
+        PauseGame();
 
     }
     void ManageTension()
@@ -105,6 +149,11 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    void IncreaseTension(float amount)
+    {
+        currentTension += amount;
+        OnTensionChanged?.Invoke(TensionCompletionRatio, currentTension);
+    }
     public void OnEnemyDefeated()
     {
         if (
@@ -112,7 +161,8 @@ public class GameManager : MonoBehaviour
             (EnemySpawner.EnemyCount <= 0 && EnemySpawner.IsSpawningComplete)
             )
         {
-            WinGame();
+            Debug.Log("meow meow, all enemies defeated");
+            //WinGame();
         }
     }
 
@@ -128,7 +178,11 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         OnGameOver?.Invoke();
-        playCanvas.SetActive(false);
+        if (playCanvas)
+        {
+            playCanvas.SetActive(false);
+        }
+
         
         LevelManager.LoadGameOver();
     }

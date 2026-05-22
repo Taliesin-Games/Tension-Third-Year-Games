@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using static Utils.DebuggerConfig; // Allows properties to be called as if they belong to this object
@@ -8,6 +9,7 @@ namespace Utils
     {
         #region Constants
         const float LOAD_DELAY = 1f; // Delay before starting FPS calculation to allow for initial spikes to settle
+        const float LOG_PRINT_INTERVAL = 10f; // Minimum interval between log prints (if logging enabled)
         #endregion
 
         #region Cached References
@@ -31,6 +33,9 @@ namespace Utils
         // declared global to prevent reallocation every frame
         float avgFPS;
         float frameTimeUnscaled;
+
+        float logPrintTime = 0f;
+        string logString = "";
         #endregion
 
 
@@ -41,6 +46,7 @@ namespace Utils
             frameTimes = new float[FrameSamples];
 
             SetupUI();
+            StartCoroutine(OncePerSecond());
         }
 
         void Update()
@@ -57,10 +63,22 @@ namespace Utils
 
             nextLogTime = Time.time + FPSLogInterval;
 
-            UpdateUIText();
-            OutputToLog();
+            //UpdateUIText();
+            //OutputToLog();
         }
 
+        IEnumerator OncePerSecond()
+        {
+            while (Time.time < startTime + 0.01f) // Add a small amount of time incase we pass the threshold during the frame. This ensures Update always happens first.
+                yield return null; // Wait until load delay has passed
+
+            while (true)
+            {
+                yield return new WaitForSecondsRealtime(1f);
+                UpdateUIText();
+                OutputToLog();
+            }
+        }
         private void CalculateFPS()
         {
             // Remove the old frame time from the total
@@ -90,8 +108,18 @@ namespace Utils
         }
         private void OutputToLog()
         {
-            // Could be extended to output to screen or remote log
-            Debug.Log($"FPS - Avg: {avgFPS:F2}, Min: {minFPS:F2}, Max: {maxFPS:F2} ({filled} samples)");
+            if (logPrintTime + LOG_PRINT_INTERVAL > Time.time)
+            {
+                Debug.Log(logString);
+                logString = "";
+                logPrintTime = Time.time;
+            }
+            else
+            {
+                // Could be extended to output to screen or remote log
+                logString += $"FPS - Avg: {avgFPS:F2}, Min: {minFPS:F2}, Max: {maxFPS:F2} ({filled} samples)";
+            }
+            
              
         }
 

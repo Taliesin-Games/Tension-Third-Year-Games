@@ -15,7 +15,7 @@ public class Player : Character
 
     InventoryUIController inventoryUiController;
     InventoryUIController equipmentUiController;
-    bool invToggle;
+    bool invToggle = false;
 
     PlayerControls playerControls;
     PlayerControls.PlayerActions playerActionMap;
@@ -24,29 +24,38 @@ public class Player : Character
     InputAction inventoryToggleUI;
     InputAction dropItemAction;
 
-
     protected override void OnEnable()
     {
         base.OnEnable();
-        playerControls.Enable();
+
+        playerHUD = FindAnyObjectByType<PlayerHUD>();
+
+        playerActionMap.Enable();
+        uiActionMap.Disable();
+
         inventoryTogglePlayer.performed += ctx => ToggleInventory();
         inventoryToggleUI.performed += ctx => ToggleInventory();
         dropItemAction.performed += ctx => DropItem();
 
-
     }
-
+    protected override void OnDeath()
+    {
+        Debug.Log("Player has died. Triggering Game Over sequence.");
+        base.OnDeath();
+        GameManager.Instance.GameOver();
+    }
     protected override void OnDisable()
     {
         base.OnDisable();
-        playerControls.Disable();
+
+        playerActionMap.Disable();
+        uiActionMap.Disable();
+
         inventoryTogglePlayer.performed -= ctx => ToggleInventory();
         inventoryToggleUI.performed -= ctx => ToggleInventory();
         dropItemAction.performed -= ctx => DropItem();
         
     }
-
-
     protected override void Awake()
     {
         Instance = this;
@@ -64,10 +73,11 @@ public class Player : Character
         uiActionMap.Disable(); // start with UI action map disabled
 
     }
-
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         InitialiseUIControllerVariables();
+        base.Start();
     }
 
     
@@ -75,23 +85,21 @@ public class Player : Character
     {
         if(!inventoryUiController || !equipmentUiController) return;
 
-        if (invToggle)
-        {        
-            inventoryUiController.ShowInventory();
-            equipmentUiController.ShowInventory();
-            HUDOffsetController.Instance.SetOffsetEnabled(true);
-        }
-        else
-        {
+        //if (invToggle)
+        //{   
+        //    inventoryUiController.ShowInventory();
+        //    equipmentUiController.ShowInventory();
+        //    HUDOffsetController.Instance.SetOffsetEnabled(true);
+        //}
+        //else
+        //{
 
-            inventoryUiController.HideInventory();
-            equipmentUiController.HideInventory();
-            HUDOffsetController.Instance.SetOffsetEnabled(false);
-        }
+        //    inventoryUiController.HideInventory();
+        //    equipmentUiController.HideInventory();
+        //    HUDOffsetController.Instance.SetOffsetEnabled(false);
+        //}
 
     }
-
-
     void DropItem()
     {
         if (inventoryUiController != null)
@@ -100,8 +108,6 @@ public class Player : Character
             Debug.Log("drop key pressed");
         }
     }
-
-
     void ToggleInventory()
     {
 
@@ -138,7 +144,6 @@ public class Player : Character
             HUDOffsetController.Instance.SetOffsetEnabled(false);
         }
     }
-
     void InitialiseUIControllerVariables()
     {
         if (InventoryUIController.Instance == null) return;
@@ -161,4 +166,8 @@ public class Player : Character
 
     }
 
+    private void OnDestroy()
+    {
+        Debug.Log("Player OnDestroy called, clearing singleton instance.");
+    }
 }

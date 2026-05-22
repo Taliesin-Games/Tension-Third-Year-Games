@@ -1,6 +1,4 @@
-using UnityEditor.Search;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 
 
@@ -50,6 +48,11 @@ public class DamageUIVisualisationController : MonoBehaviour
         {
             return; 
 
+        }
+
+        if (player == null)
+        {
+            player = Player.Instance;
         }
 
         GameObject instance = Instantiate(damageNumberPrefab, damageTarget.transform.position, Quaternion.identity);

@@ -38,24 +38,24 @@ namespace BMD.ProcGen
             public List<PathMapNode> Segments = new();
             public bool BuildSucceeded; // Tracks that nodes have been successfully built, this is used to determine if we need to clean up failed attempts
             public bool OverlapsValid;  // Tracks if the new nodes overlap with existing ones, this is used to determine if we need to clean up failed attempts
-            
+
             public int TargetLength;        // The length of the bridge sections not including the bud
             public int TotalGrowth => Segments.Count + (NewBud == null ? 0 : 1);    // Include the bud if it is not null
             public int BranchGrowth => Segments.Count;
-            public bool GrowthComplete => TotalGrowth >= TargetLength;    
+            public bool GrowthComplete => TotalGrowth >= TargetLength;
             public int RemainingGrowth => TargetLength - TotalGrowth;
 
             public RoomType RoomType => Parameters.roomType;
 
-            public int BranchID 
-            { 
-                get { return Parameters.branchID; } 
-                set { Parameters.branchID = value; } 
+            public int BranchID
+            {
+                get { return Parameters.branchID; }
+                set { Parameters.branchID = value; }
             }
-            public int SourceNodeID 
-            { 
-                get { return Parameters.sourceNodeID; } 
-                set { Parameters.sourceNodeID = value; } 
+            public int SourceNodeID
+            {
+                get { return Parameters.sourceNodeID; }
+                set { Parameters.sourceNodeID = value; }
             }
             public int PathDepthIndex;
             public int NextNodeIndex;
@@ -70,6 +70,10 @@ namespace BMD.ProcGen
             {
                 Branch = branch;
                 Depth = depth;
+            }
+            public override string ToString()
+            {
+                return $"{Branch}:{Depth}";
             }
         }
     }

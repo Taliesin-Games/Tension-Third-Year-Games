@@ -9,6 +9,11 @@ public class CharacterWeapon : MonoBehaviour
     #endregion
 
 
+    public void SetParentCharacter(Character character)
+    {
+        this.character = character;
+    }
+
     private void Start()
     {
         character = GetComponentInParent<Character>();
@@ -20,6 +25,8 @@ public class CharacterWeapon : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Weapon collided with: " + other.gameObject.name);
+
         if (character == null) return;
         
         if(!character.WeaponDamageEnabled) return;
@@ -35,11 +42,12 @@ public class CharacterWeapon : MonoBehaviour
 
     private void HitWithWeapon(GameObject target) 
     {
+        if (character == null) return;
 
         Debug.Log("Hit object: " + target.name);
 
-        CharacterStats playerStats = GetComponentInParent<Character>()?.GetCharacterStats();
-        DamageStruct damageBonusPercentage = GetComponentInParent<Character>()?.GetCharacterDamageBonusPercentage() ?? new DamageStruct();
+        CharacterStats playerStats = character?.GetCharacterStats();
+        DamageStruct damageBonusPercentage = character?.GetCharacterDamageBonusPercentage() ?? new DamageStruct();
 
         DamageStruct damage = damageComponent.CalculatePlayerDamage(playerStats, damageBonusPercentage);
 

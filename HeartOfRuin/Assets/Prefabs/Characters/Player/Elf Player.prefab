@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &142097073973852555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8121457063535324568}
+  m_Layer: 6
+  m_Name: WeaponAttachPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8121457063535324568
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 142097073973852555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0014, y: 0.0881, z: 0.0235}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5451620325200075928}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7922875856160554918
 GameObject:
   m_ObjectHideFlags: 0
@@ -24,6 +55,7 @@ GameObject:
   - component: {fileID: 9075488631171371052}
   - component: {fileID: 5276674339465016163}
   - component: {fileID: 1635114599638197084}
+  - component: {fileID: 6821615415960567140}
   m_Layer: 6
   m_Name: Elf Player
   m_TagString: Player
@@ -125,6 +157,7 @@ MonoBehaviour:
     Wind: 0
     Water: 0
   castComponent: {fileID: 1207980942263171655}
+  weaponAttachPoint: {fileID: 142097073973852555}
   playerHUD: {fileID: 0}
 --- !u!114 &5568387887786979083
 MonoBehaviour:
@@ -196,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   inventoryName: 'Starting Equipment / Equipped items '
-  inventorySize: 7
+  inventorySize: 6
   startingItems:
   - item: {fileID: 11400000, guid: e272eeb5a4ba08e449cec92d127d9c3a, type: 2}
     quantity: 1
@@ -213,10 +246,7 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: 2f0cbcf653a3531409985d765491be11, type: 2}
     quantity: 1
     slotType: 4
-  - item: {fileID: 0}
-    quantity: 0
-    slotType: 6
-  - item: {fileID: 11400000, guid: 2c2abe593e0ad0046bfbd20ff96447c6, type: 2}
+  - item: {fileID: 11400000, guid: e684c293a4ae72a4991f9e20d0024da0, type: 2}
     quantity: 1
     slotType: 6
   itemDropPrefab: {fileID: 3675725128406392298, guid: d75e7c45fd8002c4e8d78e4da88b1104, type: 3}
@@ -232,6 +262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d3ff5fe5aab5c4c88e417e922e59a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BMD.PlayerController
+  yKillValue: -20
   crouchSpeed: 2.5
   crawlSpeed: 1
   pushSpeed: 3
@@ -318,7 +349,7 @@ MonoBehaviour:
   selectedSpell: 2
   castPosOffset: {x: 0, y: 2, z: 2}
   mana: {fileID: 8828830358373169569}
-  damageComponent: {fileID: 0}
+  damageComponent: {fileID: 6821615415960567140}
 --- !u!114 &8828830358373169569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,6 +440,29 @@ MonoBehaviour:
       Earth: 0
       Wind: 0
       Water: 0
+--- !u!114 &6821615415960567140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7922875856160554918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090fb96d13786254c8c54fe647d8862d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageComponent
+  damageScaling:
+    None: 0
+    Physical: 0
+    Magical: 0.5
+    True: 0
+    Fire: 0.5
+    Lightning: 0.1
+    Ice: 0
+    Earth: 0
+    Wind: 0
+    Water: 0
 --- !u!1 &8475547856137853741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1016,7 +1070,7 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5890930530323385846}
+      addedObject: {fileID: 8121457063535324568}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9faef6c86d7a6894791d0db73e19e4d4, type: 3}
 --- !u!4 &5451620325200075928 stripped
@@ -1090,66 +1144,4 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 201195359731792174, guid: b240cd19f43f9e84c9d60d0362f4f9a2, type: 3}
   m_PrefabInstance: {fileID: 7633804015272764388}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &7920706850310523241
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 5451620325200075928}
-    m_Modifications:
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.003568286
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.10090382
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.0234576
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.49174583
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.47798896
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.458417
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.5653021
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 10.098
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 4687155244148461779, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-      propertyPath: m_Name
-      value: MeleeWeapon_Hammer
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 4c48c3331cac26544938b194ff095606, type: 3}
---- !u!4 &5890930530323385846 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4336063678738515103, guid: 4c48c3331cac26544938b194ff095606, type: 3}
-  m_PrefabInstance: {fileID: 7920706850310523241}
   m_PrefabAsset: {fileID: 0}

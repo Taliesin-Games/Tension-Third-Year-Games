@@ -8,6 +8,7 @@ public class Health : Resource
     bool isDead;
     public bool IsDead => isDead;
 
+
     [Tooltip("Damage resistances applied to incoming damage as a percentage, eg 0.1 = 10%\n" + 
         "True damage resistance will be ignored.")]
     [SerializeField] DamageStruct resistances;
@@ -29,18 +30,18 @@ public class Health : Resource
 
     public void TakeDamage(DamageStruct damage)
     {
-        Debug.Log($"Taking damage on {gameObject.name}");
+        
         if (isDead) return; // Ignore damage if already dead
 
         // apply resistances
         // incomingDamage * (1 - target.resistance.stat)
         float finalDamage = (float)ApplyResistances(damage);
-        decreaseResource(finalDamage);
+        DecreaseResource(finalDamage);
 
         Debugger.Log($"{transform.root.name} has taken {finalDamage} damage");
         Debugger.Log($"Remaining Health: {GetCurrentResource()} / {GetMaxResource()}");
 
-        DamageUIVisualisationController.Instance.VisualiseDamage(finalDamage, gameObject, this);
+        DamageUIVisualisationController.Instance?.VisualiseDamage(finalDamage, gameObject, this);
         InvokeResourceChanged();
         
 
@@ -52,7 +53,7 @@ public class Health : Resource
     public void Heal(float amount)
     {
         if (isDead) return; // Cannot heal if dead
-        increaseResource(amount);
+        IncreaseResource(amount);
         //Debugger.Log($"{transform.root.name} has healed {amount} health");
     }
     DamageStruct ApplyResistances(DamageStruct damage)
@@ -75,6 +76,10 @@ public class Health : Resource
             // Outpuit game manager instance as GameManager gm from if statement
             if (GameManager.Instance is GameManager gm) gm.GameOver();
             else Debugger.LogError("Player has died - No Game manager found to trigger game over.");
+        }
+        else if (characterController != null && characterController.GetType() == typeof(EnemyController))
+        {
+            characterController.RequestDie();
         }
 
 

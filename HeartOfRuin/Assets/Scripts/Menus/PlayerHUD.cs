@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,7 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private DPSPanelUIController DPSPanel;
     [SerializeField] private StatPanelUIController StatPanel;
     [SerializeField] private SpellPanelUIController SpellPanel;
+    [SerializeField] private EffectsPanelUIController EffectsPanel;
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject ManaBar;
 
@@ -35,6 +37,12 @@ public class PlayerHUD : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(DelayedInitialise());
+
+    }
+
+    void SetupPlayer()
+    {
         if (DPSPanel == null)
         {
             Debug.LogError("DPSPanel reference is not set in the HUD.");
@@ -48,6 +56,11 @@ public class PlayerHUD : MonoBehaviour
         if (SpellPanel == null)
         {
             Debug.LogError("SpellPanel reference is not set in the HUD.");
+        }
+
+        if (EffectsPanel == null)
+        {
+            Debug.LogError("EffectsPanel reference is not set in the HUD.");
         }
 
         if (DPSPanel != null)
@@ -65,6 +78,11 @@ public class PlayerHUD : MonoBehaviour
             SpellPanel.Initialise();
         }
 
+        if (EffectsPanel != null)
+        {
+            EffectsPanel.Initialise();
+        }
+
         if (HealthBar != null)
         {
             HealthBarImage = HealthBar.GetComponent<Image>();
@@ -73,7 +91,7 @@ public class PlayerHUD : MonoBehaviour
         if (ManaBar != null)
         {
             ManaBarImage = ManaBar.GetComponent<Image>();
-        }        
+        }
 
         player = Player.Instance;
         health = player.GetComponent<Health>();
@@ -99,11 +117,24 @@ public class PlayerHUD : MonoBehaviour
             // Initialize health, mana, and tension displays here if needed
             DisplayTension();
         }
+    }
+    IEnumerator DelayedInitialise()
+    {
+        while (Player.Instance == null)
+        {
+            yield return null;
+        }
 
+        SetupPlayer();
     }
 
     private void Update()
     {
+        if(Player.Instance == null) 
+        {
+            return;
+        }
+
         if (DPSPanel != null)
         {
             DPSPanel.UpdateUI();
@@ -111,7 +142,12 @@ public class PlayerHUD : MonoBehaviour
 
         if (SpellPanel != null)
         {
-            SpellPanel.updateUI();
+            SpellPanel.UpdateUI();
+        }
+
+        if (EffectsPanel != null)
+        {
+            EffectsPanel.updateUI();
         }
     }
 

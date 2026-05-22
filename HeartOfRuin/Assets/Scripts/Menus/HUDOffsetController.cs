@@ -16,6 +16,8 @@ public class HUDOffsetController : MonoBehaviour
     float targetOffset;
     bool isAnimating;
 
+    float timeLastFrame = 0;
+
     void Awake()
     {
         Instance = this;
@@ -25,7 +27,8 @@ public class HUDOffsetController : MonoBehaviour
     {
         if (!isAnimating) return;
 
-        CurrentOffset = Mathf.Lerp(CurrentOffset, targetOffset, Time.deltaTime * animationSpeed);
+        
+        CurrentOffset = Mathf.Lerp(CurrentOffset, targetOffset, (Time.realtimeSinceStartup - timeLastFrame) * animationSpeed);
 
         // Snap to target if very close to stop the animation
         if (Mathf.Abs(targetOffset - CurrentOffset) < 0.1f)
@@ -34,6 +37,7 @@ public class HUDOffsetController : MonoBehaviour
             isAnimating = false;
         }
 
+        timeLastFrame = Time.realtimeSinceStartup;
         OnOffsetChanged?.Invoke(CurrentOffset);
     }
 

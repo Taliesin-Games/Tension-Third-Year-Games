@@ -55,6 +55,8 @@ namespace BMD
         public event Action OnDealDamageFromWeapon;
         public event Action OnCastSpell;
 
+        public event Action OnTakeDamage;
+
         #endregion
 
         #region Constants
@@ -63,6 +65,7 @@ namespace BMD
         #endregion
 
         #region Serialized fields
+        [SerializeField] float yKillValue = -20f; // Y value at which the character will be considered dead (e.g., falling off the map)
         [Header("Depricated: Speed settings for various character rotation")]
         [SerializeField] protected float crouchSpeed = 2.5f;    // Speed of the character when crouching
         [SerializeField] protected float crawlSpeed = 1f;       // Speed of the character when crawling
@@ -194,6 +197,8 @@ namespace BMD
         public void NotifyDealDamageFromWeapon() { OnDealDamageFromWeapon?.Invoke(); OnEnableDamageFromWeapon?.Invoke(); }
         public void NotifyCastSpell() => OnCastSpell?.Invoke();
 
+        public void NotifyTakeDamage() => OnTakeDamage?.Invoke();
+
         protected void NotifySprintTriggered(bool triggered) 
         {
             if (triggered)
@@ -216,7 +221,6 @@ namespace BMD
             OnDieRequested?.Invoke();
             Destroy(gameObject, 2.0f);  // TODO evil magic number, but probably want die config and tracking elsewhere
         }
-
         private void _RequestAttack()
         {
             if (CantAttack) return;
@@ -224,20 +228,17 @@ namespace BMD
             OnAttackRequested?.Invoke();
             NotifyAttackPerformed();
         }
-
         private void _NotifyAttackPerformed()
         {
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnAttackPerformed?.Invoke();
         }
-
         private void _NotifyAttackEnded()
         {
             OnDisableDamageFromWeapon?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
-
         private void _RequestSpecialAttack()
         {
             if (CantAttack) return;
@@ -250,13 +251,11 @@ namespace BMD
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnSpecialAttackPerformed?.Invoke();
         }
-
         private void _NotifySpecialAttackEnded()
         {
             OnSpecialAttackEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
-
         private void _RequestFireWeapon()
         {
             if (CantAttack) return;
@@ -264,19 +263,16 @@ namespace BMD
             OnFireWeaponRequested?.Invoke();
             NotifyFireWeaponPerformed();
         }
-
         private void _NotifyFireWeaponPerformed()
         {
             isAttacking = true;         // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             OnFireWeaponPerformed?.Invoke();
         }
-
         private void _NotifyFireWeaponEnded()
         {
             OnFireWeaponEnded?.Invoke();    // TODO, this probably shouldnt be here, this is supposed to be a signaling hub
             isAttacking = false;
         }
-
         #endregion
 
         protected virtual void Awake()
@@ -302,6 +298,11 @@ namespace BMD
         }
         protected virtual void Update()
         {
+            if(transform.position.y <= yKillValue)
+            {
+                RequestDie();
+            }
+
             foreach (var (_, module) in modules)
                 module.Tick(Time.deltaTime);
         }
@@ -312,6 +313,7 @@ namespace BMD
                 module.FixedTick(Time.fixedDeltaTime);
 
         }
+        
 
 #if UNITY_EDITOR
         [ContextMenu("Add Default Modules")]

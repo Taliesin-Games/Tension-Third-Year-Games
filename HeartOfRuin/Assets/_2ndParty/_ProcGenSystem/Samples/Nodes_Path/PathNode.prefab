@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2801477610259497281}
   - component: {fileID: 7469882701883265440}
   m_Layer: 0
-  m_Name: Ground Example
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_LocalScale: {x: 5, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6614313898931041540}
+  m_Father: {fileID: 7238437830721037135}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1997975423236602827
 MeshFilter:
@@ -108,6 +108,38 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1150698521797095638
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7238437830721037135}
+  m_Layer: 0
+  m_Name: Ground Example
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7238437830721037135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150698521797095638}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7732914703893730651}
+  m_Father: {fileID: 6614313898931041540}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3552225471070466596
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +149,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6614313898931041540}
+  - component: {fileID: 1275862125171126044}
   - component: {fileID: -7571376616317381545}
+  - component: {fileID: 8998060946384837452}
   m_Layer: 0
   m_Name: PathNode
   m_TagString: Untagged
@@ -139,11 +173,36 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7402119462728684363}
-  - {fileID: 7732914703893730651}
   - {fileID: 204717500377050382}
   - {fileID: 7598199160414829653}
+  - {fileID: 7238437830721037135}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1275862125171126044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3552225471070466596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d49b640bba8599d4280c174b84694954, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: "Path Nodes are used to connect spawned rooms.\n\nIt is recommended that
+    Path Ndes are sized in multiples of the smalles size, this is used as length
+    =1. \n\nBe aware when adding margins that it may cause overlap on generation.
+    Adjust generation settings accordingly.\n\nDirections can be any shape. These
+    are guidelines for consistent generation, not rules. \n\"Straight\" refers to
+    moving one length forward\n\"Left/Right Turn\" refers to moving one length forward
+    and one length perpendicular.\n\"Uphill\" refers to moving one length forward
+    and increasing elevation\n\"Downhill\" refers to moving one length forward and
+    decreasing elevation.\n\nUphill and downhil distance is not considered in generation.
+    You just need to confirm iit works with your nav mesh agent settings.\n\nMost
+    directions are advisory and will be used anywhere (eg left turn rotated becomign
+    a right turn) unless solving to avoid geometry.\n\nSee provided shape examples
+    for variabtions"
 --- !u!114 &-7571376616317381545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,7 +217,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   editorVisualisation: {fileID: 8793100722642152900}
   keepVisualisationOnPlay: 1
+  terrainBoundsCollider: {fileID: 0}
+  headroom: {x: 0, y: 1, z: 0}
+  margins: {x: 0, y: 0, z: 0}
+  validRotations: 000000005a000000b40000000e010000
   length: 1
+  direction: 0
+--- !u!114 &8998060946384837452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3552225471070466596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_GenerateLinks: 1
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: cbb58482f45fc864eaa9a370f49a803a, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1001 &381416198593079470
 PrefabInstance:
   m_ObjectHideFlags: 0

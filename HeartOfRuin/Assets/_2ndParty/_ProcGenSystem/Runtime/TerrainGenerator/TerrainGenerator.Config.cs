@@ -17,6 +17,7 @@ namespace BMD.ProcGen
         [SerializeField] int GenerationThrottleAmount = 2;     // Limit how many nodes are generated each frame to avoid performance spikes
         [Tooltip("This slows down generation considerably for debugging purposes")]
         [SerializeField] bool slowGeneration = false;
+        [SerializeField] float terrainCamHeight = 30f;
         [SerializeField] bool stepThroughGeneration = false;
         [SerializeField] int randomSeed = 0;                // Seed for random number generation, set to 0 for a random seed based on current time
 
