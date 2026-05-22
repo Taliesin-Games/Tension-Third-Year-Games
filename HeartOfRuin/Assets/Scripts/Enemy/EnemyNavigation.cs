@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -23,6 +24,14 @@ public class EnemyNavigation : MonoBehaviour
         agent.updateRotation = AGENT_HANDLES_MOVEMENT;
         agent.updateUpAxis = true; // keep this true for normal humanoids
 
+        StartCoroutine(MoveToNavMesh());
+        
+        agent.nextPosition = transform.position;
+    }
+
+    IEnumerator MoveToNavMesh()
+    {
+        yield return null;
         // Auto-align agent to navmesh height
         if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
         {
@@ -31,10 +40,10 @@ public class EnemyNavigation : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"{name}: Could not find navmesh under enemy!", this);
+            Debug.LogError($"{name}: Could not find navmesh under enemy {name}!", this);
         }
-
     }
+
     void LateUpdate()
     {
         if (!agent.isOnNavMesh) return;
