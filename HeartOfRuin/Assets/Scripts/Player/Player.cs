@@ -28,6 +28,8 @@ public class Player : Character
     {
         base.OnEnable();
 
+        playerHUD = FindAnyObjectByType<PlayerHUD>();
+
         playerActionMap.Enable();
         uiActionMap.Disable();
 
