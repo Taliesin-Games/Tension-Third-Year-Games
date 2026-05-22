@@ -35,7 +35,7 @@ public class NodeEnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(PlayerDistanceCheck());
+        //StartCoroutine(PlayerDistanceCheck());
         StartCoroutine(DelayedSpawn());
     }
     IEnumerator DelayedSpawn()
