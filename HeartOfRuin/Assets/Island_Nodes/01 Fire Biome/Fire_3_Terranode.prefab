@@ -5668,6 +5668,7 @@ GameObject:
   - component: {fileID: 9121082493492350132}
   - component: {fileID: 6797655613287531203}
   - component: {fileID: 4198145632727111608}
+  - component: {fileID: 20008373837406558}
   m_Layer: 0
   m_Name: Fire_3_Terranode
   m_TagString: UnboundedTerrain
@@ -5827,6 +5828,26 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: c7e538c2dbf258d4fa30bf6c34b986fe, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &20008373837406558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3987183807468222628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859557e3806d2c94d86d085ac18bd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  commonEnemiesToSpawn:
+  - {fileID: 7607207453903759168, guid: 7bfc2a71ff7710e4cbe598a46fa5e099, type: 3}
+  rareEnemiesToSpawn:
+  - {fileID: 1970403475714826458, guid: c6e071a8197e7a54790275b8947d3b0a, type: 3}
+  enemySpawnQuantity: 3
+  rareChance: 0.2
+  maxEnemiesToSpawn: 10
+  spawnRadius: 20
 --- !u!1 &4151390103725025044
 GameObject:
   m_ObjectHideFlags: 0

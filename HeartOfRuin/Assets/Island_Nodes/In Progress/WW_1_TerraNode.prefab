@@ -2069,6 +2069,7 @@ GameObject:
   - component: {fileID: 7351676237777567247}
   - component: {fileID: 8525910642641185226}
   - component: {fileID: 7336223241124883855}
+  - component: {fileID: 7782850390019531301}
   m_Layer: 0
   m_Name: WW_1_TerraNode
   m_TagString: Untagged
@@ -2194,6 +2195,26 @@ MonoBehaviour:
   headroom: {x: 0, y: 1, z: 0}
   margins: {x: 0.2, y: 0.2, z: 0.2}
   validRotations: 000000005a000000b40000000e010000
+--- !u!114 &7782850390019531301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9217343230761709196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859557e3806d2c94d86d085ac18bd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  commonEnemiesToSpawn:
+  - {fileID: 7607207453903759168, guid: 7bfc2a71ff7710e4cbe598a46fa5e099, type: 3}
+  rareEnemiesToSpawn:
+  - {fileID: 1970403475714826458, guid: c6e071a8197e7a54790275b8947d3b0a, type: 3}
+  enemySpawnQuantity: 3
+  rareChance: 0.2
+  maxEnemiesToSpawn: 10
+  spawnRadius: 20
 --- !u!1001 &36598374956058772
 PrefabInstance:
   m_ObjectHideFlags: 0

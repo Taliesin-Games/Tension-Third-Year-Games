@@ -1476,6 +1476,7 @@ GameObject:
   - component: {fileID: 4567550092838531354}
   - component: {fileID: 7139728149896595446}
   - component: {fileID: 81265275979951817}
+  - component: {fileID: 3823595198998609756}
   m_Layer: 0
   m_Name: WW_6_Terranode
   m_TagString: Untagged
@@ -1600,6 +1601,27 @@ MonoBehaviour:
   terrainBoundsCollider: {fileID: 0}
   headroom: {x: 0, y: 1, z: 0}
   margins: {x: 0.2, y: 0.2, z: 0.2}
+  validRotations: 000000005a000000b40000000e010000
+--- !u!114 &3823595198998609756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3870112114322888922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859557e3806d2c94d86d085ac18bd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  commonEnemiesToSpawn:
+  - {fileID: 7607207453903759168, guid: 7bfc2a71ff7710e4cbe598a46fa5e099, type: 3}
+  rareEnemiesToSpawn:
+  - {fileID: 1970403475714826458, guid: c6e071a8197e7a54790275b8947d3b0a, type: 3}
+  enemySpawnQuantity: 3
+  rareChance: 0.2
+  maxEnemiesToSpawn: 10
+  spawnRadius: 20
 --- !u!1 &3988564612701269354
 GameObject:
   m_ObjectHideFlags: 0

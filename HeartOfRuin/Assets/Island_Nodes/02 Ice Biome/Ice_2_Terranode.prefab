@@ -1200,6 +1200,7 @@ GameObject:
   - component: {fileID: 1414862288430478882}
   - component: {fileID: 5953313199052761558}
   - component: {fileID: 1833657681846748845}
+  - component: {fileID: 6923790674278798985}
   m_Layer: 8
   m_Name: Ice_2_Terranode
   m_TagString: UnboundedTerrain
@@ -1376,6 +1377,26 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 58208d1c595192349842a5cd7d8d44af, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &6923790674278798985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6740745065368731368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859557e3806d2c94d86d085ac18bd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  commonEnemiesToSpawn:
+  - {fileID: 7607207453903759168, guid: 7bfc2a71ff7710e4cbe598a46fa5e099, type: 3}
+  rareEnemiesToSpawn:
+  - {fileID: 1970403475714826458, guid: c6e071a8197e7a54790275b8947d3b0a, type: 3}
+  enemySpawnQuantity: 3
+  rareChance: 0.2
+  maxEnemiesToSpawn: 10
+  spawnRadius: 20
 --- !u!1 &6850892647788436610
 GameObject:
   m_ObjectHideFlags: 0

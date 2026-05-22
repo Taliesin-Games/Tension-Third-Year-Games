@@ -50,6 +50,10 @@ namespace BMD.ProcGen
             generationStepUIOutput = "Annoying boss...";
             yield return slowTextUpdate;
 
+            // Spawn enemmies
+            spawnEnemiesNow = true; // Handled by enemy spawner, this just signals that the terrain is ready and enemies can be spawned without risk of them being deleted immediately by terrain generation cleanup.
+            yield return new WaitForSecondsRealtime(1f);   // Just to give a moment before the final generation complete message
+
             isGenerating = false;
             generationComplete = true;
             generationStepUIOutput = "Generation Complete";

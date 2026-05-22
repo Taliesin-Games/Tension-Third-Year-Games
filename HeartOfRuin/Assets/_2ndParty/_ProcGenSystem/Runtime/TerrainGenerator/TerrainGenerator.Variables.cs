@@ -25,6 +25,7 @@ namespace BMD.ProcGen
         System.Random rng;
         Coroutine generationCoroutine;
         bool isGenerating = false;
+        bool spawnEnemiesNow = false;
         bool generationComplete = false;
         int generationStepsThisFrame; // Counter to track how many nodes have been generated in the current frame
         bool debugStepDoneThisFrame = false;
@@ -45,6 +46,7 @@ namespace BMD.ProcGen
         #endregion
         #region Properties
         public bool TerrainReady => !isGenerating && generationComplete;
+        public bool SpawnEnemiesNow => spawnEnemiesNow;
         public string GenerationStepUIOutput => generationStepUIOutput;
 
         #endregion
