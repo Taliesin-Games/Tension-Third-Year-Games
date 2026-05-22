@@ -123,6 +123,7 @@ MonoBehaviour:
     Wind: 0
     Water: 0
   castComponent: {fileID: 1207980942263171655}
+  weaponAttachPoint: {fileID: 0}
   playerHUD: {fileID: 0}
 --- !u!114 &5568387887786979083
 MonoBehaviour:
@@ -230,6 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d3ff5fe5aab5c4c88e417e922e59a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BMD.PlayerController
+  yKillValue: -20
   crouchSpeed: 2.5
   crawlSpeed: 1
   pushSpeed: 3
@@ -886,6 +888,62 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5451620325200075928}
     m_Modifications:
+    - target: {fileID: 20442988091482295, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: ColorBySpeedModule.gradient.maxGradient.key0.b
+      value: 0.92248774
+      objectReference: {fileID: 0}
+    - target: {fileID: 20442988091482295, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: ColorBySpeedModule.gradient.maxGradient.key0.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 20442988091482295, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: ColorBySpeedModule.gradient.maxGradient.key0.r
+      value: 0.4481132
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6797
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.7534
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0275
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.123965025
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.6875347
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7046712
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.123965144
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0.243
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 200.192
+      objectReference: {fileID: 0}
+    - target: {fileID: 780499567249191240, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -271.367
+      objectReference: {fileID: 0}
     - target: {fileID: 1000019200963897280, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
       propertyPath: m_Name
       value: MeleeWeapon_ElvenSword
@@ -931,7 +989,9 @@ PrefabInstance:
       value: 90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3847760799897449907, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
+    - {fileID: 6721922603766886828, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b7af916e6ca9c3439ddc05647c248ca, type: 3}
