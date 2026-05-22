@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 7375253652336715246}
   - component: {fileID: -9100195043480525474}
   - component: {fileID: 3246230972150234672}
+  - component: {fileID: 660232705719410642}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -460,6 +461,24 @@ MonoBehaviour:
     Earth: 0
     Wind: 1
     Water: 1
+--- !u!114 &660232705719410642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2607250186916821478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfaa4897695bf7748a31349481792037, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmmissionPulser
+  meshRenderer: {fileID: 8090565484386367803}
+  materialID: 0
+  intensity:
+    Min: 0
+    Max: 5
+  pulseSpeed: 1
 --- !u!1001 &7414834917505524841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -804,6 +823,11 @@ PrefabInstance:
 --- !u!4 &7020109541486953346 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
+  m_PrefabInstance: {fileID: 7414834917505524841}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8090565484386367803 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1630794972795428178, guid: cde9a4b4db6d1864d884e4526585d0f9, type: 3}
   m_PrefabInstance: {fileID: 7414834917505524841}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &9174788844933847969 stripped
