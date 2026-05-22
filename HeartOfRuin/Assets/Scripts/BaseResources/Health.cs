@@ -42,7 +42,7 @@ public class Health : Resource
         Debugger.Log($"Remaining Health: {GetCurrentResource()} / {GetMaxResource()}");
 
         DamageUIVisualisationController.Instance?.VisualiseDamage(finalDamage, gameObject, this);
-        //InvokeResourceChanged();
+        InvokeResourceChanged();
         
 
         if (GetCurrentResource() <= 0)
