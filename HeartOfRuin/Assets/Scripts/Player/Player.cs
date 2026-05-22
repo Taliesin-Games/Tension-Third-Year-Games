@@ -38,7 +38,7 @@ public class Player : Character
     }
     protected override void OnDeath()
     {
-        
+        Debug.Log("Player has died. Triggering Game Over sequence.");
         base.OnDeath();
         GameManager.Instance.GameOver();
     }
@@ -70,6 +70,7 @@ public class Player : Character
     }
     protected override void Start()
     {
+        base.Start();
         InitialiseUIControllerVariables();
         base.Start();
     }
@@ -80,7 +81,7 @@ public class Player : Character
         if(!inventoryUiController || !equipmentUiController) return;
 
         if (invToggle)
-        {        
+        {   
             inventoryUiController.ShowInventory();
             equipmentUiController.ShowInventory();
             HUDOffsetController.Instance.SetOffsetEnabled(true);
@@ -160,4 +161,8 @@ public class Player : Character
 
     }
 
+    private void OnDestroy()
+    {
+        Debug.Log("Player OnDestroy called, clearing singleton instance.");
+    }
 }
