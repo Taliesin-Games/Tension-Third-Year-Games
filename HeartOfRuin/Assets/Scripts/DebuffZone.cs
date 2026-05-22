@@ -1,16 +1,37 @@
 using UnityEngine;
 
+
+[RequireComponent(typeof(Collider))]
 public class DebuffZone : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    [SerializeField] private ItemEffect debuffEffect;
+
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (debuffEffect == null) return;
+
+        if (other.CompareTag("Player"))
+        {
+            Character character = other.GetComponent<Character>();
+            if (character != null)
+            {
+                character.AddItemEffect(debuffEffect);
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerExit(Collider other)
     {
-        
+        if (debuffEffect == null) return;
+
+        if (other.CompareTag("Player"))
+        {
+            Character character = other.GetComponent<Character>();
+            if (character != null)
+            {
+                character.RemoveItemEffect(debuffEffect);
+            }
+        }
     }
 }
