@@ -115,6 +115,11 @@ public class PlayerHUD : MonoBehaviour
 
     private void Update()
     {
+        if(Player.Instance == null) 
+        {
+            return;
+        }
+
         if (DPSPanel != null)
         {
             DPSPanel.UpdateUI();
@@ -122,7 +127,7 @@ public class PlayerHUD : MonoBehaviour
 
         if (SpellPanel != null)
         {
-            SpellPanel.updateUI();
+            SpellPanel.UpdateUI();
         }
 
         if (EffectsPanel != null)

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,7 +18,7 @@ public class SpellPanelUIController : MonoBehaviour
         {
             if (spellCaster == null)
             {
-                spellCaster = Player.Instance.GetComponent<SpellCaster>();
+                spellCaster = Player.Instance?.GetComponent<SpellCaster>();
             }
             return spellCaster;
         }
@@ -49,10 +50,19 @@ public class SpellPanelUIController : MonoBehaviour
 
     public void Initialise()
     {
-        EnsureCorrectSlotCount();
+        StartCoroutine(DelayedInitialise());
     }
 
-    public void updateUI() 
+    IEnumerator DelayedInitialise()
+    {
+        while(Player.Instance == null) 
+        {
+            yield return null;
+        }
+
+        EnsureCorrectSlotCount();
+    }
+    public void UpdateUI() 
     {
         if (SpellCaster == null || gridUI == null) 
         {

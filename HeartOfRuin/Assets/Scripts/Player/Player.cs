@@ -15,7 +15,7 @@ public class Player : Character
 
     InventoryUIController inventoryUiController;
     InventoryUIController equipmentUiController;
-    bool invToggle;
+    bool invToggle = false;
 
     PlayerControls playerControls;
     PlayerControls.PlayerActions playerActionMap;
@@ -24,16 +24,16 @@ public class Player : Character
     InputAction inventoryToggleUI;
     InputAction dropItemAction;
 
-
     protected override void OnEnable()
     {
         base.OnEnable();
-        playerControls.Enable();
+
+        playerActionMap.Enable();
+        uiActionMap.Disable();
+
         inventoryTogglePlayer.performed += ctx => ToggleInventory();
         inventoryToggleUI.performed += ctx => ToggleInventory();
         dropItemAction.performed += ctx => DropItem();
-
-
 
     }
     protected override void OnDeath()
@@ -45,7 +45,10 @@ public class Player : Character
     protected override void OnDisable()
     {
         base.OnDisable();
-        playerControls.Disable();
+
+        playerActionMap.Disable();
+        uiActionMap.Disable();
+
         inventoryTogglePlayer.performed -= ctx => ToggleInventory();
         inventoryToggleUI.performed -= ctx => ToggleInventory();
         dropItemAction.performed -= ctx => DropItem();
@@ -80,19 +83,19 @@ public class Player : Character
     {
         if(!inventoryUiController || !equipmentUiController) return;
 
-        if (invToggle)
-        {   
-            inventoryUiController.ShowInventory();
-            equipmentUiController.ShowInventory();
-            HUDOffsetController.Instance.SetOffsetEnabled(true);
-        }
-        else
-        {
+        //if (invToggle)
+        //{   
+        //    inventoryUiController.ShowInventory();
+        //    equipmentUiController.ShowInventory();
+        //    HUDOffsetController.Instance.SetOffsetEnabled(true);
+        //}
+        //else
+        //{
 
-            inventoryUiController.HideInventory();
-            equipmentUiController.HideInventory();
-            HUDOffsetController.Instance.SetOffsetEnabled(false);
-        }
+        //    inventoryUiController.HideInventory();
+        //    equipmentUiController.HideInventory();
+        //    HUDOffsetController.Instance.SetOffsetEnabled(false);
+        //}
 
     }
     void DropItem()

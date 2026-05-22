@@ -26,7 +26,7 @@ public class DPSPanelUIController : MonoBehaviour
         { 
             if (dpsTracker == null)
             {
-                dpsTracker = Player.Instance.GetComponent<DpsTracker>();
+                dpsTracker = Player.Instance?.GetComponent<DpsTracker>();
             }
             return dpsTracker; 
         } 

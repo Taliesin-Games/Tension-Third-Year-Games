@@ -1,5 +1,7 @@
 using BMD;
+using BMD.ProcGen;
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,6 +42,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject playCanvas;     // TODO consider how we find and assign these references automatically.
 
     [SerializeField] bool _isPaused = false;
+    [SerializeField] GameObject playerPrefab;
     #endregion
 
     #region Cached References
@@ -51,13 +54,10 @@ public class GameManager : MonoBehaviour
     bool gameOver = false;
     bool gameWon = false;
    
-
     // Gamplay Variables
     float currentTension = 0f;
     float tensionRate; // Multiplier for tension increase rate.
     #endregion
-
-
 
     #region Properties
     public bool GameIsOver { get => gameOver; }
@@ -89,8 +89,31 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         FindRefereces();
+        StartCoroutine(SpawnPlayerWhenReady());
     }
 
+    IEnumerator SpawnPlayerWhenReady() 
+    {
+        if (playerPrefab == null)
+        {
+            Debug.LogError("Player prefab is not assigned in GameManager.");
+            yield break;
+        }
+
+        while (true)
+        {
+            if (TerrainGenerator.Instance == null) continue;
+
+            if (!TerrainGenerator.Instance.TerrainReady) 
+            {
+                yield return null; // Wait for the next frame and check again
+                continue;
+            }
+
+            Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            yield break; // Exit the coroutine after spawning the player
+        }
+    }
     public void PauseGame()
     {
         if (IsPaused)
@@ -126,6 +149,11 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    void IncreaseTension(float amount)
+    {
+        currentTension += amount;
+        OnTensionChanged?.Invoke(TensionCompletionRatio, currentTension);
+    }
     public void OnEnemyDefeated()
     {
         if (
