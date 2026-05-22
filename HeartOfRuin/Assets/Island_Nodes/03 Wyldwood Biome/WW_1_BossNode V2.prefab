@@ -1553,6 +1553,7 @@ GameObject:
   - component: {fileID: 8525910642641185226}
   - component: {fileID: 7336223241124883855}
   - component: {fileID: 5419106730349600803}
+  - component: {fileID: 5622780656424463298}
   m_Layer: 0
   m_Name: WW_1_BossNode V2
   m_TagString: Untagged
@@ -1709,6 +1710,26 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: d6730a5f5e34d5b479097c1597587244, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &5622780656424463298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9217343230761709196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859557e3806d2c94d86d085ac18bd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  commonEnemiesToSpawn:
+  - {fileID: 3696862930859499758, guid: f1ba77c309e404f4ea54c458d4cba75e, type: 3}
+  rareEnemiesToSpawn:
+  - {fileID: 3696862930859499758, guid: f1ba77c309e404f4ea54c458d4cba75e, type: 3}
+  enemySpawnQuantity: 1
+  rareChance: 0
+  maxEnemiesToSpawn: 1
+  spawnRadius: 10
 --- !u!1001 &36943298819848418
 PrefabInstance:
   m_ObjectHideFlags: 0

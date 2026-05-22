@@ -1480,6 +1480,7 @@ GameObject:
   - component: {fileID: 8525910642641185226}
   - component: {fileID: 7336223241124883855}
   - component: {fileID: 8859167772643774938}
+  - component: {fileID: 5953561063571869681}
   m_Layer: 0
   m_Name: Ice_1_BossNode 1
   m_TagString: Untagged
@@ -1637,6 +1638,26 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 17871af9ae154af49b8446e98d790ad4, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &5953561063571869681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9217343230761709196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859557e3806d2c94d86d085ac18bd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  commonEnemiesToSpawn:
+  - {fileID: 3696862930859499758, guid: f1ba77c309e404f4ea54c458d4cba75e, type: 3}
+  rareEnemiesToSpawn:
+  - {fileID: 3696862930859499758, guid: f1ba77c309e404f4ea54c458d4cba75e, type: 3}
+  enemySpawnQuantity: 1
+  rareChance: 0
+  maxEnemiesToSpawn: 1
+  spawnRadius: 10
 --- !u!1001 &36943298819848418
 PrefabInstance:
   m_ObjectHideFlags: 0
