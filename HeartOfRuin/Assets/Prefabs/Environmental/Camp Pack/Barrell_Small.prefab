@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 853294783881899387}
   - component: {fileID: 6994535511152864156}
   - component: {fileID: 2911520266397941379}
-  m_Layer: 0
+  - component: {fileID: 5106003359401350717}
+  m_Layer: 8
   m_Name: Barrell_Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,4 +89,28 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &5106003359401350717
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377945752357618560}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.4446594
+  m_Height: 1.22
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.43448097, z: 0}
