@@ -71,6 +71,28 @@ public class DamageUIVisualisationController : MonoBehaviour
         
     }
 
+    private float GetTargetMaxYBounds(GameObject target)
+    {
+        Renderer[] renderers = target.GetComponentsInChildren<Renderer>();
+
+        if (renderers.Length == 0)
+        {
+            return target.transform.position.y;
+        }
+
+        Bounds combinedBounds = renderers[0].bounds;
+
+        foreach (Renderer rend in renderers)
+        {
+
+            if (rend is ParticleSystemRenderer) continue;
+
+            combinedBounds.Encapsulate(rend.bounds);
+        }
+
+        return combinedBounds.max.y;
+    }
+
     void ShowHealthBars(GameObject damageTarget, Health targetHealth)
     {
         if (healthBarPrefab == null || !showEnemyHealthBars)
@@ -88,14 +110,16 @@ public class DamageUIVisualisationController : MonoBehaviour
             return; // Health bar already exists for this target
         }
 
-        GameObject healthBarInstance = Instantiate(healthBarPrefab, damageTarget.transform.position + Vector3.up * healthbarHeightOffset, Quaternion.identity);
+        Vector3 pos = damageTarget.transform.position + (Vector3.up * (healthbarHeightOffset + (GetTargetMaxYBounds(damageTarget)/2)));
+
+        GameObject healthBarInstance = Instantiate(healthBarPrefab, pos, Quaternion.identity);
         HealthBarWorld healthBar = healthBarInstance.GetComponent<HealthBarWorld>();
 
         if (healthBar != null)
         {
             healthBar.Initialize(targetHealth);
             healthBarInstance.transform.SetParent(damageTarget.transform);
-            healthBarInstance.transform.localPosition = Vector3.up * healthbarHeightOffset;
+            healthBarInstance.transform.localPosition = (Vector3.up * (healthbarHeightOffset + (GetTargetMaxYBounds(damageTarget) / 2)));
             healthBarInstance.transform.rotation = Quaternion.identity;
         }
         else
