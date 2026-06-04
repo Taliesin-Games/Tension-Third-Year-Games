@@ -10,7 +10,7 @@ Material:
   m_Name: WW Sml Foliage 2
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 2100000, guid: 572f9e607a4829641a87281e2e22b638, type: 2}
-  m_ModifiedSerializedProperties: 0
+  m_ModifiedSerializedProperties: 8
   m_ValidKeywords:
   - _ALPHATEST_ON
   - _EMISSION
@@ -20,7 +20,7 @@ Material:
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: TransparentCutout
@@ -31,29 +31,31 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 71481fc1b6a6a8a42850946a92c5d7fb, type: 3}
+        m_Texture: {fileID: 2800000, guid: ec1727d7c3b3a2f4b84c47c88fb37762, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: fd1c37b3acb3e9b4f8c38848323c1686, type: 3}
+        m_Texture: {fileID: 2800000, guid: ea355d7c5b156da4aab0d378ba9c2f11, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: ba5d9c81f3cb0ad428b1abff3848f646, type: 3}
+        m_Texture: {fileID: 2800000, guid: 47531dfd793afa44b8b6b41d9a77a96b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 71481fc1b6a6a8a42850946a92c5d7fb, type: 3}
+        m_Texture: {fileID: 2800000, guid: ec1727d7c3b3a2f4b84c47c88fb37762, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
-        m_Texture: {fileID: 2800000, guid: 9822cdd2b5bb1094da397ac8d87c8bc8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 298bfe6bf2fb29b4b84f819df18fcb42, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _Cull: 0
+    - _Smoothness: 0.455
     m_Colors:
-    - _EmissionColor: {r: 12.718689, g: 22.04463, b: 29.63035, a: 1}
+    - _EmissionColor: {r: 1.723771, g: 0.4970255, b: 2.5657268, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &460668109048123015
