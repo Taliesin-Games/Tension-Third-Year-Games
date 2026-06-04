@@ -4,8 +4,13 @@ public class Boss : Enemy
 {
     [SerializeField] private GameObject levelTransitionEffectPrefab;
 
+    protected override void OnDisable() 
+    { 
+        base.OnDisable();
+        DropBossPortal();
+    }
 
-    public void OnDestroy()
+    void DropBossPortal()
     {
         Debug.Log("Boss is dying. Checking for level transition effect.");
         if (levelTransitionEffectPrefab)
@@ -14,4 +19,5 @@ public class Boss : Enemy
             Instantiate(levelTransitionEffectPrefab, transform.position, Quaternion.identity);
         }
     }
+  
 }
