@@ -15,19 +15,19 @@ public class Mouse : MonoBehaviour
 
     void Update()
     {
-        handleMouseLogic();
+        HandleMouseLogic();
     }
 
-    void handleMouseLogic()
+    void HandleMouseLogic()
     {
-        transform.position = Input.mousePosition;
-
         if (Cursor.lockState == CursorLockMode.Locked)
         {
             mouseCursor.enabled = false;
             mouseItemUI.SetActive(false);
             return;
         }
+
+        transform.position = Input.mousePosition;
 
         mouseCursor.enabled = true;
         mouseItemUI.SetActive(!IsEmpty());
