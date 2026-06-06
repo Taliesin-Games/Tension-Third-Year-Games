@@ -1,52 +1,32 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager Instance; // Singleton instance of the LevelManager class
-
     private const string LoadingScreenSceneName = "LoadingScreen";
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this; // Assign the singleton instance
-            
-            // ENSURE the LevelManager isn't destroyed when its parent scene unloads!
-            // Makes the LevelManager persist across all scenes.
-            transform.SetParent(null); // DontDestroyOnLoad only works on root objects
-            DontDestroyOnLoad(gameObject); 
-        }
-        else
-        {
-            Debug.LogWarning("Multiple LevelManager instances detected! Destroying duplicate.");
-            Destroy(gameObject); // Ensure only one instance exists
-            return;
-        }
-    }
+    // Dummy MonoBehaviour to execute the Coroutine
+    private class CoroutineRunner : MonoBehaviour { }
 
-    // New generic loading method that triggers the sequence
     public static void LoadSceneAdditiveWithLoadingScreen(string sceneName)
     {
-        if (Instance != null)
-        {
-            Debug.Log($"Starting loading sequence for scene: {sceneName}");
-            Instance.StartCoroutine(Instance.LoadSceneSequence(sceneName));
-        }
-        else
-        {
-            Debug.LogError("No LevelManager instance found to start loading sequence.");
-            SceneManager.LoadScene(sceneName); // Fallback
-        }
+        Debug.Log($"Starting loading sequence for scene: {sceneName}");
+        
+        // Spawn a temporary runner to process the coroutine so we avoid needing an instance of LevelManager
+        GameObject runnerObj = new GameObject("[LevelManager_CoroutineRunner]");
+        DontDestroyOnLoad(runnerObj);
+        CoroutineRunner runner = runnerObj.AddComponent<CoroutineRunner>();
+        
+        runner.StartCoroutine(LoadSceneSequence(sceneName, runnerObj));
     }
 
-    private IEnumerator LoadSceneSequence(string newSceneName)
+    private static IEnumerator LoadSceneSequence(string newSceneName, GameObject runnerObj)
     {
         string currentMainScene = SceneManager.GetActiveScene().name;
 
         // 1. Load the loading screen additively
+        Debug.Log("Loading loading screen...");
         AsyncOperation loadLoadingScreen = SceneManager.LoadSceneAsync(LoadingScreenSceneName, LoadSceneMode.Additive);
         while (!loadLoadingScreen.isDone)
         {
@@ -57,13 +37,15 @@ public class LevelManager : MonoBehaviour
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(LoadingScreenSceneName));   
 
         // 2. Unload the current main scene
+        Debug.Log("Unloading current scene...");
         AsyncOperation unloadCurrentScene = SceneManager.UnloadSceneAsync(currentMainScene);
         while (!unloadCurrentScene.isDone)
         {
             yield return null;
         }
-
+        
         // 3. Load the new scene additively
+        Debug.Log("Loading new scene...");
         AsyncOperation loadNewScene = SceneManager.LoadSceneAsync(newSceneName, LoadSceneMode.Additive);
         while (!loadNewScene.isDone)
         {
@@ -74,10 +56,17 @@ public class LevelManager : MonoBehaviour
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(newSceneName));
 
         // 4. Unload the loading screen
+        Debug.Log("Unloading loading screen...");
         AsyncOperation unloadLoadingScreen = SceneManager.UnloadSceneAsync(LoadingScreenSceneName);
         while (!unloadLoadingScreen.isDone)
         {
             yield return null;
+        }
+
+        // Finished execution, safely destroy the temporary runner
+        if (runnerObj != null)
+        {
+            Destroy(runnerObj);
         }
     }
 
@@ -125,9 +114,6 @@ public class LevelManager : MonoBehaviour
 
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            // Because we don't have the scene path easily available to get the string name,
-            // we will need to load index using string path workaround or manage paths. 
-            // In Unity 5.3+, we can bypass by grabbing the scene path.
             string nextScenePath = SceneUtility.GetScenePathByBuildIndex(nextSceneIndex);
             string nextSceneName = System.IO.Path.GetFileNameWithoutExtension(nextScenePath);
             LoadSceneAdditiveWithLoadingScreen(nextSceneName);
