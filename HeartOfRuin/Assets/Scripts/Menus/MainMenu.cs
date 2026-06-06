@@ -13,6 +13,11 @@ public class MainMenu : MonoBehaviour
         LevelManager.LoadOptions();
     }
 
+    public void ExitGame()
+    {
+        Application.Quit();
+        Debug.Log("Closing Application");
+    }
     //public void ToggleLeaderboard()
     //{
     //    leaderboardUI.SetActive(!leaderboardUI.activeSelf);
