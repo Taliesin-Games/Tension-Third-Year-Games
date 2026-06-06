@@ -23,7 +23,7 @@ namespace BMD.ProcGen
                 return node != null && node.Length == bridgeLength.Min;
             }).Length;
 
-            if (count == 0) Debug.LogError($"No Path Nodes specified with a minimum length that matches bridgeLength.Min:{bridgeLength.Min}. There must be at least one that matches the minimum");
+            if (count == 0) Debug.LogWarning($"No Path Nodes specified with a minimum length that matches bridgeLength.Min:{bridgeLength.Min}. There must be at least one that matches the minimum");
         }
     }
 }
