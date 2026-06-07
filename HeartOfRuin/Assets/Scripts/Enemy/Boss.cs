@@ -4,9 +4,9 @@ public class Boss : Enemy
 {
     [SerializeField] private GameObject levelTransitionEffectPrefab;
 
-    protected override void OnDisable() 
+    protected override void OnDeath()
     { 
-        base.OnDisable();
+        base.OnDeath();
         DropBossPortal();
     }
 
