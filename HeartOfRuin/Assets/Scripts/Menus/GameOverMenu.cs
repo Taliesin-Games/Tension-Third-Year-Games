@@ -10,13 +10,17 @@ public class GameOverMenu : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            finalScoreText.text = $"Final Score: 00000";
-            nameInputField.text = OptionsManager.PlayerName;
+            if (finalScoreText != null)
+                finalScoreText.text = $"Final Score: 00000";
+            if (nameInputField != null)
+                nameInputField.text = OptionsManager.PlayerName;
         }
         else
         {
-            finalScoreText.text = "Final Score: 0";
-            nameInputField.text = "";
+            if (finalScoreText != null)
+                finalScoreText.text = "Final Score: 0";
+            if (nameInputField != null)
+                nameInputField.text = "";
         }
     }
     public void ReturnToMenu()
