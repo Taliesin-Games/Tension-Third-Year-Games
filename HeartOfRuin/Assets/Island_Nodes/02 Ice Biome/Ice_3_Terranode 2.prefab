@@ -8555,6 +8555,7 @@ GameObject:
   - component: {fileID: 6797655613287531203}
   - component: {fileID: 75481957879427886}
   - component: {fileID: 4382784280023105942}
+  - component: {fileID: 5071057730595743041}
   m_Layer: 0
   m_Name: Ice_3_Terranode 2
   m_TagString: Untagged
@@ -8667,6 +8668,26 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 48723bf19dc5b064a99bdc15c4e2b0f5, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &5071057730595743041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3987183807468222628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 859557e3806d2c94d86d085ac18bd455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NodeEnemySpawner
+  commonEnemiesToSpawn:
+  - {fileID: 7607207453903759168, guid: 7bfc2a71ff7710e4cbe598a46fa5e099, type: 3}
+  rareEnemiesToSpawn:
+  - {fileID: 8853847517130349112, guid: e564f7fc65980e54a93e1ca7dd3fbce4, type: 3}
+  enemySpawnQuantity: 15
+  rareChance: 0.3
+  maxEnemiesToSpawn: 15
+  spawnRadius: 20
 --- !u!1 &4030376635062191885
 GameObject:
   m_ObjectHideFlags: 0
