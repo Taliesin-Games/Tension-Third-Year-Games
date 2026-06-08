@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8720be020e9c002468ef536fd02ef084, type: 3}
-  m_Name: Hammer
+  m_Name: Rift-Scythe
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
-  itemIcon: {fileID: 1096983891, guid: 26cb0e2075257d64aa3473b498fed08f, type: 3}
-  itemName: Hammer
-  itemDescription: A heavy hammer
-  id: 7c466dfb7b384423a25ee95c32329dff
-  itemMesh: {fileID: 4687155244148461779, guid: 4c48c3331cac26544938b194ff095606, type: 3}
+  itemIcon: {fileID: 975447405, guid: 26cb0e2075257d64aa3473b498fed08f, type: 3}
+  itemName: Rift-Scythe
+  itemDescription: Rift Embued Dark Scythe
+  id: 3e6a6a280f9d462f828c15bc8b9b0384
+  itemMesh: {fileID: 853589979482818738, guid: 40f77d1106c08844e9a596ee1717de38, type: 3}
   maxStackSize: 1
-  rarity: 3
+  rarity: 4
   tags: []
   equipSlotType: 6
   damageBonusPercentages:
     None: 0
-    Physical: 1
+    Physical: 30
     Magical: 0
     True: 0
     Fire: 0
@@ -32,16 +32,16 @@ MonoBehaviour:
     Earth: 0
     Wind: 0
     Water: 0
-  BonusStrength: 3
-  BonusAgility: 0
+  BonusStrength: 16
+  BonusAgility: 16
   BonusIntelligence: 0
-  BonusCriticalChance: 0
-  BonusCriticalDamage: 0
+  BonusCriticalChance: 0.2
+  BonusCriticalDamage: 0.9
   itemEffects: []
   weaponDamageScalings:
     None: 0
-    Physical: 0.5
-    Magical: 0
+    Physical: 700
+    Magical: 700
     True: 0
     Fire: 0
     Lightning: 0
@@ -49,4 +49,4 @@ MonoBehaviour:
     Earth: 0
     Wind: 0
     Water: 0
-  weaponType: 3
+  weaponType: 0
