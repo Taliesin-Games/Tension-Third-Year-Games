@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 527992967993047708}
+  m_Sun: {fileID: 431834526}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2380,7 +2380,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -4815,6 +4815,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Directional Light Purple
       objectReference: {fileID: 0}
+    - target: {fileID: 1051043278414314151, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1183528066446436916, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_Name
       value: Global Lighting
@@ -4829,7 +4833,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1529344194202924366, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: tileIndex
-      value: 23
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1529344194202924366, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: tileCountX
@@ -4911,6 +4915,10 @@ PrefabInstance:
       propertyPath: setBColor3.r
       value: 0.3207547
       objectReference: {fileID: 0}
+    - target: {fileID: 2303907898116292927, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_AdditionalLightsShadowResolutionTier
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7422563872439741715, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4952,6 +4960,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_Range
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_Color.b
       value: 0.86614627
       objectReference: {fileID: 0}
@@ -4965,15 +4981,47 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_Intensity
-      value: 0.5
+      value: 1071.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_SpotAngle
+      value: 123.29956
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_AreaSize.x
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_AreaSize.y
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_Lightmapping
-      value: 1
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_ShadowRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_InnerSpotAngle
+      value: 76.17025
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 8354927917948670580, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 36.03296
+      value: -172
       objectReference: {fileID: 0}
     - target: {fileID: 8354927917948670580, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4981,7 +5029,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8354927917948670580, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 106.7
+      value: 67.33
       objectReference: {fileID: 0}
     - target: {fileID: 8354927917948670580, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5014,6 +5062,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8513638023534378158, guid: 95e788ad9694cae4092134361260ca37, type: 3}
+    - {fileID: 1051043278414314151, guid: 95e788ad9694cae4092134361260ca37, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7422563872439741715, guid: 95e788ad9694cae4092134361260ca37, type: 3}
       insertIndex: 0
@@ -5032,11 +5081,6 @@ PrefabInstance:
 --- !u!4 &527992967993047707 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7422563872439741715, guid: 95e788ad9694cae4092134361260ca37, type: 3}
-  m_PrefabInstance: {fileID: 527992967993047706}
-  m_PrefabAsset: {fileID: 0}
---- !u!108 &527992967993047708 stripped
-Light:
-  m_CorrespondingSourceObject: {fileID: 8037159808987054679, guid: 95e788ad9694cae4092134361260ca37, type: 3}
   m_PrefabInstance: {fileID: 527992967993047706}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &527992967993047709 stripped
