@@ -8,6 +8,7 @@ public class CharacterWeapon : MonoBehaviour
     DamageComponent damageComponent;
     #endregion
 
+    [SerializeField] AudioClip weaponSound;
 
     public void SetParentCharacter(Character character)
     {
@@ -34,6 +35,8 @@ public class CharacterWeapon : MonoBehaviour
         // Check if target and self later are the same
         if (other.gameObject.layer == gameObject.layer) return;
 
+        if (weaponSound != null) AudioSource.PlayClipAtPoint(weaponSound, transform.position);
+
         // Check if the collided object has a Health component
         if (other.GetComponent<Health>() == null) return;
         HitWithWeapon(other.gameObject);
@@ -45,6 +48,7 @@ public class CharacterWeapon : MonoBehaviour
         if (character == null) return;
 
         Debug.Log("Hit object: " + target.name);
+
 
         CharacterStats playerStats = character?.GetCharacterStats();
         DamageStruct damageBonusPercentage = character?.GetCharacterDamageBonusPercentage() ?? new DamageStruct();
