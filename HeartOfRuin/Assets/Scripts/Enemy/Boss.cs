@@ -4,6 +4,12 @@ public class Boss : Enemy
 {
     [SerializeField] private GameObject levelTransitionEffectPrefab;
 
+    SpecialAttackEffect specialAttackEffect;
+    protected override void Awake()
+    {
+        base.Awake();
+        specialAttackEffect = GetComponentInChildren<SpecialAttackEffect>();
+    }
     protected override void OnDeath()
     { 
         base.OnDeath();
@@ -19,5 +25,11 @@ public class Boss : Enemy
             Instantiate(levelTransitionEffectPrefab, transform.position, Quaternion.identity);
         }
     }
-  
+    
+    void AT_Cast_Special()
+    {
+        if (specialAttackEffect == null) return;
+
+        specialAttackEffect.Play();
+    }
 }
