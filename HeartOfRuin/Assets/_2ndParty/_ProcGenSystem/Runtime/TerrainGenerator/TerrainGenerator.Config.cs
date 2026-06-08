@@ -20,6 +20,9 @@ namespace BMD.ProcGen
         [SerializeField] float terrainCamHeight = 30f;
         [SerializeField] bool stepThroughGeneration = false;
         [SerializeField] int randomSeed = 0;                // Seed for random number generation, set to 0 for a random seed based on current time
+        [Tooltip("If true, the generator will run in demonstration mode, using curated seeds")]
+        [SerializeField] bool demonstrationMode = false;
+        [SerializeField] int[] demonstrationSeeds;
 
         [Tooltip("Directions the map can generate in.\n\n If no valid directions are selected, or the selected ones are not available, then any valid connection will be selected.")]
         [SerializeField] List<ConnectionDirection> allowedBranchDirections = new() { ConnectionDirection.North, ConnectionDirection.East, ConnectionDirection.South, ConnectionDirection.West };

@@ -29,6 +29,15 @@ namespace BMD.ProcGen
         }
         private void SetRandomSeed()
         {
+            // If we are in demonstration mode, we override the random seed with one from the demonstration seeds array, this ensures that the same levels are generated each time for demonstration purposes.
+            if (demonstrationMode)
+            {
+                randomSeed = demonstrationSeeds[UnityEngine.Random.Range(0, demonstrationSeeds.Length)];
+                Debug.Log($"Demonstration mode enabled. Random seed set to {randomSeed} from demonstration seeds.");
+            }
+
+            // If seed is 0 set a seed, also output to console for debugging purposes
+            // Also sets if demonstration mode is enabled but the demonstration seeds array is empty, this ensures that we still get a random seed in this case.
             if (randomSeed == 0)
             {
                 randomSeed = System.Environment.TickCount; // Use current time as seed if 0 is specified

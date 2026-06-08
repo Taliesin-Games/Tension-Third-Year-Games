@@ -517,7 +517,7 @@ public class EnemyController : BMD.CharacterController
 
         //SwitchEnemyState();
 
-        DrawDebug();
+        //DrawDebug();
 
 
         base.Update();
