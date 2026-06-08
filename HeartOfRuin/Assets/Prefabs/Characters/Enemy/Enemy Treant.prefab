@@ -39,9 +39,49 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 80798221949874621, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: m_Height
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 80798221949874621, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 80798221949874621, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: m_Center.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 562441046664065344, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: maxValue
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 562441046664065344, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: resistances.Magical
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 660232705719410642, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
       propertyPath: meshRenderer
       value: 
+      objectReference: {fileID: 7842036805858767153}
+    - target: {fileID: 1301100792316087286, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: meleeAttackCooldown
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2083632132247281666, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: agility
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2083632132247281666, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: strength
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2083632132247281666, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: intelligence
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2083632132247281666, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: criticalChance
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 2412272339440775529, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
       propertyPath: m_Avatar
@@ -99,10 +139,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4302046021221254410, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: runSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302046021221254410, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: sprintSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302046021221254410, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: moveWhileAttacking
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302046021221254410, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: movementAcceleration
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4427915400919398885, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: startingItems.Array.data[5].item
+      value: 
+      objectReference: {fileID: 11400000, guid: 73c2eec845f166e48973229e9f9c9a55, type: 2}
+    - target: {fileID: 4510217179583732269, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: m_Height
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4510217179583732269, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
+      propertyPath: m_Radius
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 5164306904053619644, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
       propertyPath: weaponAttachPoint
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8176272853265648652}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7649259253808060728, guid: 61664cdd4ed63714da85096cc5b8e556, type: 3}
@@ -210,5 +278,10 @@ Transform:
 --- !u!4 &7327346228059529823 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2b7b113fde4df9a489514174a806db9a, type: 3}
+  m_PrefabInstance: {fileID: 7072146681855477172}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &7842036805858767153 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -8146504838642649979, guid: 2b7b113fde4df9a489514174a806db9a, type: 3}
   m_PrefabInstance: {fileID: 7072146681855477172}
   m_PrefabAsset: {fileID: 0}
